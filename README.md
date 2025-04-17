@@ -1,2 +1,2 @@
 # FermiHubbardDMRG
-A finite-size DMRG analysis of the plain spinless Fermi-Hubbard model, then equipped with NN attractive coupling
+This analysis heavily relies on the work carried by me and my friend mrc-pop on the Bose-Hubbard model, which you can find at his repo: https://github.com/mrc-pop/BoseHubbardDMRG. Here I employ a similar analysis over the 1D Fermi-Hubbard model, with the aim of employing bosonization techniques to study both the phase diagram and the Luttinger liquid parameters; finally, I add a nearest-neighbors density-density attractive coupling, seemingly connected to interesting cuprates insulator-superconductor phase transition, and explore the variations in phase diagram.
