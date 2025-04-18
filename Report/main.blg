@@ -1,0 +1,15 @@
+[0] Config.pm:307> INFO - This is Biber 2.17
+[0] Config.pm:310> INFO - Logfile is 'main.blg'
+[59] biber:340> INFO - === Thu Apr 17, 2025, 17:52:23
+[70] Biber.pm:418> INFO - Reading 'main.bcf'
+[116] Biber.pm:969> INFO - Using all citekeys in bib section 0
+[125] Biber.pm:4383> INFO - Processing section 0
+[132] Biber.pm:4574> INFO - Looking for bibtex file 'misc/bibliography.bib' for section 0
+[137] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[137] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[137] Biber.pm:4203> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[137] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
+[138] bbl.pm:654> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[138] bbl.pm:757> INFO - Output to main.bbl
+[138] Biber.pm:130> WARN - Data source 'misc/bibliography.bib' is empty, ignoring
+[138] Biber.pm:132> INFO - WARNINGS: 1

@@ -1,0 +1,41 @@
+\documentclass[a4paper]{article}
+
+\input{misc/packages}
+\input{misc/definitions}
+\addbibresource{misc/bibliography.bib}
+
+\begin{document}
+
+\begin{center}
+    {\bfseries {\Large Finite-size DMRG characterization of the}} \\[0.8em]
+    {\bfseries {\Large 1D Fermi-Hubbard model phase diagram}} \\[1em]
+    \large University of Pisa, a.y.~2024-2025 \\[0.8em]
+    Alessandro Gori\footnote{\href{mailto:a.gori23@studenti.unipi.it}{a.gori23@studenti.unipi.it} / \href{https://github.com/nepero27178}{nepero27178@github.com}}
+\end{center}
+
+\renewcommand*{\thefootnote}{\arabic{footnote}}
+\setcounter{footnote}{0}
+
+\begin{abstract}
+    The one-dimensional Fermi-Hubbard model at zero temperature is studied, employing finite-size DMRG algorithm to investigate some of its ground state properties. The model contains a hopping term between neighbouring sites, a finite on-site interaction energy, and a chemical potential. \todo
+    
+    The entire project heavily relies upon the precedent project carried out by the author together with Marco Pompili, where the 1D Bose-Hubbard model was studied using finite-size DMRG. You may find \href{https://github.com/mrc-pop/BoseHubbardDMRG}{at this link} our previous work.\\
+    \begin{center}
+        {\footnotesize All of the code can be found at open-access in \href{https://github.com/nepero27178/FermiHubbardDMRG}{this repository}:\\ \url{https://github.com/nepero27178/FermiHubbardDMRG}}
+    \end{center}
+\end{abstract}
+\tableofcontents
+
+\clearpage
+
+\input{sections/theory}
+
+\input{sections/simulations}
+
+\input{sections/results}
+
+%\input{sections/appendix}
+
+\printbibliography \nocite{*}
+
+\end{document}
