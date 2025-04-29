@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+	\begin{axis}[
+			axis lines=center,
+			xlabel={$k$},
+			ylabel={Energy},
+			xlabel style={below},
+			ylabel style={left},
+			xtick=\empty,
+			ytick=\empty,
+			xmin=-3.5, xmax=3.5,
+			ymin=-1.0, ymax=2.5
+		]
+		\addplot[domain=-3:3, smooth, color=tabblue]
+			{1-cos(deg(x))} node[below] {$\epsilon_k$};
+		
+		\addplot[domain=-3:3, color=tabred]
+			{1} node[above] {$\epsilon_F$};
+			
+		\addplot[domain=0.2:-2.8, color=tabgreen]
+			{-0.57-x} node[right] {$\epsilon_k^{(\mathrm L)}$};
+		
+		\addplot[domain=-0.2:2.8, color=tabgreen]
+			{-0.57+x} node[left] {$\epsilon_k^{(\mathrm R)}$};
+	\end{axis}
+\end{tikzpicture}
