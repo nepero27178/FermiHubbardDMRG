@@ -1,7 +1,11 @@
 \contentsline {section}{\numberline {1}Theoretical introduction}{2}{section.1}%
 \contentsline {subsection}{\numberline {1.1}Bosonization in a nutshell}{2}{subsection.1.1}%
-\contentsline {subsection}{\numberline {1.2}The Fermi-Hubbard model}{4}{subsection.1.2}%
-\contentsline {subsection}{\numberline {1.3}Adding one effective interaction}{4}{subsection.1.3}%
-\contentsline {section}{\numberline {2}Algorithms and simulations}{5}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Finite-size DMRG}{5}{subsection.2.1}%
-\contentsline {section}{\numberline {3}Data analysis and results}{5}{section.3}%
+\contentsline {paragraph}{$g_4$ process.}{6}{section*.8}%
+\contentsline {paragraph}{$g_2$ process.}{6}{section*.9}%
+\contentsline {paragraph}{Charge compressibility.}{7}{section*.11}%
+\contentsline {paragraph}{Charge stiffness.}{7}{section*.12}%
+\contentsline {subsection}{\numberline {1.2}The Fermi-Hubbard model}{7}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Adding one effective interaction}{7}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Algorithms and simulations}{7}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Finite-size DMRG}{7}{subsection.2.1}%
+\contentsline {section}{\numberline {3}Data analysis and results}{7}{section.3}%

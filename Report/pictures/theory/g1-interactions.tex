@@ -1,4 +1,4 @@
-\begin{tikzpicture}[scale=0.75]
+\begin{tikzpicture}[scale=0.6]
 	\begin{axis}[
 			axis lines=center,
 			xlabel={$k$},
@@ -12,23 +12,23 @@
 		]
 		
 		\addplot[domain=-3:3, smooth, color=tabblue]
-		{-cos(deg(x))} node[below] {$\xi_k$};
+			{-cos(deg(x))} node[below] {$\xi_k$};
 		
 		\addplot[domain=0.2:-2.8, color=tabgreen]
-		{-1.57-x} node[right] {$\xi_k^{(\mathrm L)}$};
+			{-1.57-x} node[right] {$\xi_k^{(\mathrm L)}$};
 		
 		\addplot[domain=-0.2:2.8, color=tabgreen]
-		{-1.57+x} node[left] {$\xi_k^{(\mathrm R)}$};
+			{-1.57+x} node[left] {$\xi_k^{(\mathrm R)}$};
 		
 		\draw[color=tabred,-stealth]
-		(-1.37,-0.2) .. controls (-1.87, -0.1) .. (-1.77, 0.2);
+			(-1.37,-0.2) .. controls (-1,-0.2) and (1,0) .. (1.77,0.2) node[above left] {$g_1$};
 		\draw[color=tabred,-stealth]
-		(1.77,0.2) .. controls (1.87, -0.1) .. (1.37, -0.2) node[below right] {$g_2$};
+			(1.77,0.2) .. controls (1,0.2) and (-1,0) .. (-1.37,-0.2);
 		
 		\draw[color=tabred,dashed,-stealth]
-		(-1.77,0.2) .. controls (-1.27, 0.1) .. (-1.37,-0.2);
+			(1.37,-0.2) .. controls (1,-0.2) and (-1,0) .. (-1.77,0.2);
 		\draw[color=tabred,dashed,-stealth]
-		(1.37,-0.2) .. controls (1.27, 0.1) .. (1.77,0.2);
+			(-1.77,0.2) .. controls (-1,0.2) and (1,0) .. (1.37,-0.2);
 		
 	\end{axis}
 \end{tikzpicture}
