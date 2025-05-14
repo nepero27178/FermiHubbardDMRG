@@ -6,25 +6,39 @@ using Dates
 using DelimitedFiles
 
 # ------------------------------------------------------------------------------
-# --------------------------------- Physics ------------------------------------
+# ------------------------------- Hamiltonian ----------------------------------
 # ------------------------------------------------------------------------------
 
 # Full hamiltonian
 
-H = GetHamiltonian(sites,
-				   t::Float64,
-				   V::Float64,
-				   μ::Float64;
-				   Φ=0)
-    """
-    Construct the 1D Fermi-Hubbard chain Hamiltonian as an MPO for given sites,
-    hopping `t`, interaction `V`, and chemical potential `μ`. The parameter Φ
-    controls the boundary conditions: if Φ=0, periodic boundary conditions are
-    used. Otherwise twisted boundary conditions are implemented via a 
-    pseudo-gauge map
-    	c_k -> exp(- iΦ * k/L) c_k
-    which algebraically gives the hamiltonian below.
-    """
+"""
+function GetHamiltonianMPO(
+		sites::Vector{Index{Int64}},
+		t::Float64,
+		V::Float64,
+		μ::Float64;
+		Φ=0
+	)::MPO
+		   
+Returns: H as an MPO.
+
+Build the 1D Fermi-Hubbard chain Hamiltonian as an MPO for given sites, with 
+hopping `t`, interaction `V`, and chemical potential `μ`. The flux parameter `Φ`
+controls the boundary conditions: if Φ=0, periodic boundary conditions are used.
+Otherwise, twisted boundary conditions are implemented via a pseudo-gauge map
+	c_k -> exp(- iΦ * k/L) c_k
+which algebraically gives the hamiltonian as defined in code. The twisted
+boundary conditions give a total Φ phase twist in the ground-state wavefunction
+at the end of the chain.
+"""
+function GetHamiltonianMPO(
+		sites::Vector{Index{Int64}},
+		t::Float64,
+		V::Float64,
+		μ::Float64;
+		Φ=0
+	)::MPO
+
     os = OpSum()
     L = length(sites)
     
@@ -46,17 +60,35 @@ end
 
 # Local hamiltonian
 
-function GetLocalH(sites,
-				   j::Int64,
-				   t::Float64,
-				   V::Float64,
-				   μ::Float64;
-				   Φ=0)
-    """
-    Construct the local Hamiltonian term MPO for site `i` in the 1D 
-    Fermi-Hubbard model with hopping `t`, NN interaction `V`, and chemical
-    potential `μ`.
-    """
+"""
+function GetLocalHamiltonianMPO(
+		sites::Vector{Index{Int64}},
+		j::Int64,
+		t::Float64,
+		V::Float64,
+		μ::Float64;
+		Φ=0
+	)::MPO
+				   
+Returns: Hj (the local hamiltonian) as an MPO.
+
+Build the 1D Fermi-Hubbard chain local Hamiltonian at site `i` as an MPO, with 
+hopping `t`, interaction `V`, and chemical potential `μ`. The flux parameter `Φ`
+controls the boundary conditions: if Φ=0, periodic boundary conditions are used.
+Otherwise, twisted boundary conditions are implemented via a pseudo-gauge map
+	c_k -> exp(- iΦ * k/L) c_k
+which algebraically gives the hamiltonian as defined in code. The twisted
+boundary conditions give a total Φ phase twist in the ground-state wavefunction
+at the end of the chain.
+"""
+function GetLocalHamiltonianMPO(
+		sites::Vector{Index{Int64}},
+		j::Int64,
+		t::Float64,
+		V::Float64,
+		μ::Float64;
+		Φ=0
+	)::MPO
     
     if j<1 || j>L
     	error("Invalid site! Enter 1≤j≤L.")
@@ -84,23 +116,71 @@ function GetLocalH(sites,
     os += -μ,"N",j
 end
 
-# Total number operator
+# ------------------------------------------------------------------------------
+# ------------------------------- Correlators ----------------------------------
+# ------------------------------------------------------------------------------
 
-function GetNumber(sites)
-    """
-    Calculate the total number operator `N` as a MPO for the given sites.
-    """
-    os = OpSum()
-    for j=1:length(sites)
-        os += "N",j
-    end
+# Total number of fermions and density-density correlator.
 
-    return MPO(os, sites)
+"""
+function GetTotalFermionNumber(
+		psi::MPS
+	)::Float64
+
+Returns: expected particle number as a Float64.
+
+This function calculates the expected total number of fermions on the MPS ground
+state `psi`. 
+"""
+function GetTotalFermionNumber(
+		psi::MPS
+	)::Float64
+	
+	# Trivial function definition, just for notational coherence.
+    return sum(expect(psi,"N"))
+    
 end
 
-function GetSuperConductingPairing(sites,
-								   j::Int64,
-								   Φ=0)
+"""
+function GetDensityCorrelator(
+		psi::MPS
+	)::Matrix{Float64}
+
+Returns: expected particle number as a Matrix{Float64}.
+
+This function calculates the expected total number of fermions on the MPS ground
+state `psi`. 
+"""
+function GetDensityCorrelator(
+		psi::MPS
+	)::Matrix{Float64}
+	
+	# Trivial function definition, just for notational coherence.
+	return correlation_matrix(psi,"N","N")
+									  
+end
+
+# Superconducting order parameter and fluctuations correlator.
+
+"""
+function GetSuperConductingPairingMPO(
+		sites::Vector{Index{Int64}},
+		j::Int64;
+		Φ=0
+	)::MPO
+	
+Returns: superconducting order parameters as an MPO.
+
+This function calculates for a given site `j` the superconducting pairing
+operator on neighboring sites,
+	C_j C_{j+1}
+(note: usually the definition is hermitian-conjugate to this one).
+"""
+function GetSuperConductingPairingMPO(
+		sites::Vector{Index{Int64}},
+		j::Int64;
+		Φ=0
+	)::MPO
 
 	if j<1 || j>L
     	error("Invalid site! Enter 1≤j≤L.")
@@ -118,11 +198,27 @@ function GetSuperConductingPairing(sites,
 	return MPO(os, sites)
 end
 
-function GetSuperConductingCorrelator(sites,
-									  psi::MPS,
-									  j::Int64,
-									  k::Int64,
-									  Φ=0)
+"""
+function GetSuperConductingCorrelator(
+		psi::MPS,
+		j::Int64,
+		k::Int64;
+		Φ=0
+	)::Matrix{Float64}
+	
+Returns: the superconducting pairing correlator as a Matrix{Float64}.
+
+This function computes the pairing correlator for the superconducting order
+parameter at sites `j` and `j+k`. 
+"""
+function GetSuperConductingCorrelator(
+		psi::MPS,
+		j::Int64,
+		k::Int64;
+		Φ=0
+	)::Matrix{Float64}
+	
+	sites = siteinds(psi)
 	
 	if j<1 || j>L
     	error("Invalid site! Enter 1≤j≤L.")
@@ -136,48 +232,64 @@ function GetSuperConductingCorrelator(sites,
 	
 	# TODO Extend to non-zero flux threading the ring.
 	
-	A = GetSuperConductingCorrelator(sites,j)
-	B = GetSuperConductingCorrelator(sites,mod1(j+k,L))
-	inner(A, psi, B, psi)
+	A = GetSuperConductingPairingMPO(sites,j)
+	B = GetSuperConductingPairingMPO(sites,mod1(j+k,L))
 	
-	return 
+	return inner(A, psi, B, psi)
 									  
 end
 
-function GetNumberCorrelator(psi::MPS)
-	
-	"""
-	Trivial function definition, just for notational coherence.
-	"""
-	
-	return correlation_matrix(psi,"N","N")
-									  
-end
+# ------------------------------------------------------------------------------
+# -------------------------------- Operators -----------------------------------
+# ------------------------------------------------------------------------------
 
-# Two points correlator # TODO
+# Equal time Green's function
 
-function GetEqualTimeGreensFunction(psi::MPS)
+"""
+function GetEqualTimeGreensFunction(
+		psi::MPS
+	)::Matrix{Complex{Float64}}
+	
+Returns: G(i-j,0) as a ComplexF64.
+
+This function calcualtes the equal time Green's function as a simple correlation
+matrix for the operators `C` and `Cdag` on the MPS `psi`.
+"""
+function GetEqualTimeGreensFunction(
+		psi::MPS
+	)::Matrix{Complex{Float64}}
     
-    """
-	Trivial function definition, just for notational coherence.
-	"""
-	
+	# Trivial function definition, just for notational coherence.
 	EqualTimeGreensFunction = - im .* correlation_matrix(psi,"C","Cdag") 
 	return EqualTimeGreensFunction
 end
 
 # Von Neumann entropy
 
-function GetVonNeumannEntropy(psi::MPS, sites, b::Int64)
-    """
-    Calculate Von Neumann entropy across bond b; which is, the bipartite entropy
-    for the bipartition (1,...,b) -- (b+1,...,L).
-    """
-    # Perform SVD to all states except i, to prepare for calculating a local observable (end of Lect 4 page 4)
+"""
+function GetVonNeumannEntropy(
+		psi::MPS,
+		b::Int64
+	)::Float64
+	
+Returns: bipartite entropy at chain link `b` as a Float64.
+
+Calculate Von Neumann entropy across bond `b` for the MPS `psi`; which is, the 
+bipartite entropy for the bipartition (1,...,b) -- (b+1,...,L).
+"""
+function GetVonNeumannEntropy(
+		psi::MPS,
+		b::Int64
+	)::Float64
+	
+	sites = siteinds(psi)
+   
+    # Perform SVD to all states except i.
     orthogonalize!(psi, b)
 
-    # First argument: the tensor on which to perform the SVD, i.e. psi[i]
-    # Second argument: the indices on which to perform the SVD, i.e. linkind(psi, i-1) and sites[i] (left link and vertical link)
+    # First argument: the tensor on which to perform the SVD, i.e. psi[i].
+    # Second argument: the indices on which to perform the SVD, i.e. 
+    # linkind(psi, i-1) and sites[i] (left link and vertical link).
     
     if b==1
 	  _, S, _ = svd(psi[b], (sites[b],))
@@ -185,8 +297,10 @@ function GetVonNeumannEntropy(psi::MPS, sites, b::Int64)
 	  _, S, _ = svd(psi[b], (linkind(psi, b-1), sites[b]))
 	end
 
-    # S is the diagonal matrix containing the singular values
-    SvN = 0.0 				# von Neumann entropy
+    # S is the diagonal matrix containing the singular values; SvN is the Von
+    # Neumann entropy.
+    
+    SvN = 0.0
     for n in 1:dim(S, 1)
       p = S[n,n]^2
       SvN -= p * log(p)
@@ -194,13 +308,22 @@ function GetVonNeumannEntropy(psi::MPS, sites, b::Int64)
     return SvN
 end
 
-# Local population # TODO
+# Local population
 
-function GetLocalPopulation(psi::MPS)
-	"""
-	Get the local population for each site and for each boson state, save it
-	into a matrix.
-	"""
+"""
+function GetLocalPopulation(
+		psi::MPS
+	)::Matrix{Float64}
+	
+Returns: single-particle state populations as a Matrix{Float64}.
+
+Gets the local population for each site and for each single-particle fermion 
+state, and saves it into a matrix.
+"""
+function GetLocalPopulation(
+		psi::MPS
+	)::Matrix{Float64}
+	
 	L = length(psi)
 	Populations=zeros(L,2)
 	KMatrix = zeros(2,2)
@@ -213,7 +336,7 @@ function GetLocalPopulation(psi::MPS)
 	return Populations
 end
 
-# TODO GO ON FROM HERE
+# TODO Go on from here.
 
 # ------------------------------------------------------------------------------
 # ------------------------------------ DMRG ------------------------------------ 
@@ -246,7 +369,8 @@ function RunDMRGAlgorithm(ModelParameters::Vector{Float64},
         							 t::Float64,
         							 V::Float64,
         							 μ::Float64]
-        - DMRGParameters: array of [nsweeps::Int64, maxdim::Int64, 
+        - DMRGParameters: array of [nsweeps::Int64,
+        							maxdim::Int64, 
         							cutoff::Vector{Float64}]
     Parametric input:
         - ComputeAllObservables: boolean variable, if false only E, 
@@ -260,7 +384,7 @@ function RunDMRGAlgorithm(ModelParameters::Vector{Float64},
     """
     
     L, N = Int64.(ModelParameters[1:2])
-    t, Φ, V, μ = ModelParameters[3:6]
+    t, V, μ, Φ = ModelParameters[3:6]
     nsweeps, maxdim, cutoff = DMRGParameters[1:3]
 
 	# Evaluate UserMode
@@ -304,13 +428,20 @@ function RunDMRGAlgorithm(ModelParameters::Vector{Float64},
     	if !Fast
     		println("Selected mode: ", UserMode)
         end
-        println("Model parameters: L=$L, N=$N, nmax=$nmax, J=$J, U=$U, μ=$μ.")
+        println("Model parameters: L=$L, N=$N, t=$t, V=$V, μ=$μ, Φ=$Φ.")
         println("Starting simulation...\n")
     end
 
-    # Calculate hamiltonian and number operators
+	# Initialize lattice 
     sites = siteinds("Fermion", L)
-    H = GetHamiltonian(sites, t, Φ, V, μ; pbc)
+    
+    # Compute hamiltonian (two-cases separation is needed in order to simplify
+    # initialization.
+    if Φ==0
+		H = GetHamiltonian(sites, t, V, μ)
+	elseif Φ!==0
+	    H = GetHamiltonian(sites, t, V, μ; Φ)
+	end
     NTot = GetNumber(sites)
     
     # Set starting state and print observables

@@ -2,7 +2,10 @@
 
 using ITensors, ITensorMPS
 
-function GetHamiltonian(Sites)
+"""
+Hellooo.
+"""
+function GetHamiltonian(Sites)::MPO
 	os = OpSum()
 	L = length(Sites)
 	for j in 1:L
