@@ -3,46 +3,64 @@
 using Base.Threads
 using DelimitedFiles  # For writedlm
 
+# TODO Restart here after having finished checking for the XXZ mapping.
+
 # ------------------------------ Boundaries sweep ------------------------------
 
-function BoundariesSweep(L::Int64,
-                         nmax::Int64,
-                         JJ::Array{Float64},
-                         DMRGParameters::Vector{Any},                         
-                         FilePathOut::String; 
-                         μ0=0.0)
-    """
-    Calculate two relevant observables for the MI-SF transition.
-        - Phase boundaries,
-    Use μ0=0 by default (SF phase).
-    """
+@doc raw"""
+function BoundariesSweep(
+		L::Int64,
+		nmax::Int64,
+		JJ::Array{Float64},
+		DMRGParameters::Vector{Any},                         
+		FilePathOut::String; 
+		μ0=0.0
+	)
+	
+Returns: none (inline print).
+
+# TODO To be understood if this function is useful.
+"""
+function BoundariesSweep(
+		L::Int64,
+		tt::Array{Float64},
+		DMRGParameters::Vector{Any},                         
+		FilePathOut::String; 
+		μ0=0.0
+	)
     
     DataFile = open(FilePathOut, "a")
     println("Extracting boundaries...")
     
-    l = length(JJ)
-    for (j, J) in enumerate(JJ)
-        println("Running DMRG for J=$(round(J, digits=3)), μ=$μ0 (simulation ",
-                "$j/$l for L=$L)")
+    l = length(tt)
+    for (j, t) in enumerate(tt)
+        printstyled("Running DMRG for t=$(round(t, digits=3)), μ=$μ0". 
+        	" (simulation $j/$l for L=$L)\n", color=:yellow)
         
         # Use @sync to wait for all tasks to complete
         @sync begin
             # Create tasks for each DMRG call
-            task1 = @spawn RunDMRGAlgorithm([L, L-1, nmax, J, μ0], 
-                                             DMRGParameters,
-                                             "Fast"; 
-                                             FixedN=true,
-                                             RandomPsi0=false)
-            task2 = @spawn RunDMRGAlgorithm([L, L, nmax, J, μ0], 
-                                             DMRGParameters,
-                                             "Fast";
-                                             FixedN=true,
-                                             RandomPsi0=false)
-            task3 = @spawn RunDMRGAlgorithm([L, L+1, nmax, J, μ0], 
-                                             DMRGParameters,
-                                             "Fast"; 
-                                             FixedN=true,
-                                             RandomPsi0=false)
+            task1 = @spawn RunDMRGAlgorithm(
+            	[L, L-1, t, μ0],
+				DMRGParameters,
+				"Fast", 
+				true;	# Fix N
+				RandomPsi0=false
+			)
+            task2 = @spawn RunDMRGAlgorithm(
+            	[L, L, t, μ0], 
+				DMRGParameters,
+				"Fast",
+				true;	# Fix N
+				RandomPsi0=false
+			)
+            task3 = @spawn RunDMRGAlgorithm(
+				[L, L+1, t, μ0], # SUS LOL 
+				DMRGParameters,
+				"Fast", 
+				true;	# Fix N
+				RandomPsi0=false
+			)
 
             # Wait for all tasks to complete and collect results
             E1 = fetch(task1)
@@ -56,7 +74,7 @@ function BoundariesSweep(L::Int64,
             μDown = - ΔEminus - μ0 # Sign problem otherwise
 
             # Write results to the file
-            write(DataFile, "$L; $J; $E2; $μUp; $μDown\n")
+            write(DataFile, "$L; $t; $E2; $μUp; $μDown\n")
         end
     end
     
@@ -66,36 +84,49 @@ end
 
 # ------------------------------ Horizontal sweep ------------------------------
 
-function HorizontalSweep(L::Int64,
-                         nmax::Int64,
-                         JJ::Array{Float64},
-                         μ0::Float64,
-                         DMRGParameters::Vector{Any},                         
-                         FilePathOut::String)
-    """
-    Run horizontal sweep (fixed μ0) to extract the Green's function behaviour
-    at increasing J.
-    """
+@doc raw"""
+function HorizontalSweep(
+		L::Int64,
+		tt::Array{Float64},
+		μ0::Float64,
+		DMRGParameters::Vector{Any},                         
+		FilePathOut::String
+	)
+	
+Returns: none (inline print).
+
+Run horizontal sweep (fixed μ0) to extract observables and correlator at
+increasing t.
+"""
+function HorizontalSweep(
+		L::Int64,
+		tt::Array{Float64},
+		μ0::Float64,
+		DMRGParameters::Vector{Any},                         
+		FilePathOut::String
+	)
     
     DataFile = open(FilePathOut, "a")
     println("Performing horizontal sweep at μ=$μ0...")
     
-    l = length(JJ)
-    for (j, J) in enumerate(JJ)
-        println("Running DMRG for J=$(round(J, digits=3)), μ=$μ0 (simulation ",
-                "$j/$l for L=$L)")
+    l = length(tt)
+    for (j, t) in enumerate(tt)
+    	printstyled("Running DMRG for t=$(round(t, digits=3)), μ=$μ0". 
+        	" (simulation $j/$l for L=$L)\n", color=:yellow)
         
         # Use @sync to wait for all tasks to complete
         @sync begin
             # Create tasks for each DMRG call
-            E, Γ, eΓ =  RunDMRGAlgorithm([L, L, nmax, J, μ0], 
-                                 		 DMRGParameters,
-                                 		 "Correlator";
-							             FixedN=false,
-							             RandomPsi0=false)
+            E, Γ, eΓ, O, eO =  RunDMRGAlgorithm(
+            	[L, L, nmax, J, μ0], 
+				DMRGParameters,
+				"Correlators",
+				false;	# FixedN
+				RandomPsi0=false
+			)
 
             # Write results to the file
-            write(DataFile, "$L; $J; $E; $Γ; $eΓ;\n")
+            write(DataFile, "$L; $t; $E; $Γ; $eΓ; $O, $eO\n")
         end
     end
     
@@ -106,15 +137,16 @@ end
 
 # ----------------------------- Rectangular sweep ------------------------------
 
-function RectangularSweep(L::Int64,
-    					  N::Int64,
-    					  nmax::Int64,
-    					  JJ::Vector{Float64},				# Horizontal domain
-						  μμ::Vector{Float64},				# Vertical domain
-    					  DMRGParametersMI::Vector{Any},
-    					  DMRGParametersSF::Vector{Any},
-    					  FilePathIn::String,				# To evaluate if a given point is MI or SF
-    					  FilePathOut::String)				# Save computation time if correlators are not needed
+function RectangularSweep(
+		L::Int64,
+		N::Int64,
+		tt::Vector{Float64},
+		μμ::Vector{Float64},
+		DMRGParametersMI::Vector{Any},
+		DMRGParametersSF::Vector{Any},
+		FilePathIn::String,
+		FilePathOut::String
+	)
     """
     Calculate the variance of the number of particles on site i and ⟨b_i⟩ for a
     range of hopping J and chemical potential μ values. Results are saved to a file.

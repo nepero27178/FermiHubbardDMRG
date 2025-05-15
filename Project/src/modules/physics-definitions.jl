@@ -13,7 +13,7 @@ using DelimitedFiles
 
 @doc raw"""
 function GetHamiltonianMPO(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}},
+		sites::Sites,
 		t::Float64,
 		V::Float64,
 		μ::Float64;
@@ -32,7 +32,7 @@ boundary conditions give a total Φ phase twist in the ground-state wavefunction
 at the end of the chain.
 """
 function GetHamiltonianMPO(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}},
+		sites::Sites,
 		t::Float64,
 		V::Float64,
 		μ::Float64;
@@ -45,8 +45,8 @@ function GetHamiltonianMPO(
     for j=1:L
     	# Separate: initialize Float64 or ComplexFloat64 
     	if Φ!==0
-            os += -t * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
-	        os += -t * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
+            os += -t * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
+	        os += -t * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
 		elseif Φ==0
 			os += -t,"Cdag",j,"C",mod1(j+1,L)
 	        os += -t,"Cdag",mod1(j+1,L),"C",j
@@ -62,7 +62,7 @@ end
 
 @doc raw"""
 function GetLocalHamiltonianMPO(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}},
+		sites::Sites,
 		j::Int64,
 		t::Float64,
 		V::Float64,
@@ -82,7 +82,7 @@ boundary conditions give a total Φ phase twist in the ground-state wavefunction
 at the end of the chain.
 """
 function GetLocalHamiltonianMPO(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}},
+		sites::Sites,
 		j::Int64,
 		t::Float64,
 		V::Float64,
@@ -99,10 +99,10 @@ function GetLocalHamiltonianMPO(
     
 	# Separate: initialize Float64 or ComplexFloat64 
 	if Φ!==0
-		os += -t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j-1,L),"C",j
-        os += -t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j-1,L)
-        os += -t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
-        os += -t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
+		os += -t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",mod1(j-1,L),"C",j
+        os += -t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",j,"C",mod1(j-1,L)
+        os += -t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
+        os += -t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
 	elseif Φ==0
 		os += -t/2,"Cdag",mod1(j-1,L),"C",j
         os += -t/2,"Cdag",j,"C",mod1(j-1,L)
@@ -163,7 +163,7 @@ end
 
 @doc raw"""
 function GetSuperConductingPairingMPO(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}},
+		sites::Sites,
 		j::Int64;
 		Φ=0
 	)::MPO
@@ -176,7 +176,7 @@ operator on neighboring sites,
 (note: usually the definition is hermitian-conjugate to this one).
 """
 function GetSuperConductingPairingMPO(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}},
+		sites::Sites,
 		j::Int64;
 		Φ=0
 	)::MPO
@@ -190,7 +190,7 @@ function GetSuperConductingPairingMPO(
 	if Φ==0
 		os += "C",j,"C",mod1(j+1,L)
 	elseif Φ!==0
-		os += cos(Φ * (2*j+1)/L) + im*sin(Φ * (2*j+1)/L),"C",j,"C",mod1(j+1,L)
+		os += cos(Φ * (2*j+1)/L) - im*sin(Φ * (2*j+1)/L),"C",j,"C",mod1(j+1,L)
 	end
 	
 	return MPO(os, sites)

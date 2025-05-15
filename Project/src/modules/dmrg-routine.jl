@@ -5,6 +5,17 @@ using Statistics
 using Dates
 using DelimitedFiles
 
+# TODO Move to setup from here...
+FixedN = true
+    
+# Alias definition
+if FixedN
+	const Sites = Vector{Index{Vector{Pair{QN, Int64}}}}
+else
+	const Sites = Vector{Index{Int64}}
+end
+# ...to here.
+
 include("physics-definitions.jl")
 
 # ------------------------------------------------------------------------------
@@ -13,7 +24,7 @@ include("physics-definitions.jl")
 
 @doc raw"""
 function SetUniformState(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}}
+		sites::Sites
 	)::MPS
 	
 Returns: uniformly filled fermionic state.	
@@ -23,7 +34,7 @@ system, the state is at unitary filling; in the spinful system, it is at unitary
 filling.
 """
 function SetUniformState(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}}
+		sites::Sites
 	)::MPS
 
     L = length(sites)
@@ -34,7 +45,7 @@ end
 
 @doc raw"""
 function SetStartingState(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}}
+		sites::Sites
 	)::MPS
 	
 Returns: starting fermionic state, filled only at center.	
@@ -45,7 +56,7 @@ boundary conditions this is irrelevant, but can become useful for open boundary
 conditions.
 """
 function SetStartingState(
-		sites::Vector{Index{Vector{Pair{QN, Int64}}}},
+		sites::Sites,
 		N::Int64
 	)::MPS
 
@@ -88,9 +99,9 @@ Parametric input:
 function RunDMRGAlgorithm(
 		ModelParameters::Vector{Float64},		# Model parameters
 		DMRGParameters::Vector{Any},			# Parameters for DMRG
-		UserMode::String;						# Parametric input
-		verbose=false,							# Do not print at line
-		FixedN=false,							# Let N vary
+		UserMode::String,						# Parametric input
+		FixedN::Bool;							# Let N vary
+		verbose=false							# Do not print at line
 	)::Any
     
     L, N = Int64.(ModelParameters[1:2])
@@ -200,6 +211,8 @@ function RunDMRGAlgorithm(
 #		return E, NTotAvg, nVariance, aAvg
     
     elseif Correlators
+    
+    	# TODO Extend to Green's function
 
 		l = floor(Int64, L/2)		# Correlations up to half the closed chain
 		DensityCorrelator = GetDensityCorrelator(psi)
@@ -226,6 +239,8 @@ function RunDMRGAlgorithm(
 			eO[r] = std(TmpSC)
 			
 		end
+		
+		return E, Γ, eΓ, O, eO
     
     elseif Debug
     
@@ -255,18 +270,19 @@ end
 # ------------------------------------ Main ------------------------------------ 
 # ------------------------------------------------------------------------------
 
+@doc raw"""
 function main()
 
-	"""
-    If the script is called directly from terminal, run one full DMRG routine
-    with the following parameters.
-    """
+If the script is called directly from terminal, run one full DMRG routine
+with the parameters defined inline.
+"""
+function main()
     
     L = 15
     N = 5
    	t = 1.0
-   	V = 0
-    μ = 0
+   	V = 1.0	# Keep it fixed
+    μ = 1.0
     η = 0
 
     nsweep = 10
@@ -274,7 +290,8 @@ function main()
     cutoff = [1E-8]
     DMRGParameters = [nsweep, maxlinkdim, cutoff]
     
-    UserMode = "Correlators" # "OrderParameters" / "Correlators" / "Debug" / "Fast"
+    # Choose one: "OrderParameters" / "Correlators" / "Debug" / "Fast"
+    UserMode = "Correlators"
 
 	if UserMode=="Fast"
 		for i in 1:80
@@ -296,35 +313,39 @@ function main()
     Observables = RunDMRGAlgorithm(
 		[L, N, t, V, μ, η],
 		DMRGParameters,
-		UserMode; 
+		UserMode,
+		FixedN; 
 		verbose=true,
-		FixedN=true
 	)
     								
 	if UserMode=="OrderParameters"
-		E, nVariance, aAvg = Observables
-		println("Results of the simulation:
-Energy of ground state: $(round.(E, digits=4))
-Number variance on central site: $(round.(nVariance, digits=4))
-Average of <a> on central site: $(round.(aAvg, digits=4))")
+		
+		@warn "Mode OrderParameters under construction."
+	
+#		E, nVariance, aAvg = Observables
+#		println("Results of the simulation:
+#Energy of ground state: $(round.(E, digits=4))
+#Number variance on central site: $(round.(nVariance, digits=4))
+#Average of <a> on central site: $(round.(aAvg, digits=4))")
 	
 	elseif UserMode=="Correlators"
-		E, Γ, eΓ = Observables
-		println("Results of the simulation:
-Energy of ground state: $(round.(E, digits=4))
-Green's function: $(round.(Γ, digits=4))
-Error on Green's function: $(round.(eΓ, digits=4))")
+		E, Γ, eΓ, O, eO = Observables
+		M = vcat(["r" "Γ" "eΓ" "O" "eO"], hcat([x for x in 1:floor(Int64, L/2)], [Γ eΓ O eO]))
+		@info "Results of the simulation:" E M
 		
 	elseif UserMode=="Debug"
-		E, nMean, nVariance, LocalE, Populations, Entropy = Observables
-		println("Results of the simulation:
-Energy of ground state: $(round.(E, digits=4))
-\"Local\" part of energy: $(round.(LocalE, digits=4))
-Mean number of particles: $(round.(nMean, digits=4))
-Variance number of particles: $(round.(nVariance, digits=4))
-Relative fluctuation: $(round.(sqrt.(nVariance)./nMean, digits=4))
-Populations: $(round.(Populations, digits=4))
-Bipartite entropy: $(round.(Entropy, digits=4))")
+		
+		@warn "Mode Debug under construction."
+	
+#		E, nMean, nVariance, LocalE, Populations, Entropy = Observables
+#		println("Results of the simulation:
+#Energy of ground state: $(round.(E, digits=4))
+#\"Local\" part of energy: $(round.(LocalE, digits=4))
+#Mean number of particles: $(round.(nMean, digits=4))
+#Variance number of particles: $(round.(nVariance, digits=4))
+#Relative fluctuation: $(round.(sqrt.(nVariance)./nMean, digits=4))
+#Populations: $(round.(Populations, digits=4))
+#Bipartite entropy: $(round.(Entropy, digits=4))")
     	
 	else
 		E = Observables

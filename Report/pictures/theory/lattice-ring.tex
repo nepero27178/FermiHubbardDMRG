@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+	\foreach \i in {0,1,...,7}{
+		\def\angle{45*\i}
+		
+		\draw[color=tabgreen]
+			(\angle:2) -- ({\angle+45}:2);
+			
+		\node[anchor=center, color=tabgreen]
+			at ({\angle+22.5}:2.2) {$t$};
+		
+		\filldraw[color=black]
+			(\angle:2) circle (1pt);
+	}
+	
+	\filldraw[color=black]
+		(0:2) circle (1pt);
+\end{tikzpicture}

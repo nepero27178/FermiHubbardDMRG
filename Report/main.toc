@@ -7,9 +7,10 @@
 \contentsline {paragraph}{Density-density fluctuations.}{8}{section*.13}%
 \contentsline {paragraph}{Things I would have done, if my code was better}{8}{section*.14}%
 \contentsline {section}{\numberline {2}The Fermi-Hubbard model}{9}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Bosonization of the model}{9}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Phenomenology of spin-charge separation}{9}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Adding one effective interaction: the Extended Fermi-Hubbard model}{9}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Algorithms and simulations}{10}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Finite-size DMRG}{10}{subsection.3.1}%
-\contentsline {section}{\numberline {4}Data analysis and results}{11}{section.4}%
+\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{9}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Bosonization of the model}{10}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Phenomenology of spin-charge separation}{10}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Adding one effective interaction: the Extended Fermi-Hubbard model}{10}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Algorithms and simulations}{11}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Finite-size DMRG}{11}{subsection.3.1}%
+\contentsline {section}{\numberline {4}Data analysis and results}{12}{section.4}%

@@ -1,6 +1,68 @@
 \clearpage
 \section{The Fermi-Hubbard model}
 
+\begin{figure}
+	\centering
+	\subfloat[Lattice with null flux.]{
+		\input{pictures/theory/lattice-ring.tex}
+		\label{subfig:lattice-ring}
+	}
+	\hfil
+	\subfloat[Lattice with finite flux $\Phi$.]{
+		\input{pictures/theory/lattice-ring-flux.tex}
+		\label{subfig:lattice-ring-flux}
+	}
+	\caption{In Fig.~\ref{subfig:lattice-ring} a schematics of a $1D$ closed lattice is portrayed. The hopping amplitude $t$ is purely real, $t = \sgn(t) \abs{t}$. In Fig.~\ref{subfig:lattice-ring-flux} the same lattice is represented, but coupled to a finite threading flux $\Phi$ which can be absorbed via the pseudo-gauge transformation in Eq.~\todo. As a consequence, the hopping amplitude acquires a chirality which manifests in a non-null imaginary part, $t = \abs{t} e^{i\Phi/L}$.}
+	\label{fig:lattice-rings}
+\end{figure}
+
+In this project we limit ourselves to a polarized (spinless fermions) system. Extension to a spinful system is possible and introduces some refinements in the general bosonization scheme, the most notable being the famous spin-charge separation. Let us take it easy: consider the following interacting hamiltonian:
+\begin{equation}\label{eq:spinless-hamiltonian-pbc}
+	\hat H \equiv t \sum_{\ev{j,k}} \left[
+		\hat c_j^\dagger \hat c_k + \hat c_k^\dagger \hat c_j 
+	\right] - V \sum_{\ev{j,k}} \hat n_j \hat n_k - \mu \sum_{j=1}^L \hat n_j
+\end{equation}
+defined on a closed $1D$ lattice ring, as in Fig.~\ref{subfig:lattice-ring}.
+This is a simple nearest-neighbors (NN) interacting lattice hamiltonian with NN attraction $V$, chemical potential $\mu$ and hopping amplitude $t$,
+\[
+	t, V, \mu \in \mathbb{R}
+\]
+
+We will also be considering a magnetic flux $\Phi$ threading the ring and coupling to the charge degree of freedom. On a ring this pinned flux acts as a tangential vector potential, which is, a momentum offset; thus the correct way to absorb into our lattice framework this interaction is via the pseudo-gauge transformation
+\[
+	\hat c_j \to e^{-ij \phi} \hat c_j
+	\qquad\qquad
+	\hat c_j^\dagger \to e^{ij \phi} \hat c_j^\dagger
+	\qquad\qquad
+	\phi \equiv \frac{\Phi}{L}
+\]
+Incorporate the latter in the above hamiltonian: the hopping amplitude becomes complex (which is, chiral) $t = \abs{t} e^{\pm i\phi}$. We have, as in Fig.~\ref{subfig:lattice-ring-flux}
+\begin{equation}\label{eq:spinless-hamiltonian-tbc}
+	\hat H \equiv \abs{t} \sum_{j=1}^L \left[ 
+		e^{-i\phi} \hat c_j^\dagger \hat c_{j+1} + e^{i\phi} \hat c_{j+1}^\dagger \hat c_j 
+	\right] - V \sum_{j=1}^L \hat n_j \hat n_{j+1} - \mu \sum_{j=1}^L \hat n_j
+\end{equation}
+where a $\mod L$ operation is intended: $L+1 \leftrightarrow 1$. We want to indagate its ground-state properties. The relevant parameters will be the reduced hopping $t/V$ and chemical potential $\mu/V$.
+
+\subsection{Jordan-Wigner mapping of the Heisenberg XXZ model}
+
+The model presented above can be obtained rather easily through a Jordan-Wigner of the Heisenberg XXZ model in transverse field,
+\begin{equation}\label{eq:xxz-hamiltonian}
+	\hat H_\mathrm{XXZ} \equiv \sum_{\ev{j,k}} \left[
+		J_{xy} \left( 
+			\hat S_j^x \hat S_k^y + \hat S_k^y \hat S_j^x
+		\right) + J_z \hat S_j^z \hat S_k^z
+	\right] - h \sum_{j=1}^L \hat S_j^z 
+\end{equation}
+The Jordan-Wigner mapping, only feasible in one dimension due to sites ordering, is given by:
+\[
+	\hat S_j^+ \to \hat c_j^\dagger e^{i\pi \sum_{k < j} \hat c_k^\dagger \hat c_k}
+	\qquad
+	\hat S_j^- \to \hat c_j e^{- i\pi \sum_{k < j} \hat c_k^\dagger \hat c_k}
+	\qquad
+	\hat S_j^z \to \hat n_j - \frac{\mathbb{I}}{2}
+\]
+Consider first a spin chain with open boundary conditions: the mapping results in
 \todo
 
 \subsection{Bosonization of the model}
