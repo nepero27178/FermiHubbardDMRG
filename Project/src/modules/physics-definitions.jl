@@ -45,11 +45,11 @@ function GetHamiltonianMPO(
     for j=1:L
     	# Separate: initialize Float64 or ComplexFloat64 
     	if Φ!==0
-            os += -t * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
-	        os += -t * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
+            os += t * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
+	        os += t * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
 		elseif Φ==0
-			os += -t,"Cdag",j,"C",mod1(j+1,L)
-	        os += -t,"Cdag",mod1(j+1,L),"C",j
+			os += t,"Cdag",j,"C",mod1(j+1,L)
+	        os += t,"Cdag",mod1(j+1,L),"C",j
 		end
 		os += V,"N",j,"N",mod1(j+1,L)
 		os += -μ,"N",j
@@ -99,15 +99,15 @@ function GetLocalHamiltonianMPO(
     
 	# Separate: initialize Float64 or ComplexFloat64 
 	if Φ!==0
-		os += -t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",mod1(j-1,L),"C",j
-        os += -t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",j,"C",mod1(j-1,L)
-        os += -t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
-        os += -t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
+		os += t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",mod1(j-1,L),"C",j
+        os += t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",j,"C",mod1(j-1,L)
+        os += t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
+        os += t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
 	elseif Φ==0
-		os += -t/2,"Cdag",mod1(j-1,L),"C",j
-        os += -t/2,"Cdag",j,"C",mod1(j-1,L)
-		os += -t/2,"Cdag",j,"C",mod1(j+1,L)
-        os += -t/2,"Cdag",mod1(j+1,L),"C",j
+		os += t/2,"Cdag",mod1(j-1,L),"C",j
+        os += t/2,"Cdag",j,"C",mod1(j-1,L)
+		os += t/2,"Cdag",j,"C",mod1(j+1,L)
+        os += t/2,"Cdag",mod1(j+1,L),"C",j
 	end
 	
 	os += V/2,"N",mod1(j-1,L),"N",j
