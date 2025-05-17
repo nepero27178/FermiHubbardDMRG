@@ -330,7 +330,14 @@ Then, to measure the ratio $u/K$ we need to measure the quantity $(\pi \Delta \r
 
 \paragraph{Charge stiffness}
 
-Another observable rather easy to compute numerically is the charge stiffness; which is basically the tendency of the system to respond to an external charge-coupling field. Now, assuming a closed-chain topology (as in Fig.~\ref{fig:lattice-rings}), we see that a flux $\Phi$ threading the ring accounts for a static vector potential
+\begin{figure}
+	\centering
+	\input{pictures/theory/flux-through-ring}
+	\caption{Schematics of a static flux $\Phi$ pinning through a ring of circumference $L$.}
+	\label{fig:flux-through-ring}
+\end{figure}
+
+Another observable rather easy to compute numerically is the charge stiffness; which is basically the tendency of the system to respond to an external charge-coupling field. Now, assuming a closed-chain topology (as in Fig.~\ref{fig:flux-through-ring}), we see that a flux $\Phi$ threading the ring accounts for a static vector potential
 \[
 	A = \frac{\Phi}{L}
 \]
@@ -394,10 +401,6 @@ Recalling the definition of $\mathcal{D}$ of Eq.~\eqref{eq:charge-stiffness-defi
 	\mathcal{D} = uK
 \end{equation}
 which is the second relation we needed in order to determine $u$ and $K$. The entirety of this derivation could have been worked out analogously by expressing the current in terms of the conjugate momentum field $\Pi$ and completing the square directly in the hamiltonian.
-
-\paragraph{The strategy}
-
-\todo
 
 \paragraph{Equal-time Green's function.}
 

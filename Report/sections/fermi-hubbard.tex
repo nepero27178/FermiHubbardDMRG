@@ -68,7 +68,15 @@ Notice the appearance of the Jordan string,
 	\qquad
 	\zeta_j \equiv \sum_{k < j} \hat n_k
 \]
-Essentially, the above string counts the fermions \textit{before} the site in question and gives back a factor $+1$ for even number, $-1$ for odd number. This works for open-end chains, where the concept of \textit{before} is actually well-defined. Let us take a $1\mathrm{D}$ spin chain with open boundary conditions (OBC). The transformation gives
+Essentially, the above string counts the fermions \textit{before} the site in question and gives back a factor $+1$ for even number, $-1$ for odd number. This works for open-end chains, where the concept of \textit{before} is actually well-defined. It is straightforward to see:
+\[
+	\begin{aligned}
+		S_j^+ \hat S_{j+1}^- &\to (-1)^{\zeta_j + \zeta_{j+1}} \hat c_j^\dagger \hat c_{j+1} = (-1)^{n_j} \hat c_j^\dagger \hat c_{j+1} = c_j^\dagger \hat c_{j+1} \\
+		S_j^- \hat S_{j+1}^+ &\to (-1)^{\zeta_j + \zeta_{j+1}} \hat c_j \hat c_{j+1}^\dagger = (-1)^{n_j+1} \hat c_{j+1}^\dagger \hat c_j = c_{j+1}^\dagger \hat c_j \\
+	\end{aligned}
+\]
+having we used $\zeta_j + \zeta_{j+1} = 2 \zeta_j + n_j$.
+Let us take a $1\mathrm{D}$ spin chain with open boundary conditions (OBC). The transformation gives
 \[
 	\begin{aligned}
 		\hat H_\mathrm{XXZ} &\equiv \sum_{j=1}^{L-1} \left[
@@ -78,7 +86,7 @@ Essentially, the above string counts the fermions \textit{before} the site in qu
 		\right] - h \sum_{j=1}^L \hat S_j^z \\
 		&= \sum_{j=1}^{L-1} \left[
 			\frac{J_{xy}}{2} \left(
-				\hat c_{j+1}^\dagger \hat c_j + \hat c_j^\dagger \hat c_{j+1}
+				\hat c_j^\dagger \hat c_{j+1} + \hat c_{j+1}^\dagger \hat c_j
 			\right) + J_z \left(
 				\hat n_j - \frac{\mathbb{I}}{2}
 			\right) \left(
@@ -89,7 +97,7 @@ Essentially, the above string counts the fermions \textit{before} the site in qu
 		\right) \\
 		&= \sum_{j=1}^{L-1} \left[
 			\frac{J_{xy}}{2} \left(
-				\hat c_{j+1}^\dagger \hat c_j + \hat c_j^\dagger \hat c_{j+1}
+				\hat c_j^\dagger \hat c_{j+1} + \hat c_{j+1}^\dagger \hat c_j
 			\right) + J_z \hat n_j \hat n_{j+1}
 		\right] - \sum_{j=1}^L h_j \hat n_{j}
 		+ \frac{hL}{2} + \frac{J_z (L-1)}{2}
@@ -103,13 +111,14 @@ where we defined:
 	\end{cases}
 \]
 Apart from a constant energy shift, in the bulk ($1<j<L$) this is our spinless fermions hamiltonian in Eq.~\eqref{eq:spinless-hamiltonian-pbc} with the following maps:
-\[
+\begin{equation}\label{eq:xxz-fermions-parameters-map}
 	t = \frac{J_{xy}}{2}
 	\qquad
 	V = J_z
 	\qquad
 	\mu = h + J_z
-\]
+\end{equation}
+
 Now, add another site. This amounts for extra terms in the hamiltonian,
 \[
 	\hat H_\mathrm{XXZ} \to \hat H_\mathrm{XXZ} + \frac{J_{xy}}{2} \left( 
@@ -120,7 +129,7 @@ If we now aim to identify the open ends, which is, close the chain onto itself, 
 \[
 	\hat S_{L+1}^\alpha = \hat S_1^\alpha
 \]
-The first-site Jordan-Wigner string is trivial, $\zeta_1 = 0$. The implementation of periodic boundary conditions requires in operator space then $\zeta_{L+1} = \zeta_1 = 0$. Finally, it is trivial to see
+The first-site Jordan-Wigner string is trivial, $\zeta_1 = 0$. The implementation of periodic boundary conditions requires in operator space then $\zeta_{L+1} \to \zeta_1 = 0$. Finally, it is trivial to see
 \[
 	(-1)^{\zeta_L} \hat c_L^\dagger = (-1)^{\#_F} \hat c_L^\dagger
 	\qquad
@@ -132,7 +141,7 @@ with $\#_F$ the total number of fermions on the chain. Putting all together, we 
 	\qquad
 	\hat S_L^- \hat S_1^+ = \hat c_1^\dagger \hat c_L
 \]
-Simpler reasoning holds for the $z$ terms. Putting all together, we see that the PBC-$\mathrm{XXZ}$ model is mapped onto a spinless fermionic system on a ring with even number of particles. Since the PBC-$\mathrm{XXZ}$ admits for an exact Bethe-Ansatz solution, we can link the phase transitions of the two models.
+Simpler reasoning holds for the $z$ terms. Putting all together, we see that the PBC-$\mathrm{XXZ}$ model is mapped onto a spinless fermionic system on a ring with even number of particles, with the rules of Eq.~\eqref{eq:xxz-fermions-parameters-map}. Since the PBC-$\mathrm{XXZ}$ admits for an exact Bethe-Ansatz solution, we can link the phase transitions of the two models.
 
 \subsection{Bosonization of the model}
 

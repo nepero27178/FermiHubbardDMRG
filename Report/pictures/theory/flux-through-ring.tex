@@ -1,0 +1,23 @@
+\begin{tikzpicture}[
+	scale=1.5,
+	decoration={
+		markings,
+		mark=at position 0.6 with {\arrow{stealth}}}
+	]
+	
+	\draw[color=black, stealth-stealth]
+		(0,0) -- (2,0) node[anchor=south, midway]
+			{$L/2\pi$};
+	\draw[color=black]
+		(0,0) ellipse (2 and 0.5);
+	\draw[color=tabred, postaction={decorate}] 
+		(0,0) ellipse (2.2 and 0.6) node[anchor=north east, yshift=-25, xshift=-30]
+			{$\displaystyle A = \Phi/L$};
+	\fill[color=white]
+		(-0.05, 0.45) rectangle (0.05, 0.65);
+	\draw[color=tabblue, -stealth] 
+		(0,-0.45) -- (0,1) node[anchor=south east]
+			{$\displaystyle B = 4\pi \Phi/L^2$};
+	\draw[color=tabblue]
+		(0,-0.65) -- (0,-1);
+\end{tikzpicture}
