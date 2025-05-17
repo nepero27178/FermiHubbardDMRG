@@ -1,16 +1,22 @@
 \contentsline {section}{\numberline {1}Theoretical introduction to bosonization}{2}{section.1}%
 \contentsline {subsection}{\numberline {1.1}Bosonization in a nutshell for spinless fermions}{2}{subsection.1.1}%
-\contentsline {paragraph}{$g_4$ process.}{6}{section*.8}%
-\contentsline {paragraph}{$g_2$ process.}{6}{section*.9}%
-\contentsline {paragraph}{Charge compressibility.}{7}{section*.11}%
-\contentsline {paragraph}{Equal-time Green's function.}{8}{section*.12}%
-\contentsline {paragraph}{Density-density fluctuations.}{8}{section*.13}%
-\contentsline {paragraph}{Things I would have done, if my code was better}{8}{section*.14}%
-\contentsline {section}{\numberline {2}The Fermi-Hubbard model}{9}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{9}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Bosonization of the model}{10}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Phenomenology of spin-charge separation}{11}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Adding one effective interaction: the Extended Fermi-Hubbard model}{11}{subsection.2.4}%
-\contentsline {section}{\numberline {3}Algorithms and simulations}{12}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Finite-size DMRG}{12}{subsection.3.1}%
-\contentsline {section}{\numberline {4}Data analysis and results}{13}{section.4}%
+\contentsline {subsubsection}{\numberline {1.1.1}Boson operators}{3}{subsubsection.1.1.1}%
+\contentsline {paragraph}{Fermionic-bosonic correspondence}{4}{section*.3}%
+\contentsline {subsubsection}{\numberline {1.1.2}Field-theoretic representation of the free hamiltonian}{4}{subsubsection.1.1.2}%
+\contentsline {subsubsection}{\numberline {1.1.3}Inserting interactions}{5}{subsubsection.1.1.3}%
+\contentsline {paragraph}{$g_4$ process.}{6}{section*.5}%
+\contentsline {paragraph}{$g_2$ process.}{6}{section*.6}%
+\contentsline {subsubsection}{\numberline {1.1.4}The euclidean action}{7}{subsubsection.1.1.4}%
+\contentsline {subsubsection}{\numberline {1.1.5}Spinless fermions observables}{7}{subsubsection.1.1.5}%
+\contentsline {paragraph}{Charge compressibility.}{7}{section*.7}%
+\contentsline {paragraph}{Charge stiffness}{8}{section*.8}%
+\contentsline {paragraph}{Equal-time Green's function.}{10}{section*.9}%
+\contentsline {paragraph}{Density-density fluctuations.}{10}{section*.10}%
+\contentsline {section}{\numberline {2}The Fermi-Hubbard model}{11}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{11}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Bosonization of the model}{12}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Phenomenology of spin-charge separation}{13}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Adding one effective interaction: the Extended Fermi-Hubbard model}{13}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Algorithms and simulations}{14}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Finite-size DMRG}{14}{subsection.3.1}%
+\contentsline {section}{\numberline {4}Data analysis and results}{15}{section.4}%

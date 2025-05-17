@@ -1,5 +1,5 @@
 % $ biblatex auxiliary file $
-% $ biblatex bbl format version 3.2 $
+% $ biblatex bbl format version 3.3 $
 % Do not modify the above lines!
 %
 % This is an auxiliary file used by the 'biblatex' package.
@@ -18,8 +18,8 @@
 
 
 \refsection{0}
-  \datalist[entry]{nty/global//global/global}
-    \entry{https://doi.org/10.1002/andp.19985100401}{article}{}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{https://doi.org/10.1002/andp.19985100401}{article}{}{}
       \name{author}{2}{}{%
         {{hash=bc8657e87346eec5c0e15953879f598c}{%
            family={Delft},
@@ -36,10 +36,12 @@
       }
       \strng{namehash}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{fullhash}{5707905a39869fcdb9f2fc9683c8ed75}
+      \strng{fullhashraw}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{bibnamehash}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{authorbibnamehash}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{authornamehash}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{authorfullhash}{5707905a39869fcdb9f2fc9683c8ed75}
+      \strng{authorfullhashraw}{5707905a39869fcdb9f2fc9683c8ed75}
       \field{sortinit}{D}
       \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
       \field{labelnamesource}{author}
@@ -67,7 +69,7 @@
       \endverb
       \keyw{Bosonization,Refermionization,Luttinger liquids}
     \endentry
-    \entry{giamarchi2003quantum}{book}{}
+    \entry{giamarchi2003quantum}{book}{}{}
       \name{author}{1}{}{%
         {{hash=a9a9c4c944540b0a4524a533ee1f3d2d}{%
            family={Giamarchi},
@@ -80,10 +82,12 @@
       }
       \strng{namehash}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{fullhash}{a9a9c4c944540b0a4524a533ee1f3d2d}
+      \strng{fullhashraw}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{bibnamehash}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{authorbibnamehash}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{authornamehash}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{authorfullhash}{a9a9c4c944540b0a4524a533ee1f3d2d}
+      \strng{authorfullhashraw}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \field{sortinit}{G}
       \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
       \field{labelnamesource}{author}
@@ -103,7 +107,7 @@
       \verb https://doi.org/10.1093/acprof:oso/9780198525004.001.0001
       \endverb
     \endentry
-    \entry{Senechal:1999us}{inproceedings}{}
+    \entry{Senechal:1999us}{inproceedings}{}{}
       \name{author}{1}{}{%
         {{hash=f0e0aad70136ce872a3974631ef486e0}{%
            family={Senechal},
@@ -113,10 +117,12 @@
       }
       \strng{namehash}{f0e0aad70136ce872a3974631ef486e0}
       \strng{fullhash}{f0e0aad70136ce872a3974631ef486e0}
+      \strng{fullhashraw}{f0e0aad70136ce872a3974631ef486e0}
       \strng{bibnamehash}{f0e0aad70136ce872a3974631ef486e0}
       \strng{authorbibnamehash}{f0e0aad70136ce872a3974631ef486e0}
       \strng{authornamehash}{f0e0aad70136ce872a3974631ef486e0}
       \strng{authorfullhash}{f0e0aad70136ce872a3974631ef486e0}
+      \strng{authorfullhashraw}{f0e0aad70136ce872a3974631ef486e0}
       \field{sortinit}{S}
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
       \field{labelnamesource}{author}
