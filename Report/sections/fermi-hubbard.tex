@@ -46,6 +46,8 @@ where a $\mod L$ operation is intended: $L+1 \leftrightarrow 1$. We want to inda
 
 \subsection{Jordan-Wigner mapping of the Heisenberg XXZ model}
 
+{\color{tabred}[Insert here: schematic of the spin chain mapped onto the fermionic chain]}
+
 The model presented above can be obtained rather easily through a Jordan-Wigner of the Heisenberg XXZ model in transverse field,
 \begin{equation}\label{eq:xxz-hamiltonian}
 	\hat H_\mathrm{XXZ} \equiv \sum_{\ev{j,k}} \left[
@@ -142,6 +144,15 @@ with $\#_F$ the total number of fermions on the chain. Putting all together, we 
 	\hat S_L^- \hat S_1^+ = \hat c_1^\dagger \hat c_L
 \]
 Simpler reasoning holds for the $z$ terms. Putting all together, we see that the PBC-$\mathrm{XXZ}$ model is mapped onto a spinless fermionic system on a ring with even number of particles, with the rules of Eq.~\eqref{eq:xxz-fermions-parameters-map}. Since the PBC-$\mathrm{XXZ}$ admits for an exact Bethe-Ansatz solution, we can link the phase transitions of the two models.
+
+\subsection*{Phase diagrams}
+
+\begin{figure}
+	\centering
+	\input{pictures/theory/xxz-phase-diagram}
+	\caption{Schematics for the $\mathrm{XXZ}$ model phase diagram. We are here considering a zero-field model, $h=0$ (which is mapped by the maps \eqref{eq:xxz-fermions-parameters-map} to a $\mu = J_z$ model). H indicates Heisenberg, I indicates Ising; F stands for Ferromagnet, AF for AntiFerromagnet; XY stands for pure $\mathrm{XY}$ model.}
+	\label{xxz-phase-diagram}
+\end{figure}
 
 \subsection{Bosonization of the model}
 

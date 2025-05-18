@@ -80,8 +80,8 @@ function BoundariesSweep(
             # Calculate chemical potentials
             ΔUp = EUp - E
             ΔDown = E - EDown
-            μUp = ΔUp + 2*μ0
-            μDown = - ΔDown - 2*μ0 # Sign problem otherwise
+            μUp = ΔUp/2 + μ0
+            μDown = - ΔDown/2 - μ0 # Sign problem otherwise
 
             # Write results to the file
             write(DataFile, "$L; $t; $E; $μUp; $μDown\n")

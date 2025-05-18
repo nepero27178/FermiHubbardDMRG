@@ -24,19 +24,19 @@ Resolution = Dict([
 			 
 # Horizontal sweeps
 HorizontalLL = [10, 20, 30, 40, 50, 60, 70] 
-HorizontalJJ = collect(range(start=0.0, stop=0.35, length=Resolution["High"]))
+Horizontaltt = collect(range(start=0.0, stop=0.35, length=Resolution["High"]))
 Horizontalμμ = [0.6, 0.8]
 
 # Rectangular sweeps
 
 # RectangularLL = [10] # [10, 15, 20] 
-# RectangularJJ = collect(range(start=0.0, stop=0.35, length=Resolution["Medium"]))
+# Rectangulartt = collect(range(start=0.0, stop=0.35, length=Resolution["Medium"]))
 # Rectangularμμ = collect(range(start=0.0, stop=1.0, length=Resolution["Medium"]))
 
 RectangularLL = [5] # [10, 15, 20] 
-RectangularJJ = collect(range(start=0.0, stop=0.35, length=Resolution["High"]))
+Rectangulartt = collect(range(start=0.0, stop=0.35, length=Resolution["High"]))
 Rectangularμμ = collect(range(start=0.0, stop=1.0, length=Resolution["High"]))
 
 # Rectangular selection sweeps
 RectangularSelectionLL = [50] # [40, 50, 60]
-# JJ and μμ defined inside the script
+# tt and μμ defined inside the script
