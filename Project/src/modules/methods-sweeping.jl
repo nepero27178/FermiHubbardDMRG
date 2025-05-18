@@ -19,7 +19,14 @@ function BoundariesSweep(
 	
 Returns: none (inline print).
 
-# TODO To be understood if this function is useful.
+# TODO To be completely understood..
+
+This function computes the estimated positions for the gapped/gapless phase
+transitions boundaries. Keeping the fermionic parity constant, we add/remove 2
+femions from the chain and compute the respective ground states keeping each
+time fixed the number of fermions. The difference in energy, apart from simple
+chemical potential shifts, must be all due to the hopping-interaction part only
+parametrized by t/V.
 """
 function BoundariesSweep(
 		L::Int64,
@@ -29,52 +36,55 @@ function BoundariesSweep(
 		μ0=0.0
 	)
     
+    @warn "This function is under construction!"
+    
+    # ModelParameters: we set V=1.0, η=0.0
     DataFile = open(FilePathOut, "a")
     println("Extracting boundaries...")
     
     l = length(tt)
     for (j, t) in enumerate(tt)
-        printstyled("Running DMRG for t=$(round(t, digits=3)), μ=$μ0". 
-        	" (simulation $j/$l for L=$L)\n", color=:yellow)
+        println("Running DMRG for t=$(round(t, digits=3)), μ=$μ0". 
+        	" (simulation $j/$l for L=$L)")
         
         # Use @sync to wait for all tasks to complete
         @sync begin
             # Create tasks for each DMRG call
             task1 = @spawn RunDMRGAlgorithm(
-            	[L, L-1, t, μ0],
+            	[L, L/2-2, t, 1.0, μ0, 0.0],
 				DMRGParameters,
-				"Fast", 
-				true;	# Fix N
-				RandomPsi0=false
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
 			)
             task2 = @spawn RunDMRGAlgorithm(
-            	[L, L, t, μ0], 
+            	[L, L/2, t, 1.0, μ0, 0.0], 
 				DMRGParameters,
-				"Fast",
-				true;	# Fix N
-				RandomPsi0=false
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
 			)
             task3 = @spawn RunDMRGAlgorithm(
-				[L, L+1, t, μ0], # SUS LOL 
+				[L, L/2+2, t, 1.0, μ0, 0.0],
 				DMRGParameters,
-				"Fast", 
-				true;	# Fix N
-				RandomPsi0=false
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
 			)
 
             # Wait for all tasks to complete and collect results
-            E1 = fetch(task1)
-            E2 = fetch(task2)
-            E3 = fetch(task3)
+            EDown = fetch(task1)
+            E = fetch(task2)
+            EUp = fetch(task3)
 
             # Calculate chemical potentials
-            ΔEplus = E3 - E2
-            ΔEminus = E2 - E1
-            μUp = ΔEplus + μ0
-            μDown = - ΔEminus - μ0 # Sign problem otherwise
+            ΔUp = EUp - E
+            ΔDown = E - EDown
+            μUp = ΔUp + 2*μ0
+            μDown = - ΔDown - 2*μ0 # Sign problem otherwise
 
             # Write results to the file
-            write(DataFile, "$L; $t; $E2; $μUp; $μDown\n")
+            write(DataFile, "$L; $t; $E; $μUp; $μDown\n")
         end
     end
     
@@ -111,18 +121,17 @@ function HorizontalSweep(
     
     l = length(tt)
     for (j, t) in enumerate(tt)
-    	printstyled("Running DMRG for t=$(round(t, digits=3)), μ=$μ0". 
-        	" (simulation $j/$l for L=$L)\n", color=:yellow)
+    	println("Running DMRG for t=$(round(t, digits=3)), μ=$μ0". 
+        	" (simulation $j/$l for L=$L)")
         
         # Use @sync to wait for all tasks to complete
         @sync begin
-            # Create tasks for each DMRG call
             E, Γ, eΓ, O, eO =  RunDMRGAlgorithm(
-            	[L, L, nmax, J, μ0], 
+            	[L, L/2, t, V, μ0, η], 
 				DMRGParameters,
 				"Correlators",
 				false;	# FixedN
-				RandomPsi0=false
+				verbose=false
 			)
 
             # Write results to the file
@@ -137,7 +146,10 @@ end
 
 # ----------------------------- Rectangular sweep ------------------------------
 
-function RectangularSweep(
+# Go on from here...
+# First task by now: run some BoundariesSweeps to see if we delimit a sensed phase domain
+
+function RectangularSweepBoundaries(
 		L::Int64,
 		N::Int64,
 		tt::Vector{Float64},
@@ -157,39 +169,41 @@ function RectangularSweep(
 	# Take data from fitting data of horizontal sweeps to separate MI from SF 
 	# ( use ΔE^+(∞) and ΔE^-(∞) )
 	BoundariesData = readdlm(FilePathIn, ',', Float64, '\n'; comments=true)
-    JJFitted = BoundariesData[:,1]
+    ttFitted = BoundariesData[:,1]
 
-    for (j,J) in enumerate(JJ)
-		# We take the best approximating J ∈ JJ, to assess whether we are in the MI or SF phase
+    for (j,t) in enumerate(tt)
+		# We take the best approximating t ∈ tt, to assess whether we are in the MI or SF phase
 
-		# Index = findall(==(J), BoundariesData[:,1]) # this would work if there is the EXACT J in the fit results
-		Index = argmin(abs.(JJFitted .- J)) # this always works, gives the best approximation
+		# Index = findall(==(t), BoundariesData[:,1]) # this would work if there is the EXACT t in the fit results
+		Index = argmin(abs.(ttFitted .- t)) # this always works, gives the best approximation
 		μUp = BoundariesData[Index,2][1]
 		μDown = -BoundariesData[Index,3][1]
     	
-		println("\nJ=$J, phase boundaries: μ^+=$μUp, μ^-=$μDown")
+		println("\nt=$t, phase boundaries: μ^+=$μUp, μ^-=$μDown")
 
 		CachedRho = 1
 		
         for (m,μ) in enumerate(μμ)
         
-            ModelParameters = [L, N, nmax, J, μ]
+            ModelParameters = [L, N, t, V, μ, η]
 			inMottLobe = false
 			
 			if (μ>=μDown && μ<=μUp)
 				inMottLobe = true
 			end
 
-			println("Running DMRG for L=$L, J=$(round(J, digits=3)), ",
+			println("Running DMRG for L=$L, t=$(round(t, digits=3)), ",
 			"μ=$(round(μ, digits=3)) (simulation $m/$(length(μμ)) in μ, ",
-			"$j/$(length(JJ)) in J, MI=$inMottLobe)")
+			"$j/$(length(tt)) in t, MI=$inMottLobe)")
 
 			if inMottLobe
-		        Results = RunDMRGAlgorithm(ModelParameters,
-										   DMRGParametersMI,
-										   "OrderParameters";
-		                                   FixedN=false,
-										   RandomPsi0=false)
+		        Results = RunDMRGAlgorithm(
+                    ModelParameters,
+                    DMRGParametersMI,
+                    "OrderParameters";
+                    FixedN=false,
+                    RandomPsi0=false
+                )
 				E, NTotAvg, nVariance, aAvg = Results
 				
 				if m>1

@@ -19,7 +19,7 @@ end
 include("physics-definitions.jl")
 
 # ------------------------------------------------------------------------------
-# ------------------------------------ DMRG ------------------------------------ 
+# -------------------------------- Initializers -------------------------------- 
 # ------------------------------------------------------------------------------
 
 @doc raw"""
@@ -45,19 +45,26 @@ end
 
 @doc raw"""
 function SetStartingState(
-		sites::Sites
+		sites::Sites,
+        N::Int64;
+        ForceCenter=false
 	)::MPS
 	
 Returns: starting fermionic state, filled only at center.	
 	
-Create an initial MPS with `N` particles on the fermionic chain, with N≤L. All
-the fermions are created at the center of the chain. For periodic and twisted
-boundary conditions this is irrelevant, but can become useful for open boundary
-conditions.
+Create an initial MPS with `N` particles on the fermionic chain, with `N≤L`. Two
+modes are implemented:
+- If `N≠L/2`, all the fermions are created at the center of the chain. 
+For periodic and twisted boundary conditions this is irrelevant, but can become 
+useful for open boundary conditions.
+- If `N=L/2`, the fermions are alternated (`1`/`0`/`1`/`0`/...), except the 
+parameter `ForceCenter` is set to `true`, in which case the above condition
+applies.
 """
 function SetStartingState(
 		sites::Sites,
-		N::Int64
+		N::Int64;
+        ForceCenter=false
 	)::MPS
 
 	L = length(sites)
@@ -65,19 +72,30 @@ function SetStartingState(
 		error("Invalid filling! Enter 1≤N≤L.")
 	end 
 	
-	states = vcat(["1" for _ in 1:N], ["0" for _ in N+1:L])
-	circshift!(states, floor(Int64,(L-N)/2))
+    if N==L/2 && !ForceCenter
+        states = ["0" for _ in 1:L]
+        for j in 1:N
+            states[2*j-1] = "1"
+        end
+    else
+        states = vcat(["1" for _ in 1:N], ["0" for _ in N+1:L])
+	    circshift!(states, floor(Int64,(L-N)/2))
+    end
 
     return MPS(sites, states)
 end
+
+# ------------------------------------------------------------------------------
+# ------------------------------------ DMRG ------------------------------------ 
+# ------------------------------------------------------------------------------
 
 @doc raw"""
 function RunDMRGAlgorithm(
 		ModelParameters::Vector{Float64},
 		DMRGParameters::Vector{Any},
-		UserMode::String;
+		UserMode::String,
+        FixedN::Bool;
 		verbose=false,
-		FixedN=true
 	)::Any
 
 Returns: results of DMRG optimization and relevant observables as Float(s)64
@@ -173,10 +191,11 @@ function RunDMRGAlgorithm(
 	    H = GetHamiltonianMPO(sites, t, V, μ; Φ=2*pi*η)
 	end
     
-    # Set starting state and print observables
-    psi0 = SetStartingState(sites, N)				# Initialize state
+    # Set starting state
+    psi0 = SetStartingState(sites, N)
 
     if verbose
+        # Print observables   
         N0 = GetTotalFermionNumber(psi0)
         E0 = inner(psi0', H, psi0)
         @info "Expectation values on the initial state" N0 E0
