@@ -44,7 +44,7 @@ function BoundariesSweep(
     
     l = length(tt)
     for (j, t) in enumerate(tt)
-        println("Running DMRG for t=$(round(t, digits=3)), μ=$μ0". 
+        println("Running DMRG for t=$(round(t, digits=3)), μ=$μ0", 
         	" (simulation $j/$l for L=$L)")
         
         # Use @sync to wait for all tasks to complete
@@ -121,7 +121,7 @@ function HorizontalSweep(
     
     l = length(tt)
     for (j, t) in enumerate(tt)
-    	println("Running DMRG for t=$(round(t, digits=3)), μ=$μ0". 
+    	println("Running DMRG for t=$(round(t, digits=3)), μ=$μ0", 
         	" (simulation $j/$l for L=$L)")
         
         # Use @sync to wait for all tasks to complete

@@ -225,9 +225,9 @@ function main()
 #			
 #			println("Done!")
 #			
-#		else
-#			error(ModeErrorMsg)
-#			exit()
+		else
+			error(ModeErrorMsg)
+			exit()
 		end
 		
 	end
