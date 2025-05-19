@@ -81,15 +81,16 @@ function main()
 
             # Uncomment the needed analysis.
             #PlotPhaseBoundaries(FilePathIn; gap=false, FilePathOut=FilePathPlot, μ0)
-            FitPhaseBoundaries(FilePathIn, FilePathFit; FilePathPlotOut, FilePathSinglePlotOut, μ0)
-            PlotPhaseBoundaries(FilePathIn;
+            # FitPhaseBoundaries(FilePathIn, FilePathFit; FilePathPlotOut, FilePathSinglePlotOut, μ0)
+            PlotPhaseBoundaries(
+            	FilePathIn;
                 FilePathOut=PhaseBoundariesDir*"colored_PB.pdf",
-                HideDataPoints=true,
-                DrawMottLobe=true,
+                HideDataPoints=false,
+                DrawMottLobe=false,
                 MottLobeFilePath=PROJECT_ROOT * "/../analysis/phase-boundaries/μ0=$μ0/fitted-phase-boundaries_μ0=$μ0.txt",
             )
 
-            FindMottTip(FilePathFit, verbose=true)
+            # FindMottTip(FilePathFit, verbose=true)
 
         # ----------------------------------------------------------------------
         # ----------------------- Correlation function Γ -----------------------

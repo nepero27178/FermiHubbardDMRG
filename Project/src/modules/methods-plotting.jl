@@ -185,8 +185,8 @@ function PlotPhaseBoundaries(
 		    if gap
 		        plot!(
                     tt,                 μUp - μDown, 
-                    xlabel=L"$J$",      ylabel=L"$\Delta E_{\mathrm{gap}}$", 
-                    title=L"Charge gap  as a function of $t$ ($\mu_0=%$μ0$)",
+                    xlabel=L"$t$",      ylabel=L"$\Delta E_{\mathrm{gap}}$", 
+                    title=L"Charge gap as a function of $t$ ($\mu_0=%$μ0$)",
                     seriestype=:scatter,
                     markersize=1.5,
                     label=L"$L=%$L$",

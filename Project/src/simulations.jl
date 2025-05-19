@@ -50,7 +50,7 @@ function main()
 	    	DirPathOut = PROJECT_ROOT * "/simulations/boundaries-sweep"
     		mkpath(DirPathOut)
 	    		
-    		FilePathOut = DirPathOut * "/μ0=$(μ0)-L=$(LL).txt"
+    		FilePathOut = DirPathOut * "/μ0=$(μ0)_L=$(LL).txt"
     	
 			DataFile = open(FilePathOut,"w")
 			write(DataFile,"# Spinless Fermi-Hubbard model DMRG. This file contains many sizes. μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")

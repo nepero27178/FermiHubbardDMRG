@@ -3,14 +3,16 @@
 using DelimitedFiles
 
 PROJECT_ROOT = @__DIR__
-include(PROJECT_ROOT * "/../setup/graphic_setup.jl")
-include(PROJECT_ROOT * "/dmrg.jl")
-include(PROJECT_ROOT * "/plots.jl")
+include(PROJECT_ROOT * "/../setup/graphic-setup.jl")
+include(PROJECT_ROOT * "/dmrg-routine.jl")
+include(PROJECT_ROOT * "/methods-plotting.jl")
 PROJECT_ROOT *= "/../.."
 
-function GetStateProperties(FilePathOut::String,
-							ModelParameters::Vector{Float64},
-							ConserveNumber::Bool)
+function GetStateProperties(
+		FilePathOut::String,
+		ModelParameters::Vector{Float64},
+		ConserveNumber::Bool
+	)
 
 	# ------------------------------- Simulation ------------------------------- 
 
@@ -19,11 +21,13 @@ function GetStateProperties(FilePathOut::String,
 	cutoff = [1E-8]
 	DMRGParameters = [nsweep, maxlinkdim, cutoff]
 
-	Observables = RunDMRGAlgorithm(ModelParameters,
-								   DMRGParameters,
-								   "Debug";
-								   FixedN=ConserveNumber,
-								   RandomPsi0=false)
+	Observables = RunDMRGAlgorithm(
+		ModelParameters,
+		DMRGParameters,
+		"Debug";
+		FixedN=ConserveNumber,
+		RandomPsi0=false
+	)
 									
 	E, nMean, nVariance, LocalE, P, S = Observables
 
