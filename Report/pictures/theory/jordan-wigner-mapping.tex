@@ -1,0 +1,106 @@
+\begin{tikzpicture}
+	
+	% XXZ model
+	\draw[color=gray!50]
+		\foreach \i in {1,2,...,9}{
+			(\i,0) --++ (1,0)
+		};
+	\fill[color=black]
+		\foreach \i in {1,2,5,7,8,10}{
+			(\i,0) circle (1pt) node[anchor=center]
+				{$\uparrow$}
+		}
+		\foreach \i in {3,4,6,9}{
+			(\i,0) circle (1pt) node[anchor=center]
+			{$\downarrow$}
+		};
+	
+	\draw[
+		color=tabgreen,
+		decorate,
+		decoration={
+			coil,
+			aspect=0,
+			amplitude=1pt,
+			segment length=4pt
+		}
+	]
+		(7,0.15) --++ (1,0) node[anchor=south, midway]
+			{$+J_z$};
+		
+	\draw[
+		color=tabgreen,
+		decorate,
+		decoration={
+			coil,
+			aspect=0,
+			amplitude=1pt,
+			segment length=4pt
+		}
+	]
+		(8, -0.15) --++ (1,0) node[anchor=north, midway]
+			{$-J_z$};
+			
+	\draw[
+		color=tabblue,	
+	]
+		 (5,0.15) edge [-stealth, bend right=45] (4,0.15)
+		 (4,-0.15) edge [-stealth, bend right=45] (5,-0.15);
+		
+	\node[color=tabblue, anchor=south]
+		at (4.5, 0.3) {$J_{xy}/2$};
+	\node[color=tabblue, anchor=north]
+		at (4.5, -0.3) {$J_{xy}/2$};
+
+	% Spinless FH model
+	\draw[color=gray!50]
+		\foreach \i in {1,2,...,9}{
+			(\i,-2) --++ (1,0)
+		};
+	\filldraw[color=black, fill=black]
+		\foreach \i in {1,2,5,7,8,10}{
+			(\i,-2) circle (1.5pt) 
+		};
+	\filldraw[color=black, fill=white]
+		\foreach \i in {3,4,6,9}{
+			(\i,-2) circle (1.5pt)
+		};
+	
+	\draw[
+		color=tabgreen,
+		decorate,
+		decoration={
+			coil,
+			aspect=0,
+			amplitude=0.5pt,
+			segment length=6pt
+		}
+	]
+		(7,-1.95) --++ (1,0) node[anchor=south, midway]
+			{$+V$};
+	
+	\draw[
+		color=tabgreen,
+		decorate,
+		decoration={
+			coil,
+			aspect=0,
+			amplitude=0.5pt,
+			segment length=6pt
+		}
+	]
+		(8, -1.95) --++ (1,0) node[anchor=south, midway]
+			{$-V$};
+	
+	\draw[
+		color=tabblue,	
+	]
+		(5,-1.95) edge [-stealth, bend right=30] (4,-1.95)
+		(4,-2.05) edge [-stealth, bend right=30] (5,-2.05);
+	
+	\node[color=tabblue, anchor=south]
+		at (4.5, -1.85) {$t$};
+	\node[color=tabblue, anchor=north]
+		at (4.5, -2.15) {$t$};
+	
+\end{tikzpicture}

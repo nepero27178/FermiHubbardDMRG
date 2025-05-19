@@ -15,8 +15,6 @@
 \contentsline {section}{\numberline {2}The Fermi-Hubbard model}{11}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{11}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Bosonization of the model}{13}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Phenomenology of spin-charge separation}{13}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Adding one effective interaction: the Extended Fermi-Hubbard model}{13}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Algorithms and simulations}{14}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Finite-size DMRG}{14}{subsection.3.1}%
 \contentsline {section}{\numberline {4}Data analysis and results}{15}{section.4}%

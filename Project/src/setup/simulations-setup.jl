@@ -2,7 +2,6 @@
 
 LL = collect(L for L in 10:10:70)		# Sizes
 NN = LL									# Unitary filling
-nmax = 4								# Max: four bosons per site
 
 # Mott Insulator DMRG parameters
 nsweeps = 10
@@ -23,8 +22,8 @@ Resolution = Dict([
 			 ])
 			 
 # Horizontal sweeps
-HorizontalLL = [10, 20, 30, 40, 50, 60, 70] 
-Horizontaltt = collect(range(start=0.0, stop=0.35, length=Resolution["High"]))
+HorizontalLL = [10, 20, 30] 
+Horizontaltt = collect(range(start=-1.5, stop=1.5, length=Resolution["Low"]))
 Horizontalμμ = [0.6, 0.8]
 
 # Rectangular sweeps

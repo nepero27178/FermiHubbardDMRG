@@ -46,7 +46,12 @@ where a $\mod L$ operation is intended: $L+1 \leftrightarrow 1$. We want to inda
 
 \subsection{Jordan-Wigner mapping of the Heisenberg XXZ model}
 
-{\color{tabred}[Insert here: schematic of the spin chain mapped onto the fermionic chain]}
+\begin{figure}
+	\centering
+	\input{pictures/theory/jordan-wigner-mapping}
+	\caption{Schematics of the Jordan-Wigner mapping. The above chain represents the $\mathrm{XXZ}$ model, while the chain below represents the spinless Fermi-Hubbard model. Hollow circles represent holes, filled circles represents on-site particles. In both chain the two competing processes are represented: the NN interaction and the swapping interaction.}
+	\label{fig:jordan-wigner-mapping}
+\end{figure}
 
 The model presented above can be obtained rather easily through a Jordan-Wigner of the Heisenberg XXZ model in transverse field,
 \begin{equation}\label{eq:xxz-hamiltonian}
@@ -120,6 +125,7 @@ Apart from a constant energy shift, in the bulk ($1<j<L$) this is our spinless f
 	\qquad
 	\mu = h + J_z
 \end{equation}
+A schematics of the mapping is given in Fig.~\ref{fig:jordan-wigner-mapping}.
 
 Now, add another site. This amounts for extra terms in the hamiltonian,
 \[
@@ -150,18 +156,21 @@ Simpler reasoning holds for the $z$ terms. Putting all together, we see that the
 \begin{figure}
 	\centering
 	\input{pictures/theory/xxz-phase-diagram}
-	\caption{Schematics for the $\mathrm{XXZ}$ model phase diagram. We are here considering a zero-field model, $h=0$ (which is mapped by the maps \eqref{eq:xxz-fermions-parameters-map} to a $\mu = J_z$ model). H indicates Heisenberg, I indicates Ising; F stands for Ferromagnet, AF for AntiFerromagnet; XY stands for pure $\mathrm{XY}$ model.}
-	\label{xxz-phase-diagram}
+	\caption{Schematics for the $\mathrm{XXZ}$ model phase diagram. We are here considering a zero-field model, $h=0$ (which is mapped by the maps \eqref{eq:xxz-fermions-parameters-map} to a $\mu = J_z$ model). H indicates Heisenberg, I indicates Ising; F stands for Ferromagnet, AF for Anti-Ferromagnet; XY stands for pure $\mathrm{XY}$ model. The color of each label recalls the dominant interaction of Fig.~\ref{fig:jordan-wigner-mapping}.}
+	\label{fig:xxz-phase-diagram}
 \end{figure}
 
+The phase diagram of the $\mathrm{XXZ}$ model is readily obtained by the means of exact methods like Bethe Ansatz. Of course, the dominant parameter is the ratio $J_z/J_{xy}$ which measures the dominant contribution to energy given by spin-spin NN interaction ($z$ term) and spin diffusion ($xy$ term). Whenever $\abs{J_z} = \abs{J_{xy}}$, the model is of the Heisenberg class.
+
+The basic, field free phase diagram is represented schematically in Fig.~\ref{fig:xxz-phase-diagram}.
+\begin{enumerate}
+	\item The system tends to an Ising Ferromagnet for $J_z / J_{xy} < -1$, with dominant behavior the complete alignment of spins (which maps onto the spinless Fermi-Hubbard model as a completely filled chain). 
+	\item Moving across the first Heisenberg boundary, $J_z = - J_{xy}$, the dominant behavior is spin diffusion up to a perfect local fields free situation of $J_z = 0$. This phase maps onto the spinless Fermi-Hubbard model as a superconducting phase.
+	\item Crossing the second Heisenberg boundary, $J_z = J_{xy}$, the system tends to an Ising Anti-Ferromagnet, dominated by the Néel state configuration. The latter maps onto an half-filling and Mott-localized fermionic chain.
+\end{enumerate}
+For a fixed number system, this is the expected phase dynamics.
+{\color{tabred}[Check the correctness of all the claims.]}
+
 \subsection{Bosonization of the model}
-
-\todo
-
-\subsection{Phenomenology of spin-charge separation}
-
-\todo
-
-\subsection{Adding one effective interaction: the Extended Fermi-Hubbard model}
 
 \todo
