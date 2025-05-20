@@ -44,7 +44,7 @@ function main()
 
 			# Horizontal sweeps
 			LL = HorizontalLL				# Imported from setup
-	    	tt = Horizontaltt				# Imported from setup
+	    	VV = HorizontalVV				# Imported from setup
 	    	μ0 = 0.0						# Imported from setup
 	    	
 	    	DirPathOut = PROJECT_ROOT * "/simulations/boundaries-sweep"
@@ -53,15 +53,17 @@ function main()
     		FilePathOut = DirPathOut * "/μ0=$(μ0)_L=$(LL).txt"
     	
 			DataFile = open(FilePathOut,"w")
-			write(DataFile,"# Spinless Fermi-Hubbard model DMRG. This file contains many sizes. μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")
-			write(DataFile,"# L; t; E; μ+; μ- [calculated $(now())]\n")
+			write(DataFile,"# Spinless Fermi-Hubbard model DMRG. This file ",
+				"contains many sizes. μ0=$μ0, nsweeps=$nsweeps, ",
+				"cutoff=$cutoff\n")
+			write(DataFile,"# L; V; E; μ+; μ- [calculated $(now())]\n")
 			close(DataFile)
     	
 	    	for L in LL
 	    		println("Starting calculation of observables for L=$L...")
 	    		
-	    		# Note: here we use superfluid DMRG parameters everywhere
-				BoundariesSweep(L, tt, DMRGParametersSF, FilePathOut)
+	    		# Note: here we use XY (analog) DMRG parameters everywhere
+				BoundariesSweep(L, VV, DMRGParametersXY, FilePathOut)
 			end
 			
 			DataFile = open(FilePathOut,"a")

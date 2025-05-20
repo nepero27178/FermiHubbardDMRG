@@ -103,6 +103,56 @@
       \verb https://doi.org/10.1093/acprof:oso/9780198525004.001.0001
       \endverb
     \endentry
+    \entry{PhysRevB.93.054417}{article}{}
+      \name{author}{3}{}{%
+        {{hash=c824f6973fbf4985842dd642d4d9af1d}{%
+           family={Rakov},
+           familyi={R\bibinitperiod},
+           given={Mykhailo\bibnamedelima V.},
+           giveni={M\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=d4a1dd2706f8ff23e89f917664561f70}{%
+           family={Weyrauch},
+           familyi={W\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=337946e4d3b33f9fedd09a269cbc476d}{%
+           family={Braiorr-Orrs},
+           familyi={B\bibinithyphendelim O\bibinitperiod},
+           given={Briiissuurs},
+           giveni={B\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {American Physical Society}%
+      }
+      \strng{namehash}{297e1f2a199a203732e3c313c0994ddd}
+      \strng{fullhash}{297e1f2a199a203732e3c313c0994ddd}
+      \strng{bibnamehash}{297e1f2a199a203732e3c313c0994ddd}
+      \strng{authorbibnamehash}{297e1f2a199a203732e3c313c0994ddd}
+      \strng{authornamehash}{297e1f2a199a203732e3c313c0994ddd}
+      \strng{authorfullhash}{297e1f2a199a203732e3c313c0994ddd}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{5}
+      \field{journaltitle}{Phys. Rev. B}
+      \field{month}{2}
+      \field{title}{Symmetries and entanglement in the one-dimensional spin-$\frac{1}{2}$ XXZ model}
+      \field{volume}{93}
+      \field{year}{2016}
+      \true{nocite}
+      \field{pages}{054417}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1103/PhysRevB.93.054417
+      \endverb
+      \verb{urlraw}
+      \verb https://link.aps.org/doi/10.1103/PhysRevB.93.054417
+      \endverb
+      \verb{url}
+      \verb https://link.aps.org/doi/10.1103/PhysRevB.93.054417
+      \endverb
+    \endentry
     \entry{Senechal:1999us}{inproceedings}{}
       \name{author}{1}{}{%
         {{hash=f0e0aad70136ce872a3974631ef486e0}{%

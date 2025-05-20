@@ -13,7 +13,7 @@ using DelimitedFiles
 
 @doc raw"""
 function GetHamiltonianMPO(
-		sites::Sites,
+		sites::Any,
 		t::Float64,
 		V::Float64,
 		μ::Float64;
@@ -32,7 +32,7 @@ boundary conditions give a total Φ phase twist in the ground-state wavefunction
 at the end of the chain.
 """
 function GetHamiltonianMPO(
-		sites::Sites,
+		sites::Any,
 		t::Float64,
 		V::Float64,
 		μ::Float64;
@@ -45,24 +45,24 @@ function GetHamiltonianMPO(
     for j=1:L
     	# Separate: initialize Float64 or ComplexFloat64 
     	if Φ!==0
-            os += t * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
-	        os += t * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
+            os += -t * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
+	        os += -t * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
 		elseif Φ==0
-			os += t,"Cdag",j,"C",mod1(j+1,L)
-	        os += t,"Cdag",mod1(j+1,L),"C",j
+			os += -t,"Cdag",j,"C",mod1(j+1,L)
+	        os += -t,"Cdag",mod1(j+1,L),"C",j
 		end
 		os += V,"N",j,"N",mod1(j+1,L)
 		os += -μ,"N",j
     end
-    
-    return MPO(os,sites)
+
+	return MPO(os, sites)
 end
 
 # Local hamiltonian
 
 @doc raw"""
 function GetLocalHamiltonianMPO(
-		sites::Sites,
+		sites::Any,
 		j::Int64,
 		t::Float64,
 		V::Float64,
@@ -82,7 +82,7 @@ boundary conditions give a total Φ phase twist in the ground-state wavefunction
 at the end of the chain.
 """
 function GetLocalHamiltonianMPO(
-		sites::Sites,
+		sites::Any,
 		j::Int64,
 		t::Float64,
 		V::Float64,
@@ -90,29 +90,31 @@ function GetLocalHamiltonianMPO(
 		Φ=0
 	)::MPO
     
+    L = length(sites)
     if j<1 || j>L
     	error("Invalid site! Enter 1≤j≤L.")
     end
     
     os = OpSum()
-    L = length(sites)
     
 	# Separate: initialize Float64 or ComplexFloat64 
 	if Φ!==0
-		os += t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",mod1(j-1,L),"C",j
-        os += t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",j,"C",mod1(j-1,L)
-        os += t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
-        os += t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
+		os += -t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",mod1(j-1,L),"C",j
+        os += -t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",j,"C",mod1(j-1,L)
+        os += -t/2 * (cos(Φ/L) - im*sin(Φ/L)),"Cdag",j,"C",mod1(j+1,L)
+        os += -t/2 * (cos(Φ/L) + im*sin(Φ/L)),"Cdag",mod1(j+1,L),"C",j
 	elseif Φ==0
-		os += t/2,"Cdag",mod1(j-1,L),"C",j
-        os += t/2,"Cdag",j,"C",mod1(j-1,L)
-		os += t/2,"Cdag",j,"C",mod1(j+1,L)
-        os += t/2,"Cdag",mod1(j+1,L),"C",j
+		os += -t/2,"Cdag",mod1(j-1,L),"C",j
+        os += -t/2,"Cdag",j,"C",mod1(j-1,L)
+		os += -t/2,"Cdag",j,"C",mod1(j+1,L)
+        os += -t/2,"Cdag",mod1(j+1,L),"C",j
 	end
 	
 	os += V/2,"N",mod1(j-1,L),"N",j
 	os += V/2,"N",j,"N",mod1(j+1,L)
     os += -μ,"N",j
+    
+    return MPO(os, sites)
 end
 
 # ------------------------------------------------------------------------------
@@ -162,8 +164,8 @@ end
 # Superconducting order parameter and fluctuations correlator.
 
 @doc raw"""
-function GetSuperConductingPairingMPO(
-		sites::Sites,
+function GetSuperconductingPairingMPO(
+		sites::Any,
 		j::Int64;
 		Φ=0
 	)::MPO
@@ -175,8 +177,8 @@ operator on neighboring sites,
 	C_j C_{j+1}
 (note: usually the definition is hermitian-conjugate to this one).
 """
-function GetSuperConductingPairingMPO(
-		sites::Sites,
+function GetSuperconductingPairingMPO(
+		sites::Any,
 		j::Int64;
 		Φ=0
 	)::MPO
@@ -198,7 +200,7 @@ end
 
 @doc raw"""
 function GetSuperconductingCorrelator(
-		psi::MPS,
+		psi::MPS;
 		Φ=0
 	)::Matrix{Float64}
 	
@@ -208,7 +210,7 @@ This function computes the pairing correlator for the superconducting order
 parameter at all sites. 
 """
 function GetSuperconductingCorrelator(
-		psi::MPS,
+		psi::MPS;
 		Φ=0
 	)::Matrix{Float64}
 	
@@ -217,8 +219,8 @@ function GetSuperconductingCorrelator(
 	SuperconductingCorrelator = zeros(L,L)
 	
 	for j in 1:L, k in 1:L
-		A = GetSuperConductingPairingMPO(sites,j)
-		B = GetSuperConductingPairingMPO(sites,mod1(j+k,L))
+		A = GetSuperconductingPairingMPO(sites,j)
+		B = GetSuperconductingPairingMPO(sites,mod1(j+k,L))
 		
 		SuperconductingCorrelator[j,mod1(j+k,L)] = inner(A, psi, B, psi)	
 	end

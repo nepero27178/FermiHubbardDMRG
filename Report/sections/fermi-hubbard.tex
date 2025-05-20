@@ -18,7 +18,7 @@
 
 In this project we limit ourselves to a polarized (spinless fermions) system. Extension to a spinful system is possible and introduces some refinements in the general bosonization scheme, the most notable being the famous spin-charge separation. Let us take it easy: consider the following interacting hamiltonian:
 \begin{equation}\label{eq:spinless-hamiltonian-pbc}
-	\hat H \equiv t \sum_{\ev{j,k}} \left[
+	\hat H \equiv -t \sum_{\ev{j,k}} \left[
 		\hat c_j^\dagger \hat c_k + \hat c_k^\dagger \hat c_j 
 	\right] + V \sum_{\ev{j,k}} \hat n_j \hat n_k - \mu \sum_{j=1}^L \hat n_j
 \end{equation}
@@ -38,11 +38,20 @@ We will also be considering a magnetic flux $\Phi$ threading the ring and coupli
 \]
 Incorporate the latter in the above hamiltonian: the hopping amplitude becomes complex (which is, chiral) $t \to T \equiv t e^{i\phi}$, with $t, \phi \in \mathbb{R}$. We have, as in Fig.~\ref{subfig:lattice-ring-flux}
 \begin{equation}\label{eq:spinless-hamiltonian-tbc}
-	\hat H \equiv t \sum_{j=1}^L \left[ 
+	\hat H \equiv -t \sum_{j=1}^L \left[ 
 		e^{-i\phi} \hat c_j^\dagger \hat c_{j+1} + e^{i\phi} \hat c_{j+1}^\dagger \hat c_j 
 	\right] + V \sum_{j=1}^L \hat n_j \hat n_{j+1} - \mu \sum_{j=1}^L \hat n_j
 \end{equation}
-where a $\mod L$ operation is intended: $L+1 \leftrightarrow 1$. We want to indagate its ground-state properties. The relevant parameters will be the reduced hopping $t/V$ and chemical potential $\mu/V$.
+where a $\mod L$ operation is intended: $L+1 \leftrightarrow 1$. We want to indagate its ground-state properties. The relevant parameters will be the reduced interaction $V/t$ and chemical potential $\mu/t$.
+\[
+	\begin{aligned}
+		V/t &> 0 \qquad
+		&&\text{Repulsive interaction} \\
+		V/t &< 0 \qquad
+		&&\text{Attractive interaction} \\
+	\end{aligned}
+\]
+Intuitively, if the interaction becomes dominant with respect to the hopping dynamics, the combined effect of attraction/repulsion and Pauli exclusion principle should lead to two different forms of localization. On one hand, if the interaction is strong and attractive, the ground state should be uniformly filled, because fermions save energy both by closed packing and by increasing density due to the negative chemical potential contribution ($\mu > 0$). On the other hand, a strong repulsive interaction could lead to an half-filled chain, which sacrifices the chemical potential energy gain lost by reducing the particle number by not paying the energy cost of having nearby fermions. In both cases hopping is suppressed, thus fermions are localized; now it is a matter of seeing if these states are actually realized.
 
 \subsection{Jordan-Wigner mapping of the Heisenberg XXZ model}
 
@@ -119,7 +128,7 @@ where we defined:
 \]
 Apart from a constant energy shift, in the bulk ($1<j<L$) this is our spinless fermions hamiltonian in Eq.~\eqref{eq:spinless-hamiltonian-pbc} with the following maps:
 \begin{equation}\label{eq:xxz-fermions-parameters-map}
-	t = \frac{J_{xy}}{2}
+	t = -\frac{J_{xy}}{2}
 	\qquad
 	V = J_z
 	\qquad

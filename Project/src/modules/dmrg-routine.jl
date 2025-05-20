@@ -5,17 +5,6 @@ using Statistics
 using Dates
 using DelimitedFiles
 
-# TODO Move to setup from here...
-FixedN = true
-    
-# Alias definition
-if FixedN
-	const Sites = Vector{Index{Vector{Pair{QN, Int64}}}}
-else
-	const Sites = Vector{Index{Int64}}
-end
-# ...to here.
-
 include("physics-definitions.jl")
 
 # ------------------------------------------------------------------------------
@@ -24,7 +13,7 @@ include("physics-definitions.jl")
 
 @doc raw"""
 function SetUniformState(
-		sites::Sites
+		sites::Any
 	)::MPS
 	
 Returns: uniformly filled fermionic state.	
@@ -33,8 +22,8 @@ Create an initial MPS with `N` particles on the fermionic chain; in the spinless
 system, the state is at unitary filling; in the spinful system, it is at unitary
 filling.
 """
-function SetUniformState(
-		sites::Sites
+function SetUniformState(	# Ferromagnetic state
+		sites::Any
 	)::MPS
 
     L = length(sites)
@@ -45,7 +34,7 @@ end
 
 @doc raw"""
 function SetStartingState(
-		sites::Sites,
+		sites::Any,
         N::Int64;
         ForceCenter=false
 	)::MPS
@@ -62,7 +51,7 @@ parameter `ForceCenter` is set to `true`, in which case the above condition
 applies.
 """
 function SetStartingState(
-		sites::Sites,
+		sites::Any,
 		N::Int64;
         ForceCenter=false
 	)::MPS
@@ -155,15 +144,13 @@ function RunDMRGAlgorithm(
 		Correlators=true
 		
 	elseif UserMode=="Debug"
-		
-		@warn "Mode Debug under construction."
 	
-#		Debug=true
-#		nMean = zeros(L)				# Mean number of particles per site
-#		nVariance = zeros(L) 			# Variance on n_i, for all sites i
-#    	LocalE = zeros(L)				# Local contribution to the energy
-#    	Populations = zeros(L,nmax+1) 	# Single site populations
-#    	Entropy = zeros(L-1)			# Bipartite entropy
+		Debug=true
+		nMean = zeros(L)				# Mean number of particles per site
+		nVariance = zeros(L) 			# Variance on n_i, for all sites i
+    	LocalE = zeros(L)				# Local contribution to the energy
+    	Populations = zeros(L,2)	 	# Single site populations
+    	Entropy = zeros(L-1)			# Bipartite entropy
     
     elseif UserMode == "Fast"
     	Fast = true
@@ -192,7 +179,9 @@ function RunDMRGAlgorithm(
 	end
     
     # Set starting state
-    psi0 = SetStartingState(sites, N)
+    # psi0 = SetStartingState(sites, N)
+	# Set Ferromagnetic state
+	psi0 = SetUniformState(sites)
 
     if verbose
         # Print observables   
@@ -204,6 +193,8 @@ function RunDMRGAlgorithm(
 
     # Run DMRG algorithm and print results
     E, psi = dmrg(H, psi0; nsweeps, maxdim, cutoff, outputlevel=verbose)
+    FinalAmplitude = dot(psi0, psi)
+    @info "Superposition of final state with the initializer" FinalAmplitude
 
     # Sanity checks: calculate whether Ntot has been conserved, and the found 
     # ground state is actually an eigenstate of H.
@@ -262,23 +253,34 @@ function RunDMRGAlgorithm(
 		return E, Γ, eΓ, O, eO
     
     elseif Debug
-    
-	    @warn "Mode Debug under construction."
 		
-#	    for i in 1:L
-#	    	# Locally defined
-#	    	nMean[i] = expect(psi, "n"; sites=i)
-#			nVariance[i] = GetNumberVariance(psi, sites, i)
-#			LocalE[i] = inner(psi', GetLocalH(sites, i, J, U, μ), psi)
-#    	end
-#    	Populations = GetLocalPopulation(psi, d)
-#    	
-#    	for b in 1:L-1
-#    		# Compute entropy for all possible bipartitions
-#    		Entropy[b] = GetVonNeumannEntropy(psi, sites, b)
-#    	end
-#    	
-#    	return E, nMean, nVariance, LocalE, Populations, Entropy
+		DensityCorrelator = GetDensityCorrelator(psi)
+		R = floor(Int64, L/2)	# Max distance
+		DensityFluctuations = zeros(R)
+		for r in 1:R
+			Tmp = 0
+			for j in 1:L
+				Tmp += DensityCorrelator[j,mod1(j+r,L)]
+			end
+			Tmp /= R
+			DensityFluctuations[r] = Tmp
+		end
+		
+	    for i in 1:L
+	    	# Locally defined
+	    	nMean[i] = expect(psi, "n"; sites=i)
+			nVariance[i] = DensityCorrelator[i,i]
+			LocalE[i] = inner(psi', GetLocalHamiltonianMPO(sites, i, t, V, μ), psi)
+    	end
+    	Populations = GetLocalPopulation(psi)
+    	
+    	for b in 1:L-1
+    		# Compute entropy for all possible bipartitions
+    		Entropy[b] = GetVonNeumannEntropy(psi, b)
+    	end
+    	
+    	ShowDensityProfile(psi)    	
+    	return E, nMean, nVariance, DensityFluctuations, LocalE, Populations, Entropy
     	
     elseif Fast
     	return E
@@ -299,8 +301,8 @@ function main()
     
     L = 15
     N = 5
-   	t = 1.0
-   	V = 1.0	# Keep it fixed
+   	t = 1.0 # Keep it fixed
+   	V = 1.0
     μ = 1.0
     η = 0
 
@@ -353,18 +355,16 @@ function main()
 		@info "Results of the simulation:" E M
 		
 	elseif UserMode=="Debug"
-		
-		@warn "Mode Debug under construction."
 	
-#		E, nMean, nVariance, LocalE, Populations, Entropy = Observables
-#		println("Results of the simulation:
-#Energy of ground state: $(round.(E, digits=4))
-#\"Local\" part of energy: $(round.(LocalE, digits=4))
-#Mean number of particles: $(round.(nMean, digits=4))
-#Variance number of particles: $(round.(nVariance, digits=4))
-#Relative fluctuation: $(round.(sqrt.(nVariance)./nMean, digits=4))
-#Populations: $(round.(Populations, digits=4))
-#Bipartite entropy: $(round.(Entropy, digits=4))")
+		E, nMean, nVariance, LocalE, Populations, Entropy = Observables
+		println("Results of the simulation:
+Energy of ground state: $(round.(E, digits=4))
+\"Local\" part of energy: $(round.(LocalE, digits=4))
+Mean number of particles: $(round.(nMean, digits=4))
+Variance number of particles: $(round.(nVariance, digits=4))
+Relative fluctuation: $(round.(sqrt.(nVariance)./nMean, digits=4))
+Populations: $(round.(Populations, digits=4))
+Bipartite entropy: $(round.(Entropy, digits=4))")
     	
 	else
 		E = Observables

@@ -3,15 +3,12 @@
 using Base.Threads
 using DelimitedFiles  # For writedlm
 
-# TODO Restart here after having finished checking for the XXZ mapping.
-
 # ------------------------------ Boundaries sweep ------------------------------
 
 @doc raw"""
 function BoundariesSweep(
 		L::Int64,
-		nmax::Int64,
-		JJ::Array{Float64},
+		VV::Array{Float64},
 		DMRGParameters::Vector{Any},                         
 		FilePathOut::String; 
 		μ0=0.0
@@ -26,46 +23,44 @@ transitions boundaries. Keeping the fermionic parity constant, we add/remove 2
 femions from the chain and compute the respective ground states keeping each
 time fixed the number of fermions. The difference in energy, apart from simple
 chemical potential shifts, must be all due to the hopping-interaction part only
-parametrized by t/V.
+parametrized by V/t.
 """
 function BoundariesSweep(
 		L::Int64,
-		tt::Array{Float64},
+		VV::Array{Float64},
 		DMRGParameters::Vector{Any},                         
 		FilePathOut::String; 
 		μ0=0.0
 	)
     
-    @warn "This function is under construction!"
-    
     # ModelParameters: we set V=1.0, η=0.0
     DataFile = open(FilePathOut, "a")
     println("Extracting boundaries...")
     
-    l = length(tt)
-    for (j, t) in enumerate(tt)
-        println("Running DMRG for t=$(round(t, digits=3)), μ=$μ0", 
+    l = length(VV)
+    for (j, V) in enumerate(VV)
+        println("Running DMRG for V=$(round(V, digits=3)), μ=$μ0", 
         	" (simulation $j/$l for L=$L)")
         
         # Use @sync to wait for all tasks to complete
         @sync begin
             # Create tasks for each DMRG call
             task1 = @spawn RunDMRGAlgorithm(
-            	[L, L/2-2, t, 1.0, μ0, 0.0],
+            	[L, L/2-1, 1.0, V, μ0, 0.0],
 				DMRGParameters,
 				"Fast", # UserMode
 				true;	# FixedN
 				verbose=false
 			)
             task2 = @spawn RunDMRGAlgorithm(
-            	[L, L/2, t, 1.0, μ0, 0.0], 
+            	[L, L/2, 1.0, V, μ0, 0.0], 
 				DMRGParameters,
 				"Fast", # UserMode
 				true;	# FixedN
 				verbose=false
 			)
             task3 = @spawn RunDMRGAlgorithm(
-				[L, L/2+2, t, 1.0, μ0, 0.0],
+				[L, L/2+1, 1.0, V, μ0, 0.0],
 				DMRGParameters,
 				"Fast", # UserMode
 				true;	# FixedN
@@ -81,10 +76,10 @@ function BoundariesSweep(
             ΔUp = EUp - E
             ΔDown = E - EDown
             μUp = ΔUp/2 + μ0
-            μDown = - ΔDown/2 - μ0 # Sign problem otherwise
+            μDown = - ΔDown - 2*μ0 # Sign problem otherwise
 
             # Write results to the file
-            write(DataFile, "$L; $t; $E; $μUp; $μDown\n")
+            write(DataFile, "$L; $V; $E; $μUp; $μDown\n")
         end
     end
     
@@ -97,7 +92,7 @@ end
 @doc raw"""
 function HorizontalSweep(
 		L::Int64,
-		tt::Array{Float64},
+		VV::Array{Float64},
 		μ0::Float64,
 		DMRGParameters::Vector{Any},                         
 		FilePathOut::String
@@ -106,11 +101,11 @@ function HorizontalSweep(
 Returns: none (inline print).
 
 Run horizontal sweep (fixed μ0) to extract observables and correlator at
-increasing t.
+increasing V/t.
 """
 function HorizontalSweep(
 		L::Int64,
-		tt::Array{Float64},
+		VV::Array{Float64},
 		μ0::Float64,
 		DMRGParameters::Vector{Any},                         
 		FilePathOut::String
@@ -119,15 +114,15 @@ function HorizontalSweep(
     DataFile = open(FilePathOut, "a")
     println("Performing horizontal sweep at μ=$μ0...")
     
-    l = length(tt)
-    for (j, t) in enumerate(tt)
-    	println("Running DMRG for t=$(round(t, digits=3)), μ=$μ0", 
+    l = length(VV)
+    for (j, V) in enumerate(VV)
+    	println("Running DMRG for V=$(round(t, digits=3)), μ=$μ0", 
         	" (simulation $j/$l for L=$L)")
         
         # Use @sync to wait for all tasks to complete
         @sync begin
             E, Γ, eΓ, O, eO =  RunDMRGAlgorithm(
-            	[L, L/2, t, V, μ0, η], 
+            	[L, L/2, 1.0, V, μ0, 0.0], 
 				DMRGParameters,
 				"Correlators",
 				false;	# FixedN
@@ -135,7 +130,7 @@ function HorizontalSweep(
 			)
 
             # Write results to the file
-            write(DataFile, "$L; $t; $E; $Γ; $eΓ; $O, $eO\n")
+            write(DataFile, "$L; $V; $E; $Γ; $eΓ; $O, $eO\n")
         end
     end
     
@@ -146,60 +141,60 @@ end
 
 # ----------------------------- Rectangular sweep ------------------------------
 
-# Go on from here...
-# First task by now: run some BoundariesSweeps to see if we delimit a sensed phase domain
+@doc raw"""
 
+"""
 function RectangularSweepBoundaries(
 		L::Int64,
 		N::Int64,
-		tt::Vector{Float64},
+		VV::Vector{Float64},
 		μμ::Vector{Float64},
-		DMRGParametersMI::Vector{Any},
-		DMRGParametersSF::Vector{Any},
+		DMRGParametersXY::Vector{Any},
+		DMRGParametersIF::Vector{Any},
 		FilePathIn::String,
 		FilePathOut::String
 	)
-    """
-    Calculate the variance of the number of particles on site i and ⟨b_i⟩ for a
-    range of hopping J and chemical potential μ values. Results are saved to a file.
-    """
+    
+    @warn "Function under construction..."
     
     DataFile = open(FilePathOut,"a")
 
 	# Take data from fitting data of horizontal sweeps to separate MI from SF 
 	# ( use ΔE^+(∞) and ΔE^-(∞) )
 	BoundariesData = readdlm(FilePathIn, ',', Float64, '\n'; comments=true)
-    ttFitted = BoundariesData[:,1]
+    VVFitted = BoundariesData[:,1]
 
-    for (j,t) in enumerate(tt)
-		# We take the best approximating t ∈ tt, to assess whether we are in the MI or SF phase
+    for (j,V) in enumerate(VV)
+		# We take the best approximating V ∈ VV, to assess whether we are in 
+		# the XY or IF phase.
 
-		# Index = findall(==(t), BoundariesData[:,1]) # this would work if there is the EXACT t in the fit results
-		Index = argmin(abs.(ttFitted .- t)) # this always works, gives the best approximation
+		Index = argmin(abs.(VVFitted .- V)) # this always works, gives the best approximation
 		μUp = BoundariesData[Index,2][1]
 		μDown = -BoundariesData[Index,3][1]
     	
-		println("\nt=$t, phase boundaries: μ^+=$μUp, μ^-=$μDown")
+		println("\nV=$V, phase boundaries: μ^+=$(μUp), μ^-=$(μDown)")
 
 		CachedRho = 1
 		
         for (m,μ) in enumerate(μμ)
         
-            ModelParameters = [L, N, t, V, μ, η]
-			inMottLobe = false
+            ModelParameters = [L, N, 1.0, V, μ, 0.0]
+			inIsingRegion = false
 			
-			if (μ>=μDown && μ<=μUp)
-				inMottLobe = true
+			if (μ>=(μDown) && μ<=(μUp))
+				inIsingRegion = true
 			end
 
-			println("Running DMRG for L=$L, t=$(round(t, digits=3)), ",
-			"μ=$(round(μ, digits=3)) (simulation $m/$(length(μμ)) in μ, ",
-			"$j/$(length(tt)) in t, MI=$inMottLobe)")
+			println("Running DMRG for L=$L, V=$(round(V, digits=3)), ",
+				"μ=$(round(μ, digits=3)) (simulation $m/$(length(μμ)) in μ, ",
+				"$j/$(length(VV)) in V, IF=$inIsingRegion)")
 
-			if inMottLobe
+			# Go on from here...
+
+			if inIsingRegion
 		        Results = RunDMRGAlgorithm(
                     ModelParameters,
-                    DMRGParametersMI,
+                    DMRGParametersIF,
                     "OrderParameters";
                     FixedN=false,
                     RandomPsi0=false

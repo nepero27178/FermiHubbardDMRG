@@ -629,146 +629,196 @@ end
 
 # --------------------------- State properties plot ----------------------------
 
-function PlotPopulations(DirPathOut::String,
-						 P::Matrix{Float64},
-						 ModelParameters::Vector{Float64},
-						 SF::Bool,				# Redundant?
-						 ConserveNumber::Bool)
+@doc raw"""
+function PlotPopulations(
+		DirPathOut::String,
+		P::Matrix{Float64},
+		ModelParameters::Vector{Float64},
+		XY::Bool,
+		ConserveNumber::Bool
+	)
 	
-    @warn "Mode under construction."
+Returns: none (plots saved).
 
-#	L, N, nmax = Int64.(ModelParameters[1:3])
-#	J, μ = ModelParameters[4:5]
-#	
-#	plot(grid=false,
-#		 xlabel=L"$i$ (site)",
-#		 ylabel=L"$|n\rangle$ (state)",
-#		 size = (440, 220),
-#		 minorticks = false)
-#
-#	heatmap!(1:size(P,1), 0:(size(P,2)-1), P', clim=(0,1),
-#			 label=L"$\mathrm{Tr}\lbrace | i;n \rangle \langle i;n | \rho \rbrace$",
-#			 legend=true,
-#			 color=:coolwarm)
-#
-#	# Draw by hand: grid
-#	m, n = size(P')
-#	vline!(0.5:(n+0.5), c=:black, alpha=0.2, linewidth=0.2, label=false)
-#	hline!(-0.5:(m-0.5), c=:black, alpha=0.2, linewidth=0.2, label=false)
-#
-#	if SF
-#		if ConserveNumber
-#			title!(L"SF state population (fixed $N=%$N$, $J=%$J$, $\mu=%$μ$)")
-#			savefig(DirPathOut * "/SF_J=$(J)_μ=$(μ)_fixedN_populations.pdf")
-#		elseif !ConserveNumber
-#			title!(L"SF state population (optimal $N$, $J=%$J$, $\mu=%$μ$)")
-#			savefig(DirPathOut * "/SF_J=$(J)_μ=$(μ)_free_populations.pdf")
-#		end
-#	elseif !SF
-#		if ConserveNumber
-#			title!(L"MI state population (fixed $N=%$N$, $J=%$J$, $\mu=%$μ$)")
-#			savefig(DirPathOut * "/MI_J=$(J)_μ=$(μ)_fixedN_populations.pdf")
-#		elseif !ConserveNumber
-#			title!(L"MI state population (optimal $N$, $J=%$J$, $\mu=%$μ$)")
-#			savefig(DirPathOut * "/MI_J=$(J)_μ=$(μ)_free_populations.pdf")
-#		end
-#	end
+This function plots, for a given parametrization `ModelParameters`, the state
+populations stored in `P`.
+"""
+function PlotPopulations(
+		DirPathOut::String,
+		P::Matrix{Float64},
+		ModelParameters::Vector{Float64},
+		XY::Bool,
+		ConserveNumber::Bool
+	)
+	
+	# If I succeed in predicting the phase boundaries.
+
+	L, N = Int64.(ModelParameters[1:2])
+	t, V, μ, η = ModelParameters[3:6]
+	
+	plot(
+		grid=false,
+		xlabel=L"$i$ (site)",
+		ylabel=L"$|n\rangle$ (state)",
+		size = (440, 220),
+		minorticks = false
+	)
+
+	heatmap!(
+		1:size(P,1), 0:(size(P,2)-1), P', clim=(0,1),
+		label=L"$\mathrm{Tr}\lbrace | i;n \rangle \langle i;n | \rho \rbrace$",
+		legend=true,
+		color=:coolwarm
+	)
+
+	# Draw by hand: grid
+	m, n = size(P')
+	vline!(0.5:(n+0.5), c=:black, alpha=0.2, linewidth=0.2, label=false)
+	hline!(-0.5:(m-0.5), c=:black, alpha=0.2, linewidth=0.2, label=false)
+
+	if XY
+		if ConserveNumber
+			title!(L"XY state population (fixed $N=%$N$, $V=%$V$, $\mu=%$μ$)")
+			savefig(DirPathOut * "/XY_V=$(V)_μ=$(μ)_fixedN-populations.pdf")
+		elseif !ConserveNumber
+			title!(L"XY state population (optimal $N$, $V=%$V$, $\mu=%$μ$)")
+			savefig(DirPathOut * "/XY_V=$(V)_μ=$(μ)_free-populations.pdf")
+		end
+	elseif !XY
+		if ConserveNumber
+			title!(L"IF state population (fixed $N=%$N$, $V=%$V$, $\mu=%$μ$)")
+			savefig(DirPathOut * "/IF_V=$(V)_μ=$(μ)_fixedN-populations.pdf")
+		elseif !ConserveNumber
+			title!(L"IF state population (optimal $N$, $V=%$V$, $\mu=%$μ$)")
+			savefig(DirPathOut * "/IF_V=$(V)_μ=$(μ)_free-populations.pdf")
+		end
+	end
 
 end
 
-function PlotBipartiteEntropy(DirPathOut::String,
-						 	  S::Vector{Float64},
-							  ModelParameters::Vector{Float64},
-							  SF::Bool,
-							  ConserveNumber::Bool)
+@doc raw"""
+function PlotBipartiteEntropy(
+		DirPathOut::String,
+		S::Vector{Float64},
+		ModelParameters::Vector{Float64},
+		XY::Bool,
+		ConserveNumber::Bool
+	)
 	
-    @warn "Mode under construction."
+Returns: none (plots saved).
 
-#	L, N, nmax = Int64.(ModelParameters[1:3])
-#	J, μ = ModelParameters[4:5]
-#				  
-#	scatter([l for l in 1:length(S)], S,
-#		 	 xlabel=L"$\ell$ (link index)",
-#			 ylabel=L"$S$ (bipartite entropy)",
-#			 legend=false)
-#
-#	if SF
-#		if ConserveNumber
-#			title!(L"SF bipartite entropy (fixed $N=%$N$, $J=%$J$, $\mu=%$μ$)")
-#			savefig(DirPathOut * "/SF_J=$(J)_μ=$(μ)_fixedN_entropy.pdf")
-#		elseif !ConserveNumber
-#			title!(L"SF bipartite entropy (optimal $N$, $J=%$J$, $\mu=%$μ$)")
-#			savefig(DirPathOut * "/SF_J=$(J)_μ=$(μ)_free_entropy.pdf")
-#		end
-#	elseif !SF
-#		if ConserveNumber
-#			title!(L"MI bipartite entropy (fixed $N=%$N$, $J=%$J$, $\mu=%$μ$)")
-#			savefig(DirPathOut * "/MI_J=$(J)_μ=$(μ)_fixedN_entropy.pdf")
-#		elseif !ConserveNumber
-#			title!(L"MI bipartite entropy (optimal $N$, $J=%$J$, $\mu=%$μ$)")
-#			savefig(DirPathOut * "/MI_J=$(J)_μ=$(μ)_free_entropy.pdf")
-#		end
-#	end
+This function plots, for a given parametrization `ModelParameters`, the state
+entropy stored in `S`.
+"""
+function PlotBipartiteEntropy(
+		DirPathOut::String,
+		S::Vector{Float64},
+		ModelParameters::Vector{Float64},
+		XY::Bool,
+		ConserveNumber::Bool
+	)
 
-end
-
-# Support function outside workflow for compared plots
-
-function PlotBipartiteEntropyCompared(DirPathIn::String,
-									  DirPathOut::String,
-									  L::Int64,
-									  N::Int64,
-									  nmax::Int64,
-									  SFPoint::Vector{Float64},
-									  MIPoint::Vector{Float64})
+	L, N = Int64.(ModelParameters[1:2])
+	t, V, μ, η = ModelParameters[3:6]
 				  
-    @warn "Mode under construction."
+	scatter(
+		[l for l in 1:length(S)], S,
+		xlabel=L"$\ell$ (link index)",
+		ylabel=L"$S$ (bipartite entropy)",
+		legend=false
+	)
 
-#	SFFilePathIn = DirPathIn * "SF_J=$(SFPoint[1])_μ=$(SFPoint[2]).txt"
-#	MIFilePathIn = DirPathIn * "MI_J=$(MIPoint[1])_μ=$(MIPoint[2]).txt"
-#	
-#	SFData = readdlm(SFFilePathIn, ';', '\n'; comments=true)
-#	SFBool = SFData[:,1]
-#	
-#	# Mastruzzo to extract array of Γ
-#    function ParseArray(str)
-#        return parse.(Float64, split(strip(str, ['[', ']', ' ']), ','))
-#    end
-#	SFEntropy = [ParseArray(row[end]) for row in eachrow(SFData)]
-#	
-#	MIData = readdlm(MIFilePathIn, ';', '\n'; comments=true)
-#	MIBool = MIData[:,1]
-#	MIEntropy = [ParseArray(row[end]) for row in eachrow(MIData)]
-#	
-#	for (j,ConserveNumber) in enumerate(SFBool)
-#		
-#		scatter(legend=:right)
-#		if ConserveNumber
-#			scatter!([l for l in 1:length(SFEntropy[j])], SFEntropy[j],
-#					 xlabel=L"$\ell$ (left partition length)",
-#					 ylabel=L"$S$ (bipartite entropy)",
-#					 markersize=2,
-#					 label=L"$J=%$(SFPoint[1])$, $\mu=%$(SFPoint[2])$ (SF)")
-#					
-#			scatter!([l for l in 1:length(MIEntropy[j])], MIEntropy[j],
-#			         markersize=2,
-#					 label=L"$J=%$(MIPoint[1])$, $\mu=%$(MIPoint[2])$ (MI)")
-#		
-#			title!(L"SF bipartite entropy (fixed $N=%$N$, %$L sites)")
-#			savefig(DirPathOut * "/fixedN_compared_entropy.pdf")
-#		elseif !ConserveNumber
-#			scatter!([l for l in 1:length(SFEntropy[2])], SFEntropy[2],
-#					 xlabel=L"$\ell$ (left partition length)",
-#					 ylabel=L"$S$ (bipartite entropy)",
-#					 markersize=2,
-#					 label=L"$J=%$(SFPoint[1])$, $\mu=%$(SFPoint[2])$ (SF)")
-#					
-#			scatter!([l for l in 1:length(MIEntropy[j])], MIEntropy[j],
-#					 markersize=2,
-#					 label=L"$J=%$(MIPoint[1])$, $\mu=%$(MIPoint[2])$ (MI)")
-#		
-#			title!(L"SF bipartite entropy (optimal $N$, %$L sites)")
-#			savefig(DirPathOut * "/free_compared_entropy.pdf")
-#		end
-#	end
+	if XY
+		if ConserveNumber
+			title!(L"XY bipartite entropy (fixed $N=%$N$, $V=%$V$, $\mu=%$μ$)")
+			savefig(DirPathOut * "/XY_V=$(V)_μ=$(μ)_fixedN-entropy.pdf")
+		elseif !ConserveNumber
+			title!(L"SF bipartite entropy (optimal $N$, $V=%$V$, $\mu=%$μ$)")
+			savefig(DirPathOut * "/XY_V=$(V)_μ=$(μ)_free-entropy.pdf")
+		end
+	elseif !XY
+		if ConserveNumber
+			title!(L"IF bipartite entropy (fixed $N=%$N$, $V=%$V$, $\mu=%$μ$)")
+			savefig(DirPathOut * "/IF_V=$(V)_μ=$(μ)_fixedN-entropy.pdf")
+		elseif !ConserveNumber
+			title!(L"IF bipartite entropy (optimal $N$, $V=%$V$, $\mu=%$μ$)")
+			savefig(DirPathOut * "/IF_V=$(V)_μ=$(μ)_free-entropy.pdf")
+		end
+	end
+
+end
+
+@doc raw"""
+function PlotBipartiteEntropyCompared(
+		DirPathIn::String,
+		DirPathOut::String,
+		L::Int64,
+		N::Int64,
+		XYPoint::Vector{Float64},
+		IFPoint::Vector{Float64}
+	)
+
+Returns: none (plots saved).
+
+This function plots, for given parametrizations (points ,`XYPoint` and `IFPoint`
+on the `(V,μ)` plane, the state entropy recovering it from the appropriate
+FilePathIn. `PlotBipartiteEntropyCompared` is a support function outside the 
+workflow to produce superimposed compared plots.
+"""
+function PlotBipartiteEntropyCompared(
+		DirPathIn::String,
+		DirPathOut::String,
+		L::Int64,
+		N::Int64,
+		XYPoint::Vector{Float64},
+		IFPoint::Vector{Float64}
+	)
+
+	XYFilePathIn = DirPathIn * "XY_V=$(XYPoint[1])_μ=$(XYPoint[2]).txt"
+	IFFilePathIn = DirPathIn * "IF_V=$(IFPoint[1])_μ=$(IFPoint[2]).txt"
+	
+	XYData = readdlm(SFFilePathIn, ';', '\n'; comments=true)
+	XYBool = SFData[:,1]
+	
+	# Mastruzzo to extract array of Γ
+    function ParseArray(str)
+        return parse.(Float64, split(strip(str, ['[', ']', ' ']), ','))
+    end
+	XYEntropy = [ParseArray(row[end]) for row in eachrow(XYData)]
+	
+	IFData = readdlm(IFFilePathIn, ';', '\n'; comments=true)
+	IFBool = IFData[:,1]
+	IFEntropy = [ParseArray(row[end]) for row in eachrow(IFData)]
+	
+	for (j,ConserveNumber) in enumerate(XYBool)
+		
+		scatter(legend=:right)
+		if ConserveNumber
+			scatter!([l for l in 1:length(XYEntropy[j])], XYEntropy[j],
+					 xlabel=L"$\ell$ (left partition length)",
+					 ylabel=L"$S$ (bipartite entropy)",
+					 markersize=2,
+					 label=L"$V=%$(XYPoint[1])$, $\mu=%$(XYPoint[2])$ (XY)")
+					
+			scatter!([l for l in 1:length(MIEntropy[j])], MIEntropy[j],
+			         markersize=2,
+					 label=L"$V=%$(IFPoint[1])$, $\mu=%$(IFPoint[2])$ (IF)")
+		
+			title!(L"XY bipartite entropy (fixed $N=%$N$, %$L sites)")
+			savefig(DirPathOut * "/fixedN-compared-entropy.pdf")
+		elseif !ConserveNumber
+			scatter!([l for l in 1:length(XYEntropy[2])], XYEntropy[2],
+					 xlabel=L"$\ell$ (left partition length)",
+					 ylabel=L"$S$ (bipartite entropy)",
+					 markersize=2,
+					 label=L"$V=%$(XYPoint[1])$, $\mu=%$(XYPoint[2])$ (XY)")
+					
+			scatter!([l for l in 1:length(IFEntropy[j])], IFEntropy[j],
+					 markersize=2,
+					 label=L"$V=%$(IFPoint[1])$, $\mu=%$(IFPoint[2])$ (IF)")
+		
+			title!(L"XY bipartite entropy (optimal $N$, %$L sites)")
+			savefig(DirPathOut * "/free-compared-entropy.pdf")
+		end
+	end
 end

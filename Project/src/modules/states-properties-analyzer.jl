@@ -20,21 +20,21 @@ function GetStateProperties(
 	maxlinkdim = [10,50,75,200,500]
 	cutoff = [1E-8]
 	DMRGParameters = [nsweep, maxlinkdim, cutoff]
-
+	
 	Observables = RunDMRGAlgorithm(
 		ModelParameters,
 		DMRGParameters,
-		"Debug";
-		FixedN=ConserveNumber,
-		RandomPsi0=false
+		"Debug",
+		ConserveNumber
 	)
 									
-	E, nMean, nVariance, LocalE, P, S = Observables
+	E, nMean, nVariance, DensityFluctuations, LocalE, P, S = Observables
 
 	# --------------------------------- Write ----------------------------------
 
 	DataFile = open(FilePathOut, "a")
-	write(DataFile, "$ConserveNumber; $E; $LocalE; $nMean; $nVariance; $P; $S\n")
+	write(DataFile, "$ConserveNumber; $E; $LocalE; $nMean; $nVariance; ",
+		"$DensityFluctuations; $P; $S\n")
 	close(DataFile)
 	
 	return Observables
@@ -45,59 +45,80 @@ end
 function main()
 
 	global Counter = 0
-	L = 30
-	N = 30
-	nmax = 4
+	L = 10
+	N = 5
+	η = 0.0
 	
 	print("Should I run the simulations? (y/n) ")
 	Compute = readline()
 	
-	for SF in [true false]
+	for XY in [true false]
 	
-		DirPathOut = PROJECT_ROOT * "/simulations/states_properties/"
+		DirPathOut = PROJECT_ROOT * "/simulations/states-properties/"
 		mkpath(DirPathOut)
 		
-		if SF			# Superfluid test state
-			J = 0.33
-			μ = 0.8
-			FilePathOut = DirPathOut * "SF_J=$(J)_μ=$(μ).txt"
+		if XY			# XY state (Jordan-Wigner mapping)  
+			V = 1
+			μ = 1.5
+			FilePathOut = DirPathOut * "XY_V=$(V)_μ=$(μ).txt"
 			
-		elseif !SF		# Mott insulating test state
-			J = 0.06
-			μ = 0.4
-			FilePathOut = DirPathOut * "MI_J=$(J)_μ=$(μ).txt"
+		elseif !XY		# FE state (Jordan-Wigner mapping), Mott insulating
+			V = 2
+			μ = 1
+			FilePathOut = DirPathOut * "FE_V=$(V)_μ=$(μ).txt"
 		
 		end
 		
-		ModelParameters = [L, N, nmax, J, μ]
+		@info "State parameters" L N V μ
+		
+		ModelParameters = [L, N, 1.0, V, μ, 0.0]
 		
 		DataFile = open(FilePathOut, "w")
-		write(DataFile, "# FixedN; E; LocalE; nMean; nVariance; Populations; Entropy\n")
+		write(DataFile, "# FixedN; E; LocalE; nMean; nVariance; ",
+			"DensityFluctuations; Populations; Entropy\n")
 		close(DataFile)
 		
-		DirPathOut = PROJECT_ROOT * "/analysis/states_properties/"
+		DirPathOut = PROJECT_ROOT * "/analysis/states-properties/"
 		mkpath(DirPathOut)
 		
+		# Run both for fixed and variable fermions number
 		for ConserveNumber in [true false]
 	
 			global Counter += 1
-			print("Simulation ($Counter/4): SF=$SF and FixedN=$ConserveNumber.")
+			println("Simulation ($Counter/4): XY=$(XY) and ",
+				"FixedN=$(ConserveNumber).")
 	
 			if Compute=="y"
-				Observables = GetStateProperties(FilePathOut, ModelParameters, ConserveNumber)
-				_, _, _, _, P, S = Observables
+				Observables = GetStateProperties(
+					FilePathOut,
+					ModelParameters,
+					ConserveNumber
+				)
+				_, _, _, _, Γ, P, S = Observables
 			elseif Compute=="n"
 				ObservablesData = readdlm(FilePathOut, ';', Any, comments=true)
 				for Index in 1:2
 					if ObservablesData[Index,1]==ConserveNumber
-						_, _, _, _, P, S = ObservablesData[2:7]
+						Γ, P, S = ObservablesData[6:8]
 					end
 				end			
 			end
 	
-			PlotPopulations(DirPathOut, P, ModelParameters, SF, ConserveNumber)
-			PlotBipartiteEntropy(DirPathOut, S, ModelParameters, SF, ConserveNumber)
-			println(" Plots ready!")
+			PlotPopulations(
+				DirPathOut,
+				P,
+				ModelParameters,
+				XY,
+				ConserveNumber
+			)
+			PlotBipartiteEntropy(
+				DirPathOut,
+				S,
+				ModelParameters,
+				XY,
+				ConserveNumber
+			)
+			printstyled("Plots ready!\n", color=:green)
 		end
 	end
 end
