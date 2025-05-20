@@ -45,8 +45,8 @@ end
 function main()
 
 	global Counter = 0
-	L = 10
-	N = 5
+	L = 40
+	N = 20
 	η = 0.0
 	
 	print("Should I run the simulations? (y/n) ")
@@ -104,21 +104,21 @@ function main()
 				end			
 			end
 	
-			PlotPopulations(
-				DirPathOut,
-				P,
-				ModelParameters,
-				XY,
-				ConserveNumber
-			)
-			PlotBipartiteEntropy(
-				DirPathOut,
-				S,
-				ModelParameters,
-				XY,
-				ConserveNumber
-			)
-			printstyled("Plots ready!\n", color=:green)
+#			PlotPopulations(
+#				DirPathOut,
+#				P,
+#				ModelParameters,
+#				XY,
+#				ConserveNumber
+#			)
+#			PlotBipartiteEntropy(
+#				DirPathOut,
+#				S,
+#				ModelParameters,
+#				XY,
+#				ConserveNumber
+#			)
+#			printstyled("Plots ready!\n", color=:green)
 		end
 	end
 end
