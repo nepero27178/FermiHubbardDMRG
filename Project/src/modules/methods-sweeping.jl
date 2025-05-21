@@ -155,83 +155,164 @@ function RectangularSweepBoundaries(
 		FilePathOut::String
 	)
     
-    @warn "Function under construction..."
+    @warn "Function under construction."
+#    
+#    DataFile = open(FilePathOut,"a")
+
+#	# Take data from fitting data of horizontal sweeps to separate MI from SF 
+#	# ( use ΔE^+(∞) and ΔE^-(∞) )
+#	BoundariesData = readdlm(FilePathIn, ',', Float64, '\n'; comments=true)
+#    VVFitted = BoundariesData[:,1]
+
+#    for (j,V) in enumerate(VV)
+#		# We take the best approximating V ∈ VV, to assess whether we are in 
+#		# the XY or IF phase.
+
+#		Index = argmin(abs.(VVFitted .- V)) # this always works, gives the best approximation
+#		μUp = BoundariesData[Index,2][1]
+#		μDown = -BoundariesData[Index,3][1]
+#    	
+#		println("\nV=$V, phase boundaries: μ^+=$(μUp), μ^-=$(μDown)")
+
+#		CachedRho = 1
+#		
+#        for (m,μ) in enumerate(μμ)
+#        
+#            ModelParameters = [L, N, 1.0, V, μ, 0.0]
+#			inIsingRegion = false
+#			
+#			if (μ>=(μDown) && μ<=(μUp))
+#				inIsingRegion = true
+#			end
+
+#			println("Running DMRG for L=$L, V=$(round(V, digits=3)), ",
+#				"μ=$(round(μ, digits=3)) (simulation $m/$(length(μμ)) in μ, ",
+#				"$j/$(length(VV)) in V, IF=$inIsingRegion)")
+
+#			# Go on from here...
+
+#			if inIsingRegion
+#		        Results = RunDMRGAlgorithm(
+#                    ModelParameters,
+#                    DMRGParametersIF,
+#                    "OrderParameters";
+#                    FixedN=false,
+#                    RandomPsi0=false
+#                )
+#				E, NTotAvg, nVariance, aAvg = Results
+#				
+#				if m>1
+#					Rho = NTotAvg/L
+#					K = (Rho - CachedRho) / (μ - μμ[m-1])	# Compressibility
+#					K /= (Rho^2)
+#					CachedRho = Rho							# Next step
+#		        elseif m==1
+#		        	K = NaN									# Avoid segmentation fault
+#		        end
+#		        
+#		        write(DataFile,"$J; $μ; $E; $nVariance; $aAvg; $K # MI\n")
+#		    else
+#		    	Results = RunDMRGAlgorithm(ModelParameters,
+#				                           DMRGParametersSF,
+#				                           "OrderParameters";
+#	  		                               FixedN=false,
+#										   RandomPsi0=true)
+#				E, NTotAvg, nVariance, aAvg = Results
+#				
+#				if m>1
+#					Rho = NTotAvg/L
+#					K = (Rho - CachedRho) / (μ - μμ[m-1])	# Compressibility
+#					K /= (Rho^2)
+#					CachedRho = Rho							# Next step
+#		        elseif m==1
+#		        	K = NaN									# Avoid segmentation fault
+#		        end
+#				
+#		        write(DataFile,"$J; $μ; $E; $nVariance; $aAvg; $K # SF\n")
+#		    end
+#        end
+#    end
+
+#    close(DataFile)
+end
+
+@doc raw"""
+
+"""
+function RectangularSweep(
+		L::Int64,
+		N::Int64,
+		VV::Vector{Float64},
+		μμ::Vector{Float64},
+		DMRGParameters::Vector{Any},
+		FilePathOut::String
+	)
     
+    global ε
     DataFile = open(FilePathOut,"a")
 
-	# Take data from fitting data of horizontal sweeps to separate MI from SF 
-	# ( use ΔE^+(∞) and ΔE^-(∞) )
-	BoundariesData = readdlm(FilePathIn, ',', Float64, '\n'; comments=true)
-    VVFitted = BoundariesData[:,1]
-
-    for (j,V) in enumerate(VV)
-		# We take the best approximating V ∈ VV, to assess whether we are in 
-		# the XY or IF phase.
-
-		Index = argmin(abs.(VVFitted .- V)) # this always works, gives the best approximation
-		μUp = BoundariesData[Index,2][1]
-		μDown = -BoundariesData[Index,3][1]
-    	
-		println("\nV=$V, phase boundaries: μ^+=$(μUp), μ^-=$(μDown)")
-
-		CachedRho = 1
-		
-        for (m,μ) in enumerate(μμ)
+    for (j,V) in enumerate(VV), (m,μ) in enumerate(μμ)
         
-            ModelParameters = [L, N, 1.0, V, μ, 0.0]
-			inIsingRegion = false
-			
-			if (μ>=(μDown) && μ<=(μUp))
-				inIsingRegion = true
-			end
+        ModelParameters = [L, N, 1.0, V, μ, 0.0]
 
-			println("Running DMRG for L=$L, V=$(round(V, digits=3)), ",
-				"μ=$(round(μ, digits=3)) (simulation $m/$(length(μμ)) in μ, ",
-				"$j/$(length(VV)) in V, IF=$inIsingRegion)")
+		println("Running DMRG for L=$L, V=$(round(V, digits=3)),", 
+			"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
+			"$j/$(length(VV)) in V)")
 
-			# Go on from here...
+		E = 0 # Initalize energy to save variable
+		k = 0 # Initalize compressibility to save variable
+		D = 0 # Initalize stiffness to save variable
+        @sync begin
+            # Create tasks for each DMRG call
+            task1 = @spawn RunDMRGAlgorithm(
+            	[L, L/2, 1.0, V, μ, 0.0],		# Central
+				DMRGParameters,
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
+			)
+            task2 = @spawn RunDMRGAlgorithm(
+            	[L, L/2+2, 1.0, V, μ, 0.0], 	# Add two particles
+				DMRGParameters,
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
+			)
+            task3 = @spawn RunDMRGAlgorithm(
+				[L, L/2-2, 1.0, V, μ, 0.0],	# Remove two particles
+				DMRGParameters,
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
+			)
+			task4 = @spawn RunDMRGAlgorithm(
+            	[L, L/2, 1.0, V, μ, ε], 		# Rotate clockwise
+				DMRGParameters,
+				"Fast", # UserMode
+				false;	# FixedN
+				verbose=false
+			)
+			task5 = @spawn RunDMRGAlgorithm(
+            	[L, L/2, 1.0, V, μ, -ε], 		# Rotate counter-clockwise
+				DMRGParameters,
+				"Fast", # UserMode
+				false;	# FixedN
+				verbose=false
+			)
 
-			if inIsingRegion
-		        Results = RunDMRGAlgorithm(
-                    ModelParameters,
-                    DMRGParametersIF,
-                    "OrderParameters";
-                    FixedN=false,
-                    RandomPsi0=false
-                )
-				E, NTotAvg, nVariance, aAvg = Results
-				
-				if m>1
-					Rho = NTotAvg/L
-					K = (Rho - CachedRho) / (μ - μμ[m-1])	# Compressibility
-					K /= (Rho^2)
-					CachedRho = Rho							# Next step
-		        elseif m==1
-		        	K = NaN									# Avoid segmentation fault
-		        end
-		        
-		        write(DataFile,"$J; $μ; $E; $nVariance; $aAvg; $K # MI\n")
-		    else
-		    	Results = RunDMRGAlgorithm(ModelParameters,
-				                           DMRGParametersSF,
-				                           "OrderParameters";
-	  		                               FixedN=false,
-										   RandomPsi0=true)
-				E, NTotAvg, nVariance, aAvg = Results
-				
-				if m>1
-					Rho = NTotAvg/L
-					K = (Rho - CachedRho) / (μ - μμ[m-1])	# Compressibility
-					K /= (Rho^2)
-					CachedRho = Rho							# Next step
-		        elseif m==1
-		        	K = NaN									# Avoid segmentation fault
-		        end
-				
-		        write(DataFile,"$J; $μ; $E; $nVariance; $aAvg; $K # SF\n")
-		    end
+            # Wait for all tasks to complete and collect results
+            E = fetch(task1)
+            EAdd = fetch(task2)
+            ERemove = fetch(task3)
+            EClock = fetch(task4)
+            ECounterClock = fetch(task5)
+            
+            k = 4/( L * (EAdd+ERemove-2*E) )
+            D = pi*L * (EClock+ECounterClock-2*E)/4
         end
-    end
+        
+        write(DataFile,"$V; $μ; $E; $k; $D\n")
+	end
 
     close(DataFile)
 end

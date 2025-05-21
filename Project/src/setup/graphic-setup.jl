@@ -2,7 +2,8 @@
 
 # Set default options for plotting
 
-using Plots; pgfplotsx()
+using Plots
+using PGFPlotsX; pgfplotsx()
 using ColorSchemes
 using LaTeXStrings
 

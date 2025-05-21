@@ -2,111 +2,114 @@
 
 # ---------------------------------- Heatmap -----------------------------------
 
-"""
-Plot the variance of the number of particles from data saved
-in `FilePathIn`.
+@doc raw"""
+function PlotHeatmap(
+        L::Int64,
+        FilePathIn::String;
+        PhaseBoundariesFilePath="",
+        EFilePathOut="",
+        kFilePathOut="",
+        DFilePathOut=""
+    )
+    
+Returns: none (plots in folder).    
+    
+Plot heatmaps of ground-state energy, compressibility and charge stiffness of
+the system from data saved in `FilePathIn`.
 """
 function PlotHeatmap(
         L::Int64,
         FilePathIn::String;
         PhaseBoundariesFilePath="",
-        VarianceFilePathOut="",		    # Variance heatmap
-        DFilePathOut="",				# Charge stiffness
-        kFilePathOut=""                 # Compressibility heatmap
+        EFilePathOut="",		    # Energy heatmap
+        kFilePathOut="",			# Charge stiffness
+        DFilePathOut=""             # Compressibility heatmap
     )
-
-    @warn "Mode under construction."
     
-#    # Extract data coming from rectangular_sweep
-#    Data = readdlm(FilePathIn, ';', '\n'; comments=true)
-#    # TODO not uniform ; vs , everywhere
-#
-#    # display(Data)
-#
-#    JJ = Data[:,1]
-#    μμ = Data[:,2]
-#    EE = Data[:,3]
-#    varvar = Data[:,4]
-#    aa = Data[:,5]
-#    kk = Data[:,6]
-#
-#    NumJ = length(unique(JJ))
-#    Numμ = length(unique(μμ))
-#
-#    # Store variance and order parameter <a_i>
-#    Variances = zeros(Numμ, NumJ)
-#    OrderParameters = zeros(Numμ, NumJ)
-#    FourierTransforms = zeros(Numμ, NumJ)
-#    Compressibilities = zeros(Numμ, NumJ)
-#
-#    for jj in 1:NumJ
-#        Variances[:,jj] = varvar[ Numμ*(jj-1)+1 : Numμ*jj ]
-#        OrderParameters[:,jj] = aa[ Numμ*(jj-1)+1 : Numμ*jj ]
-#        Compressibilities[:,jj] = kk[ Numμ*(jj-1)+1 : Numμ*jj ]	# First row is NaN!
-#    end
-#
-#    i = (ceil(Int64, L/2)) # site index
-#
-#    if VarianceFilePathOut != ""
-#        # Plot variance
-#        heatmap(unique(JJ), unique(μμ), Variances, 
-#                xlabel=L"J",
-#                ylabel=L"$\mu$",
-#                title=L"Variance $\delta n_i^2$ ($L=%$L, i=%$i$)")
-#        ylabel!(L"μ")
-#
+    # Extract data coming from rectangular-sweep
+    Data = readdlm(FilePathIn, ';', '\n'; comments=true)
+	@info "Data" Data
+
+    VV = Data[:,1]
+    μμ = Data[:,2]
+    EE = Data[:,3]
+    kk = Data[:,4]
+    DD = Data[:,5]
+
+    NumV = length(unique(VV))
+    Numμ = length(unique(μμ))
+    
+    Energies = zeros(Numμ, NumV)
+    Compressibilities = zeros(Numμ, NumV)
+    Stiffnesses = zeros(Numμ, NumV)
+
+    for jj in 1:NumV
+        Energies[:,jj] = EE[ Numμ*(jj-1)+1 : Numμ*jj ]
+        Compressibilities[:,jj] = kk[ Numμ*(jj-1)+1 : Numμ*jj ]
+        Stiffnesses[:,jj] = DD[ Numμ*(jj-1)+1 : Numμ*jj ]
+    end
+
+    if EFilePathOut != ""
+        hE = heatmap(
+        	unique(VV), unique(μμ), Energies, 
+			xlabel=L"V/t",
+			ylabel=L"$\mu/t$",
+			title=L"Ground-state energy ($L=%$L$)"
+		)
+
 #        if PhaseBoundariesFilePath != ""
 #            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
 #        end
-#
-#        savefig(VarianceFilePathOut)
-#        println("Variance plot for L=$L saved on file!")
-#    end
-#
-#    if AFilePathOut != ""
-#        # Plot order parameter <a_i>
-#        heatmap(unique(JJ), unique(μμ), OrderParameters, 
-#                xlabel=L"J",
-#                ylabel=L"$\mu$",
-#                title=L"$\langle \hat b_i \rangle$ ($L=%$L, i=%$i$)")
-#
-#        # Add phase boundaries
+
+        savefig(hE, EFilePathOut)
+        println("Energy plot for L=$L saved on file!")
+    end
+
+    if kFilePathOut != ""
+        hk = heatmap(
+        	unique(VV), unique(μμ), Compressibilities, 
+			xlabel=L"V/t",
+			ylabel=L"$\mu/t$",
+			title=L"Compressibility ($L=%$L$)"
+		)
+
 #        if PhaseBoundariesFilePath != ""
 #            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
 #        end
-#
-#        savefig(AFilePathOut)
-#        println("Order parameter plot for L=$L saved on file!")
-#    end
-#	
-#    if KFilePathOut != ""
-#		# Plot compressibility
-#        heatmap(unique(JJ), unique(μμ)[3:end], Compressibilities[3:end,:], 
-#                xlabel=L"J",
-#                ylabel=L"$\mu$",
-#                title=L"Compressibility $\kappa$ ($L=%$L, i=%$i$)",
-#                clim=(0,5))
-#                
-#        # Add phase boundaries
+
+        savefig(hk, kFilePathOut)
+        println("Compressibility plot for L=$L saved on file!")
+    end
+    
+    if DFilePathOut != ""
+        hD = heatmap(
+        	unique(VV), unique(μμ), Stiffnesses, 
+			xlabel=L"V/t",
+			ylabel=L"$\mu/t$",
+			title=L"Charge stiffness ($L=%$L$)"
+		)
+
 #        if PhaseBoundariesFilePath != ""
 #            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
 #        end
-#        
-#        savefig(KFilePathOut)
-#        println("Compressibility plot for L=$L saved on file!")        
-#    end
-#end
-#
-#"""
-#Add the phase boundaries to the heatmap, for the closest size L available,
-#and adjusting the xlimits and ylimits appropriately.
-#"""
-#function HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath::String,
-#                                   L::Int64,
-#                                   JJ::Array{Float64},
-#                                   μμ::Array{Float64};
-#                                   μ0=0.0)
-#                                   
+
+        savefig(hD, DFilePathOut)
+        println("Charge stiffness plot for L=$L saved on file!")
+    end
+end
+
+"""
+Add the phase boundaries to the heatmap, for the closest size L available,
+and adjusting the xlimits and ylimits appropriately.
+"""
+function HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath::String,
+                                   L::Int64,
+                                   JJ::Array{Float64},
+                                   μμ::Array{Float64};
+                                   μ0=0.0)
+	
+	@warn "Function under construction..."	
+	                                   
 #    BoundariesData = readdlm(PhaseBoundariesFilePath, ';', '\n'; comments=true)
 #    LL = unique(BoundariesData[:, 1])
 #
@@ -155,7 +158,7 @@ function PlotPhaseBoundaries(
         μ0=0.0,
         HideDataPoints=false,
         DrawMottLobe=false,
-        MottLobeFilePath=PROJECT_ROOT * "/analysis/phase_boundaries/fitted-phase-boundaries.txt",
+        MottLobeFilePath=PROJECT_ROOT * "/analysis/phase-boundaries/fitted-phase-boundaries.txt",
     )
     
     global HorizontalLL # Imported from setup

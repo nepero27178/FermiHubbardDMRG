@@ -115,8 +115,8 @@ function RunDMRGAlgorithm(
     t, V, μ, η = ModelParameters[3:6]
     nsweeps, maxdim, cutoff = DMRGParameters[1:3]
 
-	if η>1 || η<0
-    	error("Invalid phase! Enter 1≤η≤L.")
+	if η>0.5 || η<-0.5
+    	error("Invalid phase! Enter -1/2≤η≤1/2.")
 	end 
 
 	# Evaluate UserMode
@@ -179,9 +179,9 @@ function RunDMRGAlgorithm(
 	end
     
     # Set starting state
-    # psi0 = SetStartingState(sites, N)
+    psi0 = SetStartingState(sites, N)
 	# Set Ferromagnetic state
-	psi0 = SetUniformState(sites)
+	# psi0 = SetUniformState(sites)
 
     if verbose
         # Print observables   

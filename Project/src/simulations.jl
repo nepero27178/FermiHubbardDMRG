@@ -28,7 +28,8 @@ referred to with their names. Check the setup file to modify the definitions.
 function main()
     
 	ModeErrorMsg = "Input error: use option --boundaries, --horizontal, " *
-				   "--rectangular or --rectangular-selection"
+				   "--rectangular, --rectangular-boundaries or " *
+				   "--rectangular-selection"
 	
 	if length(ARGS) != 1
 		# If user does not specify the user mode
@@ -113,25 +114,65 @@ function main()
         # -------------------------- Rectangular sweep -------------------------
         
 		elseif UserMode=="--rectangular"
+
+			# Rectangular sweeps
+	    	VV = RectangularVV				# Imported from setup
+	    	LL = RectangularLL				# Imported from setup
+	    	μμ = Rectangularμμ				# Imported from setup
+
+			NN = Int64.(LL./2)				# Half filling
+
+			DirPathOut = PROJECT_ROOT * "/simulations/rectangular-sweep"
+    		mkpath(DirPathOut)
+
+			for (j,L) in enumerate(LL)
+				N = NN[j]
+				
+				FilePathOut = DirPathOut * "/L=$L.txt"
+				DataFile = open(FilePathOut, "w")
+					write(DataFile,"# Fermi-Hubbard model DMRG. L=$L, N=$N\n")
+					write(DataFile,"# V; μ; E; k; D; [calculated $(now())]\n")
+				close(DataFile)
+				
+				println("Starting calculation of observables for L=$L...")
+				RectangularSweep(
+					L, 
+					N,
+					VV,
+					μμ,
+					DMRGParametersXY,
+					FilePathOut
+				)
+				
+				DataFile = open(FilePathOut,"a")
+					write(DataFile,"# [finished at $(now())]\n")
+				close(DataFile)
+			end
+			
+			println("Done!")
+			
+	# -------------------- Rectangular sweep with boundaries -------------------
+			
+	elseif UserMode=="--rectangular-boundaries"
 		
             @warn "Mode under construction."
 
 #			# Rectangular sweeps
-#	    	JJ = RectangularJJ				# Imported from setup
+#	    	VV = RectangularVV				# Imported from setup
 #	    	LL = RectangularLL				# Imported from setup
 #	    	μμ = Rectangularμμ				# Imported from setup
-#
+
 #			μ0 = 0.0 						# μ0 from which to take phase boundaries
-#
+
 #			NN = LL							# Unitary filling
-#
+
 #			DirPathOut = PROJECT_ROOT * "/simulations/rectangular_sweep"
 #    		mkpath(DirPathOut)
-#
+
 #			# Uncomment here to use L-wise phase boundaries
 #			# FilePathIn =  PROJECT_ROOT * "/simulations/horizontal_sweep/L=$LL.txt"
 #			FilePathIn =  PROJECT_ROOT * "/analysis/phase_boundaries/μ0=$μ0/fitted_phase_boundaries_μ0=$μ0.txt"
-#
+
 #			for (j,L) in enumerate(LL)
 #				N = NN[j]
 #				

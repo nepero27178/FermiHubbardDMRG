@@ -32,32 +32,31 @@ function main()
 
         if UserMode=="--heatmap"
 
-            @warn "Mode under construction."
+            global HorizontalLL, RectangularLL # Imported from setup
+            
+			PhaseBoundariesLL = HorizontalLL
+            LL = RectangularLL
+            L = 10             
+            μ0 = 0.0
+            Cutoff = 0.05
 
-#            global HorizontalLL, RectangularLL # Imported from setup
-#            
-#			PhaseBoundariesLL = HorizontalLL
-#            LL = RectangularLL
-#            L = 10 # TODO CHANGE!             
-#            μ0 = 0.0 # TODO CHANGE!
-#            Cutoff = 0.05 # TODO CHANGE!
-#
-#            PhaseBoundariesFilePath = PROJECT_ROOT * "/../simulations/horizontal_sweep/μ0=$(μ0)_L=$PhaseBoundariesLL.txt"
-#            HeatmapDir = PROJECT_ROOT * "/../analysis/heatmap/"
-#
-#
-#			for L in LL
-#                FilePathIn = PROJECT_ROOT * "/../simulations/rectangular_sweep/L=$(L)_High.txt"
-#
-#				VarianceFilePathOut = HeatmapDir * "variance_L=$(L)_High.pdf" # Variance plot
-#	            AFilePathOut = HeatmapDir * "b_L=$(L)_High.pdf"       # <a_i> plot
-#    	        KFilePathOut = HeatmapDir * "K_L=$(L)_High.pdf"       # K plot
-#				
-#	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, VarianceFilePathOut, AFilePathOut, KFilePathOut)
-#   			end
-#            
-#            FilePathIn = PROJECT_ROOT * "/../simulations/rectangular_sweep/L=$(L)_High.txt"
-#
+            PhaseBoundariesFilePath = "" # PROJECT_ROOT * "/../simulations/horizontal_sweep/μ0=$(μ0)_L=$PhaseBoundariesLL.txt"
+            HeatmapDir = PROJECT_ROOT * "/../analysis/heatmap/"
+            mkpath(HeatmapDir)
+
+
+			for L in LL
+                FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/L=$(L).txt"#_High.txt"
+
+				EFilePathOut = HeatmapDir * "Energy_L=$(L)_High-Resolution.pdf" 			# Ground-state energy plot
+	            kFilePathOut = HeatmapDir * "Compressibility_L=$(L)_High-Resolution.pdf" 	# Compressibility plot
+    	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L)_High-Resolution.pdf"       	# Charge stiffness plot
+				
+	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, EFilePathOut, kFilePathOut, DFilePathOut)
+   			end
+            
+#            FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/L=$(L)_High.txt"
+
 #            EstimateFractionOrderParameter(L, FilePathIn, PhaseBoundariesFilePath, Cutoff)
 
 

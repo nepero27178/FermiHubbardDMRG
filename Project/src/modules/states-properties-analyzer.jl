@@ -58,13 +58,13 @@ function main()
 		mkpath(DirPathOut)
 		
 		if XY			# XY state (Jordan-Wigner mapping)  
-			V = 1
-			μ = 1.5
+			V = 0.25
+			μ = 0.5
 			FilePathOut = DirPathOut * "XY_V=$(V)_μ=$(μ).txt"
 			
 		elseif !XY		# FE state (Jordan-Wigner mapping), Mott insulating
-			V = 2
-			μ = 1
+			V = 3
+			μ = 2
 			FilePathOut = DirPathOut * "FE_V=$(V)_μ=$(μ).txt"
 		
 		end
@@ -73,10 +73,12 @@ function main()
 		
 		ModelParameters = [L, N, 1.0, V, μ, 0.0]
 		
-		DataFile = open(FilePathOut, "w")
-		write(DataFile, "# FixedN; E; LocalE; nMean; nVariance; ",
-			"DensityFluctuations; Populations; Entropy\n")
-		close(DataFile)
+		if Compute=="y"
+			DataFile = open(FilePathOut, "w")
+			write(DataFile, "# FixedN; E; LocalE; nMean; nVariance; ",
+				"DensityFluctuations; Populations; Entropy\n")
+			close(DataFile)
+		end
 		
 		DirPathOut = PROJECT_ROOT * "/analysis/states-properties/"
 		mkpath(DirPathOut)
@@ -104,21 +106,21 @@ function main()
 				end			
 			end
 	
-#			PlotPopulations(
-#				DirPathOut,
-#				P,
-#				ModelParameters,
-#				XY,
-#				ConserveNumber
-#			)
-#			PlotBipartiteEntropy(
-#				DirPathOut,
-#				S,
-#				ModelParameters,
-#				XY,
-#				ConserveNumber
-#			)
-#			printstyled("Plots ready!\n", color=:green)
+			PlotPopulations(
+				DirPathOut,
+				P,
+				ModelParameters,
+				XY,
+				ConserveNumber
+			)
+			PlotBipartiteEntropy(
+				DirPathOut,
+				S,
+				ModelParameters,
+				XY,
+				ConserveNumber
+			)
+			printstyled("Plots ready!\n", color=:green)
 		end
 	end
 end
