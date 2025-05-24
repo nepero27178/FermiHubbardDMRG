@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+	\begin{axis}[
+			axis x line=center,
+			axis y line=left,
+			xlabel={$k$},
+			ylabel={Energy},
+			xlabel style={below},
+			ylabel style={above},
+			xtick={-pi,0,pi},
+			ytick={-1,0,1},
+			extra x ticks={-pi/2,pi/2},
+			extra x tick labels=\empty,
+			xticklabels={$-\pi$,$0$,$\pi$},
+			yticklabels={$-2t$, $0$, $2t$},
+			xmin=-4.0, xmax=4.0,
+			ymin=-2.0, ymax=2.0
+		]
+		\addplot[domain=-pi:pi, smooth, color=tabblue]
+			{-cos(deg(x))} node[below] {$\epsilon_k$};
+		
+		\addplot[domain=0.2:-pi, color=tabgreen]
+			{-1.57-x} node[right] {$\epsilon_k^{(\mathrm L)}$};
+		
+		\addplot[domain=-0.2:pi, color=tabgreen]
+			{-1.57+x} node[left] {$\epsilon_k^{(\mathrm R)}$};
+	\end{axis}
+\end{tikzpicture}

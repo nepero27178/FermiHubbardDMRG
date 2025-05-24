@@ -11,12 +11,14 @@
 \contentsline {paragraph}{Charge compressibility.}{7}{section*.7}%
 \contentsline {paragraph}{Charge stiffness}{8}{figure.caption.9}%
 \contentsline {paragraph}{Equal-time Green's function.}{10}{section*.10}%
-\contentsline {paragraph}{Density-density fluctuations.}{10}{section*.11}%
-\contentsline {section}{\numberline {2}The Fermi-Hubbard model}{11}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{12}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Bosonization of the model}{14}{subsection.2.2}%
-\contentsline {section}{\numberline {3}Algorithms and simulations}{15}{section.3}%
-\contentsline {subsection}{\numberline {3.1}General strategy and target(s)}{15}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Finite-size DMRG}{15}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Data analysis and results}{16}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{16}{subsection.4.1}%
+\contentsline {paragraph}{Equal-time density-density correlations.}{10}{section*.11}%
+\contentsline {paragraph}{Superconducting correlations.}{11}{section*.12}%
+\contentsline {section}{\numberline {2}The Fermi-Hubbard model}{12}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{13}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Non-interacting ground-state}{15}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Bosonization of the model}{16}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Algorithms and simulations}{17}{section.3}%
+\contentsline {subsection}{\numberline {3.1}General strategy and target(s)}{17}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Finite-size DMRG}{17}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Data analysis and results}{18}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{18}{subsection.4.1}%

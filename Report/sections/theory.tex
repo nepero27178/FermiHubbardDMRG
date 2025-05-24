@@ -15,8 +15,8 @@ The key idea is simple: start from a conventional fermionic-metallic hamiltonian
 \[
 	\hat H = \hat H_0 + \hat V = \sum_k \xi_k \hat c_k^\dagger \hat c_k + \hat V
 \]
-(we will leave the interaction unspecified, for a moment) where $\xi_k = \epsilon_k - \epsilon_F$ and we are using spinless fermions, for normal bands in ordinary fillings.
-Consider Fig.~\ref{fig:bands}: the approximation in the above equation is exactly given by making the following assumption: since at low temperature (which, in metals, is a very broad definition) all the relevant Physics takes place at $\xi \sim 0$, and both the deep-down/far-away single-particle states do not contribute either due to Pauli pressure or state depletion, we can as well study the model:
+(I will leave the interaction unspecified, for a moment) where $\xi_k = \epsilon_k - \epsilon_F$ and I am using spinless fermions, for normal bands in ordinary fillings.
+Consider Fig.~\ref{fig:bands}: the approximation in the above equation is exactly given by making the following assumption: since at low temperature (which, in metals, is a very broad definition) all the relevant Physics takes place at $\xi \sim 0$, and both the deep-down/far-away single-particle states do not contribute either due to Pauli pressure or state depletion, one can as well study the model:
 \[
 	\epsilon_k \to \left\{\epsilon_k^{(\mathrm L)}, \epsilon_k^{(\mathrm R)} \right\}
 \]
@@ -27,19 +27,19 @@ Let $s$ be the side index, $s \in \left\{\mathrm L, \mathrm R\right\}$, with
 	-1 \quad \text{if} \quad s = \mathrm L
 \end{cases}
 \]
-Then we may approximate around the Fermi surface (in one dimension degenerated in two points)
+Then I may approximate around the Fermi surface (in one dimension degenerated in two points)
 \[
 	\hat H_0 \simeq \hat K_0 \equiv \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \sum_k \hbar v_F \left( \sgn(s) k -  k_F \right) \left[ \hat c_k^{(s)} \right]^\dagger \hat c_k^{(s)}
 \]
-being $k_F \equiv \sqrt{2m\epsilon_F/\hbar}$ the Fermi wavevector and $v_F \equiv \hbar k_F / m$. $\hat K_0$ is the Tomonaga-Luttinger model. In the following, we will set $\hbar=1$. Now, consider the side-wise density operators,
+being $k_F \equiv \sqrt{2m\epsilon_F/\hbar}$ the Fermi wavevector and $v_F \equiv \hbar k_F / m$. $\hat K_0$ is the Tomonaga-Luttinger model. In the following, I will set $\hbar=1$. Now, consider the side-wise density operators,
 \[
 	\hat \rho_q^{(s)} \equiv \sum_k  \left[ \hat c_{k+q}^{(s)} \right]^\dagger \hat c_k^{(s)}
 \]
-Let us use a slightly different, somewhat lighter notation:
+Let me use a slightly different, somewhat lighter notation:
 \[
 	\hat \rho_q^{(s)} \leftrightarrow \hat \rho_s (q)
 \]
-From now on, we will proceed only highlighting the important result in the bosonization procedure, since all the detailed derivation is included in \cite{giamarchi2003quantum}.
+From now on, I will proceed only highlighting the important result in the bosonization procedure, since all the detailed derivation is included in \cite{giamarchi2003quantum}.
 
 \subsubsection{Boson operators}
 
@@ -52,7 +52,7 @@ To get to this point, the very key passage is to employ the identity
 \[
 	\hat A \hat B = \colon \hat A \hat B \colon + \mel{\Omega}{\hat A \hat B}{\Omega}
 \]
-being $\hat A$, $\hat B$ two operators made of constructions/destructions, $\ket{\Omega}$ the generic many-body vacuum and $\colon \cdots \colon$ the normal ordering operation. Eq.~\eqref{eq:density-commutator} only holds if we use this trick, which is, if we make a smart use of the infinite particle populations for the linearized model.
+being $\hat A$, $\hat B$ two operators made of constructions/destructions, $\ket{\Omega}$ the generic many-body vacuum and $\colon \cdots \colon$ the normal ordering operation. Eq.~\eqref{eq:density-commutator} only holds if one uses this trick, which is, making a smart use of the infinite particle populations for the linearized model.
 
 Now, Eq.~\eqref{eq:density-commutator} looks ``bosonic''. Notice that the left-side density operator vanishes identically for any $q>0$ on the ground-state Fermi sea $\ket{\Omega}$. This is because it would require to destroy a fermion at any given $k$ and creating one at $k+q$ -- but the monotonicity of the linear left band prevents from doing so, because states on the left get deeper and deeper and thus are already occupied. In formulas
 \[
@@ -61,7 +61,7 @@ Now, Eq.~\eqref{eq:density-commutator} looks ``bosonic''. Notice that the left-s
 	\hat \rho_\mathrm{R} (q<0) \ket{\Omega} &= 0
 \end{aligned}
 \]
-Then, we can define boson operator with finite particle numbers as
+Then, I define a boson operator with finite particle numbers as
 \[
 \begin{aligned}
 	\hat b_q^\dagger &\equiv \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \theta \left(\sgn(s) q\right) \hat \rho_s^\dagger (q) \\
@@ -74,9 +74,9 @@ which of course satisfy
 \]
 
 With a little patience, it can be shown that, taking $q \neq 0$,
-\beq\label{eq:boson-hamiltonian-commutator}
+\begin{equation}\label{eq:boson-hamiltonian-commutator}
 	\comm{\hat b_q}{\hat K_0} = v_F \abs{q} \hat b_q
-\eeq
+\end{equation}
 Assuming the (operatorial) basis generated by the bosonic operators to be complete, then this equation completely defines $\hat K_0$. It must hold:
 \[
 	\hat K_0 = \sum_{q \neq 0} v_F \abs{q} \hat b_q^\dagger \hat b_q + (\text{a term for $q=0$})
@@ -84,7 +84,7 @@ Assuming the (operatorial) basis generated by the bosonic operators to be comple
 This is astonishing result of the bosonization method: the kinetic term can be approximated by a quadratic free-bosons hamiltonian. Any quartic fermion interaction term (as are two-body interactions) is density-quadratic and can be cast to an identical form.
 
 \paragraph{Fermionic-bosonic correspondence}
-At the very heart of the bosonization technique, lies a change of basis in operators space: the hamiltonian is mapped from a fermionic representation to a bosonic one, limitedly to the energy regime of our interest. In terms of the boson operators we shall express the fermion field operators,
+At the very heart of the bosonization technique, lies a change of basis in operators space: the hamiltonian is mapped from a fermionic representation to a bosonic one, limitedly to the energy regime of interest. In terms of the boson operators I shall express the fermion field operators,
 \[
 	\hat \psi_s (x) \equiv \frac{1}{\sqrt{L}} \sum_k e^{ikx} \hat c_k^{(s)}
 \]
@@ -109,16 +109,16 @@ The final goal is to express the entire hamiltonian in terms of continuous boson
 \]
 where $\hat N = \hat N^{(\mathrm R)} + \hat N^{(\mathrm L)}$, $\Delta \hat N = \hat N^{(\mathrm R)} - \hat N^{(\mathrm L)}$ and $\alpha$ is a convergence cutoff to regularize the theory. Notice that the side-wise number operators appear normal-ordered, thus have finite matrix elements.
 These field are defined like this for a reason: taking immediately the $\alpha \to 0$ limit and the $x$ derivative, we get
-\beq\label{eq:fields-density-equations}
+\begin{equation}\label{eq:fields-density-equations}
 	\nabla \hat \phi(x) = - \pi \left[ \hat \rho_\mathrm{R}(x) + \hat \rho_\mathrm{L}(x) \right]
 	\qquad
 	\nabla \hat \theta(x) = \pi \left[ \hat \rho_\mathrm{R}(x) - \hat \rho_\mathrm{L}(x) \right]
-\eeq
+\end{equation}
 being the spatial density simply given by Fourier-transforming our $q$-wise density,
 \[
 	\hat \rho(x) = \frac{1}{L} \sum_q e^{-iqx} \hat \rho(q) = \frac{1}{L} \sum_q e^{-iqx} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \hat \rho_s(q)
 \]
-Here, the second ``$=$'' sign is the passage where we actively switched to the Tomonaga-Luttinger model of Fig.~\ref{fig:bands}.
+Here, the second ``$=$'' sign is the passage where I actively switched to the Tomonaga-Luttinger model of Fig.~\ref{fig:bands}.
 Then:
 \[
 \begin{aligned}
@@ -128,18 +128,26 @@ Then:
 \]
 The difference $\hat \rho_\mathrm{R} - \hat \rho_\mathrm{L}$ is related to the current operator in one dimension: it just subtracts, point-wise, the left-going density from the right-going density.
 
-Let us go straight to the end: expressing the above fields in terms of boson operators it turns out that
+Let me go straight to the end: expressing the above fields in terms of boson operators it turns out that
 \[
 	\comm{\hat \phi(x)}{\frac{\nabla \hat \theta(y)}{\pi}} = i \delta(x-y)
 \]
 Thus, the fields $\hat \phi(x)$ and $\hat \Pi(x) \equiv \nabla \hat \phi(x)/\pi$ are bosonic and canonically conjugate.
-Skipping some passages the reader can find in \cite{giamarchi2003quantum}, the hamiltonian is represented in field language as:
-\beq\label{eq:free-field-hamiltonian}
+Skipping some passages the reader can find in \cite[Chap.~2]{giamarchi2003quantum}, the hamiltonian is represented in field language as:
+\begin{equation}\label{eq:free-field-hamiltonian}
 	\hat H_0 \simeq \hat K_0 = \frac{1}{2\pi} \int_0^L dx \, v_F \left[ \left( \nabla \hat \phi(x) \right)^2 + \left( \nabla \hat \theta(x) \right)^2 \right]
-\eeq
+\end{equation}
 This is the very cornerstone of bosonization. This is the Klein-Gordon bosonic-massless hamiltonian. Apart from pure math, what we obtained is a consequence of the strict one-dimensional topology: in such low dimensionality the Fermi surface reduces to two points ($k=\pm k_F$), thus the only low-energy particle-hole excitations allowed (those collective excitations proper of a system of free fermions) either have a well defined momentum of $q \simeq 0$ or $q \simeq \pm 2k_F$. Low energy spectrum only exists strictly around these points.
 
-Particle-hole excitations are always made of a combined creation and annihilation of fermions, thus intuitively remind of a ``bosonic character''. In order to interpret such excitations as bosons, however, they must be somewhat stable. This only happens in one dimension: here, particle-hole excitations \textit{are} emergent bosons. We do not enter in deep details here, recalling the main reference of this report \cite{giamarchi2003quantum} and its exceptional cover of the topic. To make the discussion here clearer, however, it must be cited that the reason for insurgence of boson fields is the fact that the use of a linear spectrum ensures independence of the particle-hole spectrum from the starting point on the (degenerated) Fermi surface, and thus lets us make the fermion-to-boson mapping.
+Particle-hole excitations are always made of a combined creation and annihilation of fermions, thus intuitively remind of a ``bosonic character''. In order to interpret such excitations as bosons, however, they must be somewhat stable. This only happens in one dimension: here, particle-hole excitations \textit{are} emergent bosons. I won't enter in deep details here, recalling the main reference of this report \cite{giamarchi2003quantum} and its exceptional cover of the topic. To make the discussion here clearer, however, it must be cited that the reason for insurgence of boson fields is the fact that the use of a linear spectrum ensures independence of the particle-hole spectrum from the starting point on the (degenerated) Fermi surface, and thus makes the fermion-to-boson mapping possible.
+
+As a final remark, notice that combining Eqns.~\eqref{eq:free-field-hamiltonian} and \eqref{eq:fields-density-equations}, the above hamiltonian reduces to
+\begin{equation}\label{eq:free-field-hamiltonian-density-integral}
+	\hat K_0 = \pi \int_0^L dx \, v_F \left[  
+		\hat \rho_\mathrm{R}^2 (x) + \hat \rho_\mathrm{L}^2 (x)
+	\right]
+\end{equation}
+a rewriting that will become useful later on. A prefactor $\hbar$ on the right side is to be reintroduced to be dimensionally correct.
 
 \subsubsection{Inserting interactions}
 
@@ -157,12 +165,12 @@ Particle-hole excitations are always made of a combined creation and annihilatio
 		\input{pictures/theory/g4-interactions}
 		\label{fig:g4-process}
 	}
-	\label{fig:g-processes}
 	\caption{Diagrammatic sketch of the possible two-fermions interaction in the spinless scenario.}
+	\label{fig:g-processes}
 \end{figure}
 
-It is time to let in interactions. As we said, particle-hole excitations exchange a fermion from the Fermi sea with a hole from outside. Due to the strict topology of the Fermi surface, only three processes actually contribute -- namely $g_1$, $g_2$ and $g_4$, respectively in Figs.~\ref{fig:g1-process}-\ref{fig:g2-process}-\ref{fig:g4-process}. Note that, for spinless fermions, due to particles indistinguishability, actually $g_1$ and $g_2$ are the same process\footnote{
-	We here skip an explanation about how we absorb $g_1$ inside $g_2$, a detail that will become clear in the spinful case.
+It is time to let in interactions. As said, particle-hole excitations exchange a fermion from the Fermi sea with a hole from outside. Due to the strict topology of the Fermi surface, only three processes actually contribute -- namely $g_1$, $g_2$ and $g_4$, respectively in Figs.~\ref{fig:g1-process}-\ref{fig:g2-process}-\ref{fig:g4-process}. Note that, for spinless fermions, due to particles indistinguishability, actually $g_1$ and $g_2$ are the same process\footnote{
+	I here skip an explanation about how to absorb $g_1$ inside $g_2$, a detail that will become clear in the spinful case.
 }.
 
 Now, consider a particle-hole symmetric interaction, \textit{quartic} in the fermionic operators,
@@ -173,11 +181,11 @@ as is for instance an $s$-wise spatial density-density interaction,
 \[
 	\hat V = \sum_{s_1 \in \left\{\mathrm L, \mathrm R\right\}} \sum_{s_2 \in \left\{\mathrm L, \mathrm R\right\}} \int_0^L dx_1 \int_0^L dx_2 \, V_{s_1 s_2}(x_1-x_2) \hat \rho_{s_1}(x_1) \hat \rho_{s_2} (x_2)
 \]
-coupling left-going and right-going fermions. We collect $g_4$ processes as those terms with $s_1 = s_2$ and $g_1$, $g_2$ processes as those terms with $s_1 \neq s_2$,
+coupling left-going and right-going fermions. I collect $g_4$ processes as those terms with $s_1 = s_2$ and $g_1$, $g_2$ processes as those terms with $s_1 \neq s_2$,
 \[
 	\underbrace{\hat \rho_\mathrm{R} (x_1) \hat \rho_\mathrm{R} (x_2) \quad \hat \rho_\mathrm{L} (x_1) \hat \rho_\mathrm{L} (x_2)}_{g_4} \qquad \underbrace{\hat \rho_\mathrm{R} (x_1) \hat \rho_\mathrm{L} (x_2) \quad \hat \rho_\mathrm{L} (x_1) \hat \rho_\mathrm{R} (x_2)}_{g_1 = g_2}
 \]
-At this point, we make an apparently heavy assumption we will heal later. Let us use for now a contact-like interaction,
+At this point, I make an apparently heavy assumption I will heal later. Let me use for now a contact-like interaction,
 \[
 	\left[V(x-y)\right] = \frac{1}{2} \begin{bmatrix}
 		g_4 & g_2 \\ g_2 & g_4
@@ -185,13 +193,13 @@ At this point, we make an apparently heavy assumption we will heal later. Let us
 	\qquad
 	\text{with $g_2, g_4 \in \mathbb{R}$}
 \]
-(with a little notation abuse, we used the side indices $s_1$, $s_2$ as row-column indices) and let us analyze separately the contributions to the hamiltonian: $\hat V = \hat V_2 + \hat V_4$.
+(with a little notation abuse, I used the side indices $s_1$, $s_2$ as row-column indices) and let me analyze separately the contributions to the hamiltonian: $\hat V = \hat V_2 + \hat V_4$.
 
 \paragraph{$g_4$ process.} this is the simpler case. The densities vertex contributions to $\hat K_0$ is simply
 \[
 	\hat V_4 = \frac{1}{2} g_4 \int_0^L dx \, \left[ \hat \rho_\mathrm{R} (x) \hat \rho_\mathrm{R} (x) + \hat \rho_\mathrm{L} (x) \hat \rho_\mathrm{L} (x) \right]
 \]
-Recalling Eq.~\eqref{eq:fields-density-equations}, we get immediately
+Recalling Eq.~\eqref{eq:fields-density-equations},
 \[
 \begin{aligned}
 	\hat V_4 &= g_4 \int_0^L dx \, \left[ \left( \frac{\nabla \hat \phi(x) - \nabla \hat \theta(x)}{2\pi} \right)^2 + \left( \frac{\nabla \hat \phi(x) + \nabla \hat \theta(x)}{2\pi} \right)^2 \right] \\
@@ -213,9 +221,9 @@ Now, $u$ is the \textbf{bosons velocity renormalized by $g_4$-like interactions}
 \end{aligned}
 \]
 It is not so immediate to insert this term in the interacting hamiltonian. However, an elegant formulation exists involving two parameters $u$ and $K$:
-\beq\label{eq:interacting-fields-hamiltonian}
+\begin{equation}\label{eq:interacting-fields-hamiltonian}
 	\hat K_0 + \hat V_4 + \hat V_2 = \frac{1}{2\pi} \int_0^L dx \, \left[ \frac{u}{K} \left( \nabla \hat \phi(x) \right)^2 + uK \left( \nabla \hat \theta(x) \right)^2 \right]
-\eeq
+\end{equation}
 trivially defined as
 \[
 	\frac{u}{K} \equiv 1 + \frac{g_4}{2\pi v_F} + \frac{g_2}{2\pi v_F}
@@ -230,11 +238,11 @@ a condition simultaneously satisfied by
 	\qquad
 	y_i \equiv \frac{g_i}{\pi v_F}
 \]
-This collection of equation is all we need to completely map a one-dimensional interacting fermionic problem into a renormalized free bosonic problem. Everything we have done hold for spinless fermions and contact interaction, but can be extended.
+This collection of equation is all I need to completely map a one-dimensional interacting fermionic problem into a renormalized free bosonic problem. Everything I have done hold for spinless fermions and contact interaction, but can be extended.
 
 \subsubsection{The euclidean action}
 
-We here briefly sketch the derivation of the bosonized euclidean action. Starting from the hamiltonian density,
+I here briefly sketch the derivation of the bosonized euclidean action. Starting from the hamiltonian density,
 \[
 	\hat{\mathcal{K}}[\phi, \Pi] = \frac{1}{2\pi} \left[
 			\frac{u}{K} \left( \nabla \hat \phi(x) \right)^2 + uK \left( \pi \hat \Pi(x) \right)^2
@@ -250,7 +258,7 @@ the euclidean action is immediately recovered by Legendre-transforming $\hat{\ma
 		\right]
 	\end{aligned}
 \]
-Now the calculation gets a little intricate, and we will skip it. The key point is to recognize that, being $L$ the lagrangian,
+Now the calculation gets a little intricate, and I will skip it. The key point is to recognize that, being $L$ the lagrangian,
 \[
 	S[\phi, \Pi] \equiv \int_0^\beta d\tau \, L[\phi, \Pi] = \int_0^\beta d\tau \int_0^L dx \,  \mathcal{L}[\phi, \Pi]
 \]
@@ -274,22 +282,22 @@ which, exponentiated, is the path integral statistical weight.
 
 \subsubsection{Spinless fermions observables}
 
-The big, heavy (but wondrous) theoretical part is over: let's get operative. Our aim is to estimate the renormalized parameters $u$ and $K$. First, we need to understand how to get them out of some observables.
+The big, heavy (but wondrous) theoretical part is over: let's get operative. My aim is to estimate the renormalized parameters $u$ and $K$. First, it must be understood how to get them out of some observables.
 
 \paragraph{Charge compressibility.}
 
-A very simple observable, capable of letting us estimate easily the ratio $u/K$, is charge compressibility. Let $\mu$ be the chemical potential,
+A very simple observable, usable for estimating easily the ratio $u/K$, is charge compressibility. Let $\mu$ be the chemical potential,
 \[
 	\hat K \to \hat K - \mu \int_0^L dx \, \hat \rho(x)
 \]
-Following the convention of \citeauthor{giamarchi2003quantum}, we will define compressibility
+Following the convention of \citeauthor{giamarchi2003quantum}, I will define compressibility as
 \[
 	\kappa \equiv \pdv{\rho}{\mu}
 	\qquad
 	\rho = \frac{1}{L} \int_0^L dx \, \ev{\hat \rho(x)}
 \]
-(notice that usually the definition above is completed by a prefactor $\rho^{-2}$, we omit). Using Eq.~\eqref{eq:fields-density-equations}\footnote{
-	To be complete, we here are hiding a passage. In fact, $\pi \hat \rho = \pi \left[ \mathrm{RR} + \mathrm{LL} + \mathrm{RL} + \mathrm{LR} \right]$ (here we use the shorthand notation $\mathrm{s}_1 \mathrm{s}_2 = \hat \psi_{s_1}^\dagger \hat \psi_{s_2}$). Taking the average value, $\pi \ev{\hat \rho} = \pi \ev{ \mathrm{RR} + \mathrm{LL}} + \pi \ev{\mathrm{RL} + \mathrm{LR}}$, and it's evident by symmetry that $\ev{\mathrm{RL} + \mathrm{LR}} = 0$; which justifies our last line, since $\pi \ev{ \mathrm{RR} + \mathrm{LL}} = - \langle \nabla \hat \phi \rangle$.
+(notice that usually the definition above is completed by a prefactor $\rho^{-2}$, I omit). Using Eq.~\eqref{eq:fields-density-equations}\footnote{
+	To be complete, I here am hiding a passage. In fact, $\pi \hat \rho = \pi \left[ \mathrm{RR} + \mathrm{LL} + \mathrm{RL} + \mathrm{LR} \right]$ (here I use the shorthand notation $\mathrm{s}_1 \mathrm{s}_2 = \hat \psi_{s_1}^\dagger \hat \psi_{s_2}$). Taking the average value, $\pi \ev{\hat \rho} = \pi \ev{ \mathrm{RR} + \mathrm{LL}} + \pi \ev{\mathrm{RL} + \mathrm{LR}}$, and it's evident by symmetry that $\ev{\mathrm{RL} + \mathrm{LR}} = 0$; which justifies the last line, since $\pi \ev{ \mathrm{RR} + \mathrm{LL}} = - \langle \nabla \hat \phi \rangle$.
 },
 \[
 \begin{aligned}
@@ -298,7 +306,7 @@ Following the convention of \citeauthor{giamarchi2003quantum}, we will define co
 \end{aligned}
 \]
 
-Now, consider the term we are adding to the hamiltonian: let us add a pure energy shift term (physically irrelevant) and manipulate the above expression a bit,
+Now, consider the term I am adding to the hamiltonian: let me add a pure energy shift term (physically irrelevant) and manipulate the above expression a bit,
 \[
 \begin{aligned}
 	- \mu \int_0^L dx \, \hat \rho(x) &= \frac{\mu}{\pi} \int_0^L dx \, \nabla \hat \phi(x) + \Delta \\
@@ -307,7 +315,7 @@ Now, consider the term we are adding to the hamiltonian: let us add a pure energ
 	}_{\Delta} \\
 \end{aligned}	
 \]
-It is now immediate to see that if we define
+It is now immediate to see that if I define
 \[
 	\hat \varphi(x) \equiv \hat \phi(x) + \mu \frac{K}{u} x
 \]
@@ -326,7 +334,7 @@ Finally:
 	&= \pdv{}{\mu} \mu \frac{K}{\pi u} \times \frac{1}{L} \int_0^L dx = \frac{K}{\pi u}
 \end{aligned}
 \]
-Then, to measure the ratio $u/K$ we need to measure the quantity $(\pi \Delta \rho / \Delta \mu)^{-1}$ (times $\hbar$, to be dimensionally correct). This most certainly is a simple quantity to be measured by the means of a DMRG simulation.
+Then, to measure the ratio $u/K$ I need to measure the quantity $(\pi \Delta \rho / \Delta \mu)^{-1}$ (times $\hbar$, to be dimensionally correct). This most certainly is a simple quantity to be measured by the means of a DMRG simulation.
 
 \paragraph{Charge stiffness}
 
@@ -337,15 +345,15 @@ Then, to measure the ratio $u/K$ we need to measure the quantity $(\pi \Delta \r
 	\label{fig:flux-through-ring}
 \end{figure}
 
-Another observable rather easy to compute numerically is the charge stiffness; which is basically the tendency of the system to respond to an external charge-coupling field. Now, assuming a closed-chain topology (as in Fig.~\ref{fig:flux-through-ring}), we see that a flux $\Phi$ threading the ring accounts for a static vector potential
+Another observable rather easy to compute numerically is the charge stiffness; which is basically the tendency of the system to respond to an external charge-coupling field. Now, assuming a closed-chain topology (as in Fig.~\ref{fig:flux-through-ring}), a flux $\Phi$ threading the ring accounts for a static vector potential
 \[
 	A = \frac{\Phi}{L}
 \]
-We define the unit flux as:	$\Phi_0 \equiv h/e$. The overall effect on the fermionic system is an overall momentum shift originated by the covariant derivative formulation,
+I define the unit flux as:	$\Phi_0 \equiv h/e$. The overall effect on the fermionic system is an overall momentum shift originated by the covariant derivative formulation,
 \[
 	k \to k - \frac{e}{\hbar} A = k - \frac{2\pi}{L} \frac{\Phi}{\Phi_0}
 \]
-Let us define the shift angle:
+Let me define the shift angle:
 \[
 	\eta \equiv 2\pi \frac{\Phi}{\Phi_0}
 \]
@@ -357,23 +365,23 @@ Finally, absorbing the latter as a gauge transformation, this translates in the 
 		&= \frac{1}{\hbar} \pdv{\eta} E[\Phi]
 	\end{aligned}
 \]
-In the second passage we have isolated the contribution to the derivative given from the free system $J_0$, null by symmetry, and in the last the ground-state energy $E[\Phi]$ was recognized as the sum of all single-particle occupied states.
+In the second passage I have isolated the contribution to the derivative given from the free system $J_0$, null by symmetry, and in the last the ground-state energy $E[\Phi]$ was recognized as the sum of all single-particle occupied states.
 
 Now, charge stiffness is simply the zero-flux current response:
 \[
 	\mathcal{D} = \pdv{J}{\Phi} \bigg|_{\Phi=0}
 \]
-As for the compressibility, we adopt a slightly different (and charge-neutral) definition,
+As for the compressibility, I adopt a slightly different (and charge-neutral) definition,
 \begin{equation}\label{eq:charge-stiffness-definition}
 	\mathcal{D} \equiv \frac{\pi L}{e} \pdv{J}{\Phi} \bigg|_{\Phi=0}
 \end{equation}
-Inserting our previous result,
+Inserting the previous result,
 \[
 	\mathcal{D} = \frac{\pi L}{e} \frac{\Phi_0}{2\pi} \pdv{J}{\eta} \bigg|_{\Phi=0} = \pi L \pdv[2]{\eta} E[\Phi] \bigg|_{\Phi=0}
 \]
 The second derivative of the ground-state energy, taken with respect to the twisting angle, is -- apart from some factors -- the charge stiffness.
 
-We now need to link all of this with the bosonization scheme. The procedure is identical to the one carried out for the charge compressibility in last paragraph:
+I now need to link all of this with the bosonization scheme. The procedure is identical to the one carried out for the charge compressibility in last paragraph:
 \begin{enumerate}
 	\item Include the minimally coupled interaction in the euclidean effective action of Eq.~\eqref{eq:phi-action},
 	\[
@@ -390,17 +398,17 @@ We now need to link all of this with the bosonization scheme. The procedure is i
 	\[
 		\varphi \equiv \phi - uK \frac{\Phi}{L} \tau
 	\]
-	neither the time nor the spatial part get affected by the transformation, and we recover the action for a flux-free system.
-	\item Since for the flux-free system the induced current is zero, we have
+	neither the time nor the spatial part get affected by the transformation, and the action for a flux-free system is recovered.
+	\item Since for the flux-free system the induced current is zero,
 	\[
 		J = \frac{1}{\pi} \ev{\partial_\tau \phi} = uK \frac{\Phi}{\pi L}
 	\]
 \end{enumerate}
-Recalling the definition of $\mathcal{D}$ of Eq.~\eqref{eq:charge-stiffness-definition}, we finally conclude
+Recalling the definition of $\mathcal{D}$ of Eq.~\eqref{eq:charge-stiffness-definition}, finally
 \begin{equation}\label{eq:charge-stiffness}
 	\mathcal{D} = uK
 \end{equation}
-which is the second relation we needed in order to determine $u$ and $K$. The entirety of this derivation could have been worked out analogously by expressing the current in terms of the conjugate momentum field $\Pi$ and completing the square directly in the hamiltonian.
+which is the second relation I needed in order to determine $u$ and $K$. The entirety of this derivation could have been worked out analogously by expressing the current in terms of the conjugate momentum field $\Pi$ and completing the square directly in the hamiltonian.
 
 \paragraph{Equal-time Green's function.}
 
@@ -408,7 +416,7 @@ The single-particle Green's function is defined in imaginary time, and for $s$-s
 \[
 	\mathcal{G}_s (x,\tau) \equiv - \ev{\mathrm{T}_\tau \left\{ \hat \psi_s (x,\tau) \hat \psi_s ^\dagger (0,0) \right\}}
 \]
-having we assumed in definition spacetime translational invariance, and being $\mathcal{T}_\tau$ the time-ordering operator. Let us take $\tau = 0^-$, thus keeping the order $\hat \psi \hat \psi^\dagger$ inside the expectation value. We follow here the lead of \cite{giamarchi2003quantum, Senechal:1999us}: the occupation factor $n(k)$,
+having we assumed in definition spacetime translational invariance, and being $\mathcal{T}_\tau$ the time-ordering operator. Let me take $\tau = 0^-$, thus keeping the order $\hat \psi \hat \psi^\dagger$ inside the expectation value. I (surprisingly) follow here the lead of \cite{giamarchi2003quantum, senechal1999introduction}: the occupation factor $n(k)$,
 \[
 	n(k) \equiv \ev{\hat c_k^\dagger \hat c_k}
 \]
@@ -416,7 +424,7 @@ is given by the Fourier transform of the equal time Green's function:
 \[
 	n(k) = \int_0^L dx \, e^{-ikx} \mathcal{G}_s (x,0^-)
 \]
-both for $s=\mathrm{R}, \mathrm{L}$ due to inversion symmetry. At zero temperature, we have the following algebraic dependence:
+both for $s=\mathrm{R}, \mathrm{L}$ due to inversion symmetry. At zero temperature, the following algebraic dependence holds:
 \[
 	n(k) = n(k_F) - A \times \sgn(k-k_F) \abs{k-k_F}^\zeta
 	\qquad
@@ -428,7 +436,60 @@ with $A \in \mathbb{R}$. Then, a suitable way to extract the $K$ parameter on a 
 \]
 From this measure $\zeta$ can be extracted for $k<k_F$ and $k>k_F$, and from the latter $K$.
 
-\paragraph{Density-density fluctuations.}
+\paragraph{Equal-time density-density correlations.}
+
+A very important feature of the bosonization scheme is the possibility of computing first-order analytical expressions for the correlations of observables. Take density-density correlations,
+\[
+	\mathcal{C}_\mathrm{CDW}(s) = \ev{\hat \rho(s) \hat \rho(0)}
+	\quad\text{for}\quad
+	s = (x,u\tau)
+\]
+To treat this expression in a field-theoretical fashion, I express the density operator as
+\[
+	\begin{aligned}
+		\hat \rho(s) &= \left[
+			\hat \psi_\mathrm{R}(s) + \hat \psi_\mathrm{L}(s)
+		\right] \left[
+			\hat \psi_\mathrm{R}(s) + \hat \psi_\mathrm{L}(s)
+		\right] \\
+		&= - \frac{1}{\pi} \nabla \hat \phi(s) + \left[
+			\hat \psi_\mathrm{R}(s) \hat \psi_\mathrm{L}(s) + \hat \psi_\mathrm{L}(s) \hat \psi_\mathrm{R}(s) 
+		\right] \\
+		&= - \frac{1}{\pi} \nabla \hat \phi(s) + \frac{1}{2\pi\alpha} \left[
+			e^{i 2k_F x} e^{-i 2 \hat \phi(s)}
+			+ \mathrm{h.c.}
+		\right]
+	\end{aligned}
+\]
+Recall, $\alpha$ is a cutoff I introduced to stabilize the theory. In particular, $\alpha$ has the dimensions of a length and the momentum integral is cut at momenta larger than $1/\alpha$. I avoid entering in the detailed derivation: what is important, is that we can safely assume $\alpha \to 0$, at least for this correlation function \cite{haldane1981luttinger}. Let $y_\alpha$ be
+\[
+	y_\alpha \equiv u\tau + \alpha \sgn(\tau)
+\]
+The dominant behavior for $\mathcal{C}_\mathrm{CDW}(s)$ is given by
+\[
+	\mathcal{C}_\mathrm{CDW}(s) \simeq \frac{K}{2\pi^2} \frac{y_\alpha^2 - x^2}{(x^2 + y_\alpha^2)^2} + \frac{2}{(2\pi\alpha)^2} \cos\left(2k_F x\right) \left(
+		\frac{\alpha}{\sqrt{x^2 + (u\tau)^2}}
+	\right)^{2K}
+	\quad\text{for}\quad \sqrt{x^2 + (u\tau)^2} \gg \alpha
+\]
+which, for equal-time measurement ($\tau=0$) reduces to
+\begin{equation}\label{eq:density-density-correlation-power-law}
+	\mathcal{C}_\mathrm{CDW}(x) \simeq - \frac{K}{2\pi^2 x^2} +  \frac{2}{(2\pi\alpha)^2} \cos\left(2k_F x\right) \left(
+		\frac{\alpha}{x}
+	\right)^{2K}
+\end{equation}
+As \citeauthor{giamarchi2003quantum} notes \cite[Sec.~2.2.2]{giamarchi2003quantum}, the first term reproduces a standard Fermi liquid correlation, decaying as $x^{-2}$ with an amplitude renormalized by interactions. The second term is highly unusual and has two remarkable properties: an amplitude modulation of wavevector $2k_F$ (a property also present in Fermi liquids, signaling the presence of a Fermi sea underneath the interactions) \textit{plus} a power-law decay whose strength is determined by interactions.
+
+Finally, notice that for a $1$D lattice of lattice spacing $a$ at half-filling, the Fermi wavevector is given by $k_F = \pi/2a$. Since each site coordinate is $x_r=ra$, one has
+\[
+	\mathcal{C}_\mathrm{CDW}(r) \simeq - \frac{K}{2\pi^2 (ra)^2} +  \frac{2 (-1)^r }{(2\pi\alpha)^2} \left(
+	\frac{\alpha}{ra}
+	\right)^{2K}
+	\quad\text{for}\quad
+	r \in \mathbb{Z} \mod L
+\]
+The oscillatory character of the correlation function with the site index parity reflects the fact that, at half-filling, charge-density waves (CDW) excitations follow have wavelength twice the lattice spacing. At unitary filling, such oscillatory behavior vanishes due to the halving of the Fermi wavevector.
+
+\paragraph{Superconducting correlations.}
 
 \todo
-

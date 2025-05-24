@@ -19,7 +19,7 @@
 
 \refsection{0}
   \datalist[entry]{nty/global//global/global}
-    \entry{https://doi.org/10.1002/andp.19985100401}{article}{}
+    \entry{vonDelft1998bosonization}{article}{}
       \name{author}{2}{}{%
         {{hash=bc8657e87346eec5c0e15953879f598c}{%
            family={Delft},
@@ -103,7 +103,44 @@
       \verb https://doi.org/10.1093/acprof:oso/9780198525004.001.0001
       \endverb
     \endentry
-    \entry{PhysRevB.93.054417}{article}{}
+    \entry{haldane1981luttinger}{article}{}
+      \name{author}{1}{}{%
+        {{hash=3a0dc1a4bb58ef9e8936b4afcc45ebc6}{%
+           family={Haldane},
+           familyi={H\bibinitperiod},
+           given={F\bibnamedelima D\bibnamedelima M},
+           giveni={F\bibinitperiod\bibinitdelim D\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
+      \strng{fullhash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
+      \strng{bibnamehash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
+      \strng{authorbibnamehash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
+      \strng{authornamehash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
+      \strng{authorfullhash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The explicitly soluble Luttinger model is used as a basis for the description of the general interacting Fermi gas in one dimension, which will be called 'Luttinger liquid theory', by analogy with Fermi liquid theory. The excitation spectrum of the Luttinger model is described by density-wave, charge and current excitations; its spectral properties determine a characteristic parameter that controls the correlation function exponents. These relations are shown to survive in non-soluble generalisations of the model with a non-linear fermion dispersion. It is proposed that this low-energy structure is universal to a wide class of 1D systems with conducting or fluid properties, including spin chains.}
+      \field{journaltitle}{Journal of Physics C: Solid State Physics}
+      \field{month}{7}
+      \field{number}{19}
+      \field{title}{'Luttinger liquid theory' of one-dimensional quantum fluids. I. Properties of the Luttinger model and their extension to the general 1D interacting spinless Fermi gas}
+      \field{volume}{14}
+      \field{year}{1981}
+      \field{pages}{2585}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1088/0022-3719/14/19/010
+      \endverb
+      \verb{urlraw}
+      \verb https://dx.doi.org/10.1088/0022-3719/14/19/010
+      \endverb
+      \verb{url}
+      \verb https://dx.doi.org/10.1088/0022-3719/14/19/010
+      \endverb
+    \endentry
+    \entry{rakov2016symmetries}{article}{}
       \name{author}{3}{}{%
         {{hash=c824f6973fbf4985842dd642d4d9af1d}{%
            family={Rakov},
@@ -140,7 +177,6 @@
       \field{title}{Symmetries and entanglement in the one-dimensional spin-$\frac{1}{2}$ XXZ model}
       \field{volume}{93}
       \field{year}{2016}
-      \true{nocite}
       \field{pages}{054417}
       \range{pages}{1}
       \verb{doi}
@@ -153,7 +189,7 @@
       \verb https://link.aps.org/doi/10.1103/PhysRevB.93.054417
       \endverb
     \endentry
-    \entry{Senechal:1999us}{inproceedings}{}
+    \entry{senechal1999introduction}{inproceedings}{}
       \name{author}{1}{}{%
         {{hash=f0e0aad70136ce872a3974631ef486e0}{%
            family={Senechal},
@@ -178,6 +214,49 @@
       \field{year}{1999}
       \verb{eprint}
       \verb cond-mat/9908262
+      \endverb
+    \endentry
+    \entry{sirker2006openXXZ}{article}{}
+      \name{author}{2}{}{%
+        {{hash=7d9f07212465f3b6b67eb93a6738f857}{%
+           family={Sirker},
+           familyi={S\bibinitperiod},
+           given={Jesko},
+           giveni={J\bibinitperiod}}}%
+        {{hash=feb3be91402a88cf91e3c99d7fba000a}{%
+           family={Bortz},
+           familyi={B\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{3481aa07720fc76313bdba33a19ee117}
+      \strng{fullhash}{3481aa07720fc76313bdba33a19ee117}
+      \strng{bibnamehash}{3481aa07720fc76313bdba33a19ee117}
+      \strng{authorbibnamehash}{3481aa07720fc76313bdba33a19ee117}
+      \strng{authornamehash}{3481aa07720fc76313bdba33a19ee117}
+      \strng{authorfullhash}{3481aa07720fc76313bdba33a19ee117}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We calculate the bulk and boundary parts of the free energy for an open spin-1/2 XXZ-chain in the critical regime by bosonization. We identify the cut-off independent contributions and determine their amplitudes by comparing with Bethe ansatz calculations at zero temperature T. For the bulk part of the free energy we find agreement with Lukyanov’s result (1998 Nucl. Phys. B 522 533). In the boundary part we obtain a cut-off independent term which is linear in T and determines the temperature dependence of the boundary susceptibility in the attractive regime for . We further show that at particular anisotropies where contributions from irrelevant operators with different scaling dimensions cross, logarithmic corrections appear. We give explicit formulae for these terms at those anisotropies where they are most important. We verify our results by comparing with extensive numerical calculations based on a numerical solution of the T = 0 Bethe ansatz equations, the finite temperature Bethe ansatz equations in the quantum transfer matrix formalism, and the density matrix renormalization group applied to transfer matrices.}
+      \field{journaltitle}{Journal of Statistical Mechanics: Theory and Experiment}
+      \field{month}{1}
+      \field{number}{01}
+      \field{title}{The open XXZ-chain: bosonization, the Bethe ansatz and logarithmic corrections}
+      \field{volume}{2006}
+      \field{year}{2006}
+      \true{nocite}
+      \field{pages}{P01007}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1088/1742-5468/2006/01/P01007
+      \endverb
+      \verb{urlraw}
+      \verb https://dx.doi.org/10.1088/1742-5468/2006/01/P01007
+      \endverb
+      \verb{url}
+      \verb https://dx.doi.org/10.1088/1742-5468/2006/01/P01007
       \endverb
     \endentry
   \enddatalist

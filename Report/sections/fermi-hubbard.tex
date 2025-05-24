@@ -4,19 +4,19 @@
 \begin{figure}
 	\centering
 	\subfloat[Lattice with null flux.]{
-		\input{pictures/theory/lattice-ring.tex}
+		\input{pictures/fermi-hubbard/lattice-ring.tex}
 		\label{subfig:lattice-ring}
 	}
 	\hfil
 	\subfloat[Lattice with finite flux $\Phi$.]{
-		\input{pictures/theory/lattice-ring-flux.tex}
+		\input{pictures/fermi-hubbard/lattice-ring-flux.tex}
 		\label{subfig:lattice-ring-flux}
 	}
 	\caption{In Fig.~\ref{subfig:lattice-ring} a schematics of a $1D$ closed lattice is portrayed. The hopping amplitude $t$ is purely real, $t = \sgn(t) \abs{t}$. In Fig.~\ref{subfig:lattice-ring-flux} the same lattice is represented, but coupled to a finite threading flux $\Phi$ which can be absorbed via the pseudo-gauge transformation in Eq.~\todo. As a consequence, the hopping amplitude acquires a chirality which manifests in a non-null imaginary part, $T = t e^{i\Phi/L}$.}
 	\label{fig:lattice-rings}
 \end{figure}
 
-In this project we limit ourselves to a polarized (spinless fermions) system. Extension to a spinful system is possible and introduces some refinements in the general bosonization scheme, the most notable being the famous spin-charge separation. Let us take it easy: consider the following interacting hamiltonian:
+In this project I limit myself to a polarized (spinless fermions) system. Extension to a spinful system is possible and introduces some refinements in the general bosonization scheme, the most notable being the famous spin-charge separation. Let me take it easy: consider the following interacting hamiltonian:
 \begin{equation}\label{eq:spinless-hamiltonian-pbc}
 	\hat H \equiv -t \sum_{\ev{j,k}} \left[
 		\hat c_j^\dagger \hat c_k + \hat c_k^\dagger \hat c_j 
@@ -28,7 +28,7 @@ This is a simple nearest-neighbors (NN) interacting lattice hamiltonian with NN 
 	t, V, \mu \in \mathbb{R}
 \]
 
-We will also be considering a magnetic flux $\Phi$ threading the ring and coupling to the charge degree of freedom. On a ring this pinned flux acts as a tangential vector potential, which is, a momentum offset; thus the correct way to absorb into our lattice framework this interaction is via the pseudo-gauge transformation
+I will also be considering a magnetic flux $\Phi$ threading the ring and coupling to the charge degree of freedom. On a ring this pinned flux acts as a tangential vector potential, which is, a momentum offset; thus the correct way to absorb into our lattice framework this interaction is via the pseudo-gauge transformation
 \[
 	\hat c_j \to e^{-ij \phi} \hat c_j
 	\qquad\qquad
@@ -42,7 +42,7 @@ Incorporate the latter in the above hamiltonian: the hopping amplitude becomes c
 		e^{-i\phi} \hat c_j^\dagger \hat c_{j+1} + e^{i\phi} \hat c_{j+1}^\dagger \hat c_j 
 	\right] + V \sum_{j=1}^L \hat n_j \hat n_{j+1} - \mu \sum_{j=1}^L \hat n_j
 \end{equation}
-where a $\mod L$ operation is intended: $L+1 \leftrightarrow 1$. We want to indagate its ground-state properties. The relevant parameters will be the reduced interaction $V/t$ and chemical potential $\mu/t$.
+where a $\mod L$ operation is intended: $L+1 \leftrightarrow 1$. I want to indagate its ground-state properties. The relevant parameters will be the reduced interaction $V/t$ and chemical potential $\mu/t$.
 \[
 	\begin{aligned}
 		V/t &> 0 \qquad
@@ -57,7 +57,7 @@ Intuitively, if the interaction becomes dominant with respect to the hopping dyn
 
 \begin{figure}
 	\centering
-	\input{pictures/theory/jordan-wigner-mapping}
+	\input{pictures/fermi-hubbard/jordan-wigner-mapping}
 	\caption{Schematics of the Jordan-Wigner mapping. The above chain represents the $\mathrm{XXZ}$ model, while the chain below represents the spinless Fermi-Hubbard model. Hollow circles represent holes, filled circles represents on-site particles. In both chain the two competing processes are represented: the NN interaction and the swapping interaction.}
 	\label{fig:jordan-wigner-mapping}
 \end{figure}
@@ -84,15 +84,15 @@ Notice the appearance of the Jordan string,
 	\qquad
 	\zeta_j \equiv \sum_{k < j} \hat n_k
 \]
-Essentially, the above string counts the fermions \textit{before} the site in question and gives back a factor $+1$ for even number, $-1$ for odd number. This works for open-end chains, where the concept of \textit{before} is actually well-defined. It is straightforward to see:
+Essentially, the above string counts the fermions \textit{before} the site in question and gives back a factor $+1$ for even number, $-1$ for odd number. This works for open-ends chains, where the concept of \textit{before} is actually well-defined. It is straightforward to see:
 \[
 	\begin{aligned}
-		S_j^+ \hat S_{j+1}^- &\to (-1)^{\zeta_j + \zeta_{j+1}} \hat c_j^\dagger \hat c_{j+1} = (-1)^{n_j} \hat c_j^\dagger \hat c_{j+1} = c_j^\dagger \hat c_{j+1} \\
-		S_j^- \hat S_{j+1}^+ &\to (-1)^{\zeta_j + \zeta_{j+1}} \hat c_j \hat c_{j+1}^\dagger = (-1)^{n_j+1} \hat c_{j+1}^\dagger \hat c_j = c_{j+1}^\dagger \hat c_j \\
+		S_{j+1}^+ \hat S_j^- &\to (-1)^{\zeta_{j+1}+\zeta_j} \hat c_{j+1}^\dagger \hat c_j = (-1)^{n_j} \hat c_{j+1}^\dagger \hat c_j = - c_{j+1}^\dagger \hat c_j \\
+		S_{j+1}^- \hat S_j^+ &\to (-1)^{\zeta_{j+1} \zeta_j} \hat c_{j+1} \hat c_j^\dagger = (-1)^{n_j+1} \hat c_j^\dagger \hat c_{j+1} = - c_{j+1}^\dagger \hat c_j \\
 	\end{aligned}
 \]
-having we used $\zeta_j + \zeta_{j+1} = 2 \zeta_j + n_j$.
-Let us take a $1\mathrm{D}$ spin chain with open boundary conditions (OBC). The transformation gives
+having used $\zeta_j + \zeta_{j+1} = 2 \zeta_j + n_j$.
+Let me take a $1\mathrm{D}$ spin chain with open boundary conditions (OBC). The transformation gives
 \[
 	\begin{aligned}
 		\hat H_\mathrm{XXZ} &\equiv \sum_{j=1}^{L-1} \left[
@@ -101,7 +101,7 @@ Let us take a $1\mathrm{D}$ spin chain with open boundary conditions (OBC). The 
 			\right) + J_z \hat S_j^z \hat S_{j+1}^z
 		\right] - h \sum_{j=1}^L \hat S_j^z \\
 		&= \sum_{j=1}^{L-1} \left[
-			\frac{J_{xy}}{2} \left(
+			- \frac{J_{xy}}{2} \left(
 				\hat c_j^\dagger \hat c_{j+1} + \hat c_{j+1}^\dagger \hat c_j
 			\right) + J_z \left(
 				\hat n_j - \frac{\mathbb{I}}{2}
@@ -112,23 +112,23 @@ Let us take a $1\mathrm{D}$ spin chain with open boundary conditions (OBC). The 
 			\hat n_{j} - \frac{\mathbb{I}}{2}
 		\right) \\
 		&= \sum_{j=1}^{L-1} \left[
-			\frac{J_{xy}}{2} \left(
+			- \frac{J_{xy}}{2} \left(
 				\hat c_j^\dagger \hat c_{j+1} + \hat c_{j+1}^\dagger \hat c_j
 			\right) + J_z \hat n_j \hat n_{j+1}
 		\right] - \sum_{j=1}^L h_j \hat n_{j}
 		+ \frac{hL}{2} + \frac{J_z (L-1)}{2}
 	\end{aligned}
 \]
-where we defined:
+where I defined:
 \[
 	h_j = \begin{cases}
 		h + J_z/2 &\qq{if} j=1,L \\
 		h + J_z &\qq{if} 1<j<L
 	\end{cases}
 \]
-Apart from a constant energy shift, in the bulk ($1<j<L$) this is our spinless fermions hamiltonian in Eq.~\eqref{eq:spinless-hamiltonian-pbc} with the following maps:
+Apart from a constant energy shift, in the bulk ($1<j<L$) this is the spinless fermions hamiltonian in Eq.~\eqref{eq:spinless-hamiltonian-pbc} with the following maps:
 \begin{equation}\label{eq:xxz-fermions-parameters-map}
-	t = -\frac{J_{xy}}{2}
+	t = \frac{J_{xy}}{2}
 	\qquad
 	V = J_z
 	\qquad
@@ -142,7 +142,7 @@ Now, add another site. This amounts for extra terms in the hamiltonian,
 		\hat S_L^+ \hat S_{L+1}^- + \hat S_L^- \hat S_{L+1}^+
 	\right) + J_z \hat S_L^z \hat S_{L+1}^z
 \]
-If we now aim to identify the open ends, which is, close the chain onto itself, the condition is
+In order to identify the open ends, which is, close the chain onto itself, the condition is
 \[
 	\hat S_{L+1}^\alpha = \hat S_1^\alpha
 \]
@@ -152,19 +152,19 @@ The first-site Jordan-Wigner string is trivial, $\zeta_1 = 0$. The implementatio
 	\qquad
 	(-1)^{\zeta_L+1} \hat c_L = (-1)^{\#_F} \hat c_L
 \]
-with $\#_F$ the total number of fermions on the chain. Putting all together, we see that as long as $\#_F$ is \textbf{even} {\color{tabred}[Check: I have the suspect it should be odd, actually...]}, we can impose periodic boundary conditions,
+with $\#_F$ the total number of fermions on the chain. Putting all together, as long as $\#_F$ is \textbf{even} {\color{tabred}[Check: I have the suspect it should be odd, actually...]}, we can impose periodic boundary conditions,
 \[
-	\hat S_L^+ \hat S_1^- = \hat c_L^\dagger \hat c_1
+	\hat S_1^+ \hat S_L^- = - \hat c_L^\dagger \hat c_1
 	\qquad
-	\hat S_L^- \hat S_1^+ = \hat c_1^\dagger \hat c_L
+	\hat S_1^- \hat S_L^+ = - \hat c_1^\dagger \hat c_L
 \]
-Simpler reasoning holds for the $z$ terms. Putting all together, we see that the PBC-$\mathrm{XXZ}$ model is mapped onto a spinless fermionic system on a ring with even number of particles, with the rules of Eq.~\eqref{eq:xxz-fermions-parameters-map}. Since the PBC-$\mathrm{XXZ}$ admits for an exact Bethe-Ansatz solution, we can link the phase transitions of the two models.
+Simpler reasoning holds for the $z$ terms. Putting all together, the PBC-$\mathrm{XXZ}$ model is mapped onto a spinless fermionic system on a ring with even number of particles, with the rules of Eq.~\eqref{eq:xxz-fermions-parameters-map}. Since the PBC-$\mathrm{XXZ}$ admits for an exact Bethe-Ansatz solution, we can link the phase transitions of the two models.
 
 \subsection*{Phase diagrams}
 
 \begin{figure}
 	\centering
-	\input{pictures/theory/xxz-phase-diagram}
+	\input{pictures/fermi-hubbard/xxz-phase-diagram}
 	\caption{Schematics for the $\mathrm{XXZ}$ model phase diagram. We are here considering a zero-field model, $h=0$ (which is mapped by the maps \eqref{eq:xxz-fermions-parameters-map} to a $\mu = J_z$ model). H indicates Heisenberg, I indicates Ising; F stands for Ferromagnet, AF for Anti-Ferromagnet; XY stands for pure $\mathrm{XY}$ model. The color of each label recalls the dominant interaction of Fig.~\ref{fig:jordan-wigner-mapping}.}
 	\label{fig:xxz-phase-diagram}
 \end{figure}
@@ -178,8 +178,73 @@ The basic, field free phase diagram is represented schematically in Fig.~\ref{fi
 	\item Crossing the second Heisenberg boundary, $J_z = J_{xy}$, the system tends to an Ising Anti-Ferromagnet, dominated by the Néel state configuration. The latter maps onto an half-filling and Mott-localized fermionic chain.
 \end{enumerate}
 For a fixed number system, this is the expected phase dynamics.
-{\color{tabred}[Check the correctness of all the claims.]}
+
+\begin{figure}
+	\centering
+	\input{pictures/fermi-hubbard/xxz-field-phase-diagram}
+	\caption{Schematics of the phase boundaries for the $\mathrm{XXZ}$ model as extracted by \citeauthor{rakov2016symmetries} \cite{rakov2016symmetries}. Notice the two zero-field phase-transition points $(-1,0)$ and $(1,0)$.}
+	\label{fig:xxz-field-phase-diagram}
+\end{figure}
+
+Now, define $J$ and $\Delta$ as in \cite{rakov2016symmetries}, which is
+\[
+	J_{xy} \equiv -J
+	\qquad\qquad
+	J_z \equiv -J\Delta
+\]
+Notice that I set $J > 0$, while $\Delta \in \mathbb{R}$. This is because a simple canonical transformation (at zero field) of the fermionic operators (specifically, a $\pi$ shift in momentum) inverts the $xy$ coupling sign leaving unchanged the $z$ coupling. Then I may limit to $J>0$. This gives the mapping:
+\begin{equation}\label{eq:xxz-fermions-parameters-map-2}
+	t = - \frac{J}{2}
+	\qquad
+	\frac{V}{t} = 2\Delta
+	\qquad
+	\frac{\mu}{t} = - 2 \left(
+		\frac{h}{J} - \Delta
+	\right)
+\end{equation}
+Within this parametrization, the analytical phase diagram is the one depicted in Fig.~\ref{fig:xxz-field-phase-diagram} \cite{rakov2016symmetries}.
+Now, I use $\mu/t > 0$. This maps on the $\mathrm{XXZ}$ model as $h/J < \Delta$, a condition depicted in Fig.~\ref{fig:jordan-wigner-mapping}. Thus, running simulations in a regime $\mu/t > 0$ and $V/t \in \mathbb{R}$, what one expects is to encounter all three phases. Now, I need to reconnect this expectation in a bosonization framework.
+
+\begin{figure}
+	\centering
+	\input{pictures/fermi-hubbard/jordan-wigner-phase-diagram}
+	\caption{The same phase diagram as in Fig.~\ref{fig:xxz-field-phase-diagram}, completed with the requirement $h/J < \Delta$. The shaded area is excluded from the mapping. Note that a positive chemical potential excludes the Antiferromagnetic phase.}
+	\label{fig:jordan-wigner-phase-diagram}
+\end{figure}
+
+\subsection{Non-interacting ground-state}
+
+In order to further explore the interacting system, we need to know its zero-field non-interacting ground-state. This amounts to setting $V=\mu=0$. The hamiltonian is well known,
+\[
+	\hat H_0 = -t \sum_{j=1}^{L} \left(
+		\hat c_j^\dagger \hat c_{j+1} + \hat c_{j+1}^\dagger \hat c_j
+	\right)
+\]
+and is easily solved by a simple Fourier transformation,
+\[
+	\hat c_j \equiv \sum_k e^{ikj} \hat c_k
+\]
+(I am here using adimensional momenta $k$, since space has throughout been considered as a simple integer index) which leads to
+\[
+	\hat H_0 = -t \sum_k \left[
+		e^{-ik} \hat c_k^\dagger \hat c_k + e^{ik} \hat c_k^\dagger \hat c_k
+	\right] = \sum_k \epsilon_k \hat c_k^\dagger \hat c_k
+	\quad\text{for}\quad
+	\epsilon_k = -2t \cos k
+\]
+The band $\epsilon_k$ is represented in Fig.~\ref{fig:XY-band}. At half-filling, this simple sinusoidal band presents a null Fermi energy at Fermi wavevector $k_F = \pm \pi/2$. Linearization of the band for subsequent bosonization is as well represented in Fig.~\ref{fig:XY-band}.
+
+\begin{figure}
+	\centering
+	\input{pictures/fermi-hubbard/XY-band}
+	\caption{Excitations band and relative linearizations for the non-interacting model ($V=0$). At half-filling the ground-state has null Fermi energy, the negative part of the band is filled and the spectrum is gapless.}
+	\label{fig:XY-band}
+\end{figure}
 
 \subsection{Bosonization of the model}
 
-\todo
+I now \textit{bosonize} the spinless Fermi-Hubbard model. Recall the processes of Fig.~\ref{fig:g-processes}: for a spinless system the only contributions to a bosonized hamiltonian is from the $g_2$ and $g_4$ processes. The non-interacting hamiltonian is very simple, and it already known how to reduce it to the form of Eq.~\eqref{eq:free-field-hamiltonian}: all is needed is to take a coherent continuum limit for the fermionic operators,
+\[
+	\hat c_j \to \hat \psi(x)
+\]
+We derived Eq.~\eqref{eq:free-field-hamiltonian} starting from a free-fermions situation, a condition which has led us to the appearance of the Fermi velocity $v_F$. Of course, a tuning of the hopping parameter $t$ in our lattice hamiltonian besides its free-particles kinetic values in the continuum limit could in principle give us another velocity (with respect to the respective free-fermions value). This amounts for a fermion mass tuning. \todo

@@ -2354,10 +2354,21 @@
     <bcf:citekey order="5">giamarchi2003quantum</bcf:citekey>
     <bcf:citekey order="6">giamarchi2003quantum</bcf:citekey>
     <bcf:citekey order="7">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="7">Senechal:1999us</bcf:citekey>
+    <bcf:citekey order="7">senechal1999introduction</bcf:citekey>
+    <bcf:citekey order="8">haldane1981luttinger</bcf:citekey>
+    <bcf:citekey order="9">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="10">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="11">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="12">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="13">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="14">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="15">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="16">rakov2016symmetries</bcf:citekey>
     <bcf:citekey order="0" nocite="1">*</bcf:citekey>
-    <bcf:citekey order="8">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="9">Senechal:1999us</bcf:citekey>
+    <bcf:citekey order="17">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="18">senechal1999introduction</bcf:citekey>
+    <bcf:citekey order="19">haldane1981luttinger</bcf:citekey>
+    <bcf:citekey order="20">rakov2016symmetries</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

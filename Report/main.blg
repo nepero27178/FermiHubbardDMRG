@@ -1,17 +1,19 @@
 [0] Config.pm:307> INFO - This is Biber 2.17
 [0] Config.pm:310> INFO - Logfile is 'main.blg'
-[60] biber:340> INFO - === Tue May 20, 2025, 12:40:07
-[73] Biber.pm:418> INFO - Reading 'main.bcf'
-[121] Biber.pm:969> INFO - Using all citekeys in bib section 0
-[130] Biber.pm:4383> INFO - Processing section 0
-[138] Biber.pm:4574> INFO - Looking for bibtex file 'misc/bibliography.bib' for section 0
-[139] bibtex.pm:1713> INFO - LaTeX decoding ...
-[143] bibtex.pm:1518> INFO - Found BibTeX data source 'misc/bibliography.bib'
-[191] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[191] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[191] Biber.pm:4203> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
-[191] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
-[198] bbl.pm:654> INFO - Writing 'main.bbl' with encoding 'UTF-8'
-[200] bbl.pm:757> INFO - Output to main.bbl
-[200] Biber.pm:130> WARN - legacy month field 'Feb' in entry 'PhysRevB.93.054417' is not an integer - this will probably not sort properly.
-[200] Biber.pm:132> INFO - WARNINGS: 1
+[59] biber:340> INFO - === Sat May 24, 2025, 18:28:54
+[71] Biber.pm:418> INFO - Reading 'main.bcf'
+[117] Biber.pm:969> INFO - Using all citekeys in bib section 0
+[127] Biber.pm:4383> INFO - Processing section 0
+[135] Biber.pm:4574> INFO - Looking for bibtex file 'misc/bibliography.bib' for section 0
+[136] bibtex.pm:1713> INFO - LaTeX decoding ...
+[142] bibtex.pm:1518> INFO - Found BibTeX data source 'misc/bibliography.bib'
+[195] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[195] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[195] Biber.pm:4203> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[195] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
+[203] bbl.pm:654> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[206] bbl.pm:757> INFO - Output to main.bbl
+[206] Biber.pm:130> WARN - legacy month field 'jan' in entry 'sirker2006openXXZ' is not an integer - this will probably not sort properly.
+[206] Biber.pm:130> WARN - legacy month field 'jul' in entry 'haldane1981luttinger' is not an integer - this will probably not sort properly.
+[206] Biber.pm:130> WARN - legacy month field 'Feb' in entry 'rakov2016symmetries' is not an integer - this will probably not sort properly.
+[206] Biber.pm:132> INFO - WARNINGS: 3
