@@ -2365,11 +2365,13 @@
     <bcf:citekey order="15">rakov2016symmetries</bcf:citekey>
     <bcf:citekey order="16">rakov2016symmetries</bcf:citekey>
     <bcf:citekey order="17">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="0" nocite="1">*</bcf:citekey>
     <bcf:citekey order="18">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="19">senechal1999introduction</bcf:citekey>
-    <bcf:citekey order="20">haldane1981luttinger</bcf:citekey>
-    <bcf:citekey order="21">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="19">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="0" nocite="1">*</bcf:citekey>
+    <bcf:citekey order="20">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="21">senechal1999introduction</bcf:citekey>
+    <bcf:citekey order="22">haldane1981luttinger</bcf:citekey>
+    <bcf:citekey order="23">rakov2016symmetries</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

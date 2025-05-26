@@ -16,9 +16,10 @@
 \contentsline {section}{\numberline {2}The Fermi-Hubbard model}{12}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{13}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Non-interacting ground-state}{16}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Bosonization of the model}{17}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Algorithms and simulations}{19}{section.3}%
-\contentsline {subsection}{\numberline {3.1}General strategy and target(s)}{19}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Finite-size DMRG}{19}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Data analysis and results}{20}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{20}{subsection.4.1}%
+\contentsline {subsection}{\numberline {2.3}Bosonization of the free model}{17}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{18}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Algorithms and simulations}{21}{section.3}%
+\contentsline {subsection}{\numberline {3.1}General strategy and target(s)}{21}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Finite-size DMRG}{21}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Data analysis and results}{22}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{22}{subsection.4.1}%

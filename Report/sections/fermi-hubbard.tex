@@ -294,7 +294,7 @@ The band $\epsilon_k$ is represented in Fig.~\ref{fig:XY-band}. At half-filling,
 	\label{fig:XY-band}
 \end{figure}
 
-\subsection{Bosonization of the model}
+\subsection{Bosonization of the free model}
 
 I now \textit{bosonize} the spinless Fermi-Hubbard model. Recall the processes of Fig.~\ref{fig:g-processes}: for a spinless system the only contributions to a bosonized hamiltonian is from the $g_2$ and $g_4$ processes. The non-interacting hamiltonian is very simple, and it already known how to reduce it to the form of Eq.~\eqref{eq:free-field-hamiltonian}: all is needed is to take a coherent continuum limit for the fermionic operators,
 \[
@@ -304,11 +304,11 @@ Let me reintroduce a lattice spacing $a$ for the sake of dimensional correctness
 \[
 	-2t \cos (ka) \big|_{k = \pm \frac{\pi}{2a} + q} = 2t \cos \left(
 		\pm \frac{\pi}{2} + qa
-	\right) \simeq \pm (a J_{xy}) q
+	\right) \simeq \pm (a J) q
 \]
 I take as granted the result of Eq.~\eqref{eq:free-field-hamiltonian}, recognizing the Fermi velocity simply as
 \[
-	v_F = \partial_k \epsilon_k \big|_{k = k_F} = a J_{xy}
+	v_F = \partial_k \epsilon_k \big|_{k = k_F} = a J
 \]
 (As always, I omit a term $\hbar=1$).
 For the sake of completeness, here I also derive the Dirac expression for the hamiltonian density of these linear dispersion fermions (which, of course, are massless). First, split the hamiltonian of Eq.~\eqref{eq:XY-hamiltonian},
@@ -362,20 +362,20 @@ Then the massless chiral Dirac hamiltonian is recovered:
 \end{equation}
 Now, all is left to do is to insert interactions in the bosonized hamiltonian and link the model parameters to the Luttinger parameters $u$ and $K$.
 
-\subsection*{Inserting interactions}
+\subsection{Bosonization of nearest-neighbors interaction}
 
 The interaction term is of the density-density class,
 \[
-	\hat V = V \sum_{j=1}^L \hat n_j \hat n_{j+1} = a^2 J_z \sum_{j=1}^L \frac{\hat n_j}{a} \frac{\hat n_{j+1}}{a}
+	\hat V = V \sum_{j=1}^L \hat n_j \hat n_{j+1} = a^2 J\Delta \sum_{j=1}^L \frac{\hat n_j}{a} \frac{\hat n_{j+1}}{a}
 \]
 We identify $\hat n_j/a \to \hat \rho(x=ja)$ as the continuum density, thus giving (splitting in left/right contributions)
-\[
-	\hat V = a^2 J_z \sum_{j=1}^L \hat \rho(ja) \hat \rho\left(
+\begin{equation}\label{eq:interaction-hamiltonian-lattice-density}
+	\hat V = a^2 J\Delta \sum_{j=1}^L \hat \rho(ja) \hat \rho\left(
 		\vphantom{A^A} (j+1)a
 	\right)
-\]
-I do not enter in the detailed derivation the reader can find one in \cite[Sec.~6.1.2]{giamarchi2003quantum}. The key property used is that the expansion of $\hat \rho$ can be identically carried out in terms of physical fields $\hat \psi$ or shifted fields $\hat \Psi_s$,
-\[
+\end{equation}
+The detailed derivation can be found in \cite[Sec.~6.1.2]{giamarchi2003quantum}. The starting point is the expansion of $\hat \rho$, carried out in terms of physical fields $\hat \psi$ or shifted fields $\hat \Psi_s$,
+\begin{equation}\label{eq:density-operator-shifted-fermionic-fields}
 	\begin{aligned}
 		\hat \rho(x) &= - \frac{1}{\pi} \nabla \hat \phi(x) + \left[
 			\hat \psi_\mathrm{R}^\dagger(x) \hat \psi_\mathrm{L}(x) + \hat \psi_\mathrm{L}^\dagger(x) \hat \psi_\mathrm{R}(x) 
@@ -385,5 +385,85 @@ I do not enter in the detailed derivation the reader can find one in \cite[Sec.~
 			\hat \Psi_\mathrm{R}^\dagger(x) \hat \Psi_\mathrm{L}(x) + e^{2ik_F x} \hat \Psi_\mathrm{L}^\dagger(x) \hat \Psi_\mathrm{R}(x) 
 		\right]
 	\end{aligned}
+\end{equation}
+In thermodynamic limit, recalling Eq.~\eqref{eq:fermionic-fields-bosonic-fields-expression},
+\[
+	\hat \Psi_s (x) = \frac{\hat U_s}{\sqrt{2\pi\alpha}} \exp\left\{
+		i \left(
+			\sgn(s) \hat \phi(x) + \hat \theta(x)
+		\right)
+	\right\}
+	\qquad\left( \alpha \to 0 \right)
 \]
-and the shifted fields $\hat \Psi_s$ vary \textit{slowly}. This means that, in the limit $a \to 0$ of null lattice spacing, one can approximate the spatial variation as only happening in the fast-oscillating exponents. \todo
+The analytical calculation gets a little cumbersome: I only highlight the essential passage. First, express analytically the density operator of Eqns.~\eqref{eq:density-operator-shifted-fermionic-fields} using the results
+\[
+	\hat \Psi_\mathrm{R}^\dagger(x) \hat \Psi_\mathrm{L}(x) = \frac{\hat U_\mathrm{R}^\dagger \hat U_\mathrm{L}}{2\pi\alpha} e^{-2i\hat \phi(x)}
+	\qquad
+	\hat \Psi_\mathrm{L}^\dagger(x) \hat \Psi_\mathrm{R}(x) = \frac{\hat U_\mathrm{L}^\dagger \hat U_\mathrm{R}}{2\pi\alpha} e^{2i\hat \phi(x)}
+\]
+which gives
+\begin{equation}\label{eq:density-operator-bosonic-fields}
+	\hat \rho(x) = - \frac{1}{\pi} \nabla \hat \phi(x) + \left[
+		e^{-2ik_F x}
+		\frac{\hat U_\mathrm{R}^\dagger \hat U_\mathrm{L}}{2\pi\alpha} e^{-2i\hat \phi(x)}
+		+ e^{2ik_F x}
+		\frac{\hat U_\mathrm{L}^\dagger \hat U_\mathrm{R}}{2\pi\alpha} e^{2i\hat \phi(x)} 
+	\right]
+\end{equation}
+Insert now the above result in Eq.~\eqref{eq:interaction-hamiltonian-lattice-density} for both the densities appearing. The key property to be used here is that the shifted fields $\hat \Psi_s$ (and hence the bosonic fields) vary \textit{slowly} with respect to $k_F$. This means that, in the limit $a \to 0$ of null lattice spacing, one can approximate the spatial variation as only happening in the fast-oscillating exponents of the above equation. This assumption limits this derivation to slight fluctuations of the fields around equilibrium, which means, to perturbative results. Moreover, one identifies the cutoff $\alpha$ with $a$, sending both to zero. The two densities multiplied in Eq.~\eqref{eq:interaction-hamiltonian-lattice-density} then give rise to $3 \times 3 = 9$ terms, of which the most relevant are
+\begin{itemize}
+	\item the one coming from the $\phi$ field gradients multiplied,
+	\[
+		\frac{1}{\pi^2} \nabla \hat \phi(x) \nabla \hat \phi(x+a) \simeq \frac{1}{\pi^2} \left( \nabla \hat \phi(x) \right)^2
+	\]
+	Such approximation is possible because, as said, fields vary slowly and then $x+a$ can be taken to be $x$ as well when a field variable;
+	\item the one coming from the multiplication of the second term of Eq.~\eqref{eq:density-operator-bosonic-fields} (evaluated at $x$) with the third one (evaluated at $x+a$)
+	\[
+		e^{-2ik_F x}
+		\frac{\hat U_\mathrm{R}^\dagger \hat U_\mathrm{L}}{2\pi a} e^{-2i\hat \phi(x)} \times
+		e^{2ik_F (x+a)}
+		\frac{\hat U_\mathrm{L}^\dagger \hat U_\mathrm{R}}{2\pi a} e^{2i\hat \phi(x+a)} = \frac{1}{(2\pi a)^2} e^{2ik_F a} e^{2i \left[ \hat \phi(x+a) - \hat \phi(x) \right]}
+	\]
+	where I dropped the Klein factors and substituted $\alpha \to a$;
+	\item the hermitian conjugate of the above term, which arises inverting the roles in the previous point.
+\end{itemize}
+The other terms either vanish when summed to their respective hermitian conjugate or are subdominant\footnote{
+	A word of caution fits here. Another term actually appears in the expansion, namely a \textit{umklapp} term. As is explained by \citeauthor{giamarchi2003quantum} in \cite[Sec.~6.1.2]{giamarchi2003quantum}, for a spinless hamiltonian defined on a lattice this term is less relevant when compared to the others (but is far from irrelevancy for a complete physical description!).
+}. Then
+\[
+	\hat \rho(x) \hat \rho (x+a) \simeq \frac{1}{\pi^2} \left( \nabla \hat \phi(x) \right)^2
+	+ \frac{1}{(2\pi a)^2} e^{2ik_F a} e^{2i \left[ \hat \phi(x+a) - \hat \phi(x) \right]} + \frac{1}{(2\pi a)^2} e^{-2ik_F a} e^{-2i \left[ \hat \phi(x+a) - \hat \phi(x) \right]}
+\]
+Finally, approximating
+\[
+	\begin{aligned}
+		e^{\pm 2i \left[ \hat \phi(x+a) - \hat \phi(x) \right]} &\simeq e^{\pm 2ia \nabla \hat \phi(x)} \\
+		&\simeq 1 \pm 2ia \nabla \hat \phi(x) - 2a^2 \left( \nabla \hat \phi(x) \right)^2
+	\end{aligned}
+\]
+The $1$ constant term can be discarded: it only generates a constant energy shift. The linear terms $ \pm 2ia \nabla \hat \phi(x)$ can be discarded as well, since they vanish when summed. Only the last survives:
+\[
+	\begin{aligned}
+		\hat \rho(x) \hat \rho (x+a) &\simeq \frac{1}{\pi^2} \left( \nabla \hat \phi(x) \right)^2 
+		- \frac{2a^2}{(2\pi a)^2} \left( \nabla \hat \phi(x) \right)^2 \left(
+			e^{2ik_F a} + e^{-2ik_F a}
+		\right) \\
+		&= \frac{1}{\pi^2} \left( \nabla \hat \phi(x) \right)^2 \left(
+			\vphantom{A^A}
+			1 - \cos(2k_F a)
+		\right) \\
+		\text{(at half filling)} &= \frac{2}{\pi^2} \left( \nabla \hat \phi(x) \right)^2
+	\end{aligned}
+\]
+It's done. Recalling the bosonic structure of the general bosonized spinless Luttinger hamiltoninan of Eq.~\eqref{eq:interacting-fields-hamiltonian}, we finally conclude that the bosonized interacting hamiltonian is given by
+\begin{equation}\label{eq:XXZ-luttinger-hamiltonian}
+	\frac{1}{2\pi} \int_0^L dx \, \left[ \frac{u}{K} \left( \nabla \hat \phi(x) \right)^2 + uK \left( \nabla \hat \theta(x) \right)^2 \right]
+	\quad\text{with}\quad
+	\begin{cases}
+		uK &= aJ \\
+		u/K &= aJ \left(
+			1 + 4\Delta/\pi
+		\right)
+	\end{cases}
+\end{equation}
+This simple result is a consequence of the many approximations I made. It is far from exact and strictly perturbative. By the means of Bethe Ansatz, a much better result can be obtained.
