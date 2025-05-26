@@ -64,11 +64,11 @@ Now, Eq.~\eqref{eq:density-commutator} looks ``bosonic''. Notice that the left-s
 Then, I define a boson operator with finite particle numbers as
 \[
 \begin{aligned}
-	\hat b_q^\dagger &\equiv \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \theta \left(\sgn(s) q\right) \hat \rho_s^\dagger (q) \\
-	\hat b_q &\equiv \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \theta \left(\sgn(s) q\right) \hat \rho_s^\dagger (-q)
+	\hat b_q^\dagger &\equiv \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}}  \left(\sgn(s) q\right) \hat \rho_s^\dagger (q) \\
+	\hat b_q &\equiv \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \mathrm{H} \left(\sgn(s) q\right) \hat \rho_s^\dagger (-q)
 \end{aligned}
 \]
-which of course satisfy
+(here I define the Heaviside step function $\mathrm{H}(x)$) which of course satisfy
 \[
 	\comm{\hat b_q}{\hat b_{q'}^\dagger} = \delta_{qq'}
 \]
@@ -93,9 +93,9 @@ To derive the change of basis directly is non-trivial. However, it can be shown:
 	\comm{\hat \rho_s^\dagger (q)}{\hat \psi_s (x)} = -e^{iqx} \hat \psi_s (x)
 \]
 The above result is then used to extract the exact field representation in terms of density operators,
-\[
+\begin{equation}\label{eq:fermionic-fields-density-expression}
 	\hat \psi_s (x) = \hat U_s \exp\left\{ \sgn(s) \frac{2\pi}{L} \sum_q \frac{e^{iqx}}{q} \hat \rho_s (-q) \right\}
-\]
+\end{equation}
 where $\hat U_s$ is a so-called Klein-Haldane factor. The operator $\hat U_s$ suppresses a charge uniformly, and is inserted by hand to make the fermion-boson mapping coherent and bijective.
 
 \subsubsection{Field-theoretic representation of the free hamiltonian}
@@ -108,7 +108,7 @@ The final goal is to express the entire hamiltonian in terms of continuous boson
 \end{aligned}
 \]
 where $\hat N = \hat N^{(\mathrm R)} + \hat N^{(\mathrm L)}$, $\Delta \hat N = \hat N^{(\mathrm R)} - \hat N^{(\mathrm L)}$ and $\alpha$ is a convergence cutoff to regularize the theory. Notice that the side-wise number operators appear normal-ordered, thus have finite matrix elements.
-These field are defined like this for a reason: taking immediately the $\alpha \to 0$ limit and the $x$ derivative, we get
+These field are defined like this for a reason: taking immediately the $\alpha \to 0$ limit and the $x$ derivative,
 \begin{equation}\label{eq:fields-density-equations}
 	\nabla \hat \phi(x) = - \pi \left[ \hat \rho_\mathrm{R}(x) + \hat \rho_\mathrm{L}(x) \right]
 	\qquad
@@ -128,7 +128,16 @@ Then:
 \]
 The difference $\hat \rho_\mathrm{R} - \hat \rho_\mathrm{L}$ is related to the current operator in one dimension: it just subtracts, point-wise, the left-going density from the right-going density.
 
-Let me go straight to the end: expressing the above fields in terms of boson operators it turns out that
+For the sake of completeness, here I also report the expression for the fermionic fields in term of the bosonic ones:
+\begin{equation}\label{eq:fermionic-fields-bosonic-fields-expression}
+	\hat \psi_s (x) = \frac{\hat U_s}{2\pi\alpha} \exp\left\{
+		i \sgn(s) \left(
+			k_F x - \hat \phi(x)
+		\right) + i\hat \theta(x)
+	\right\}
+	\qquad\left( \alpha \to 0 \right)
+\end{equation}
+This expression is valid in the thermodynamic limit. Let me go straight to the end: expressing the above fields in terms of boson operators it turns out that
 \[
 	\comm{\hat \phi(x)}{\frac{\nabla \hat \theta(y)}{\pi}} = i \delta(x-y)
 \]
@@ -140,6 +149,24 @@ Skipping some passages the reader can find in \cite[Chap.~2]{giamarchi2003quantu
 This is the very cornerstone of bosonization. This is the Klein-Gordon bosonic-massless hamiltonian. Apart from pure math, what we obtained is a consequence of the strict one-dimensional topology: in such low dimensionality the Fermi surface reduces to two points ($k=\pm k_F$), thus the only low-energy particle-hole excitations allowed (those collective excitations proper of a system of free fermions) either have a well defined momentum of $q \simeq 0$ or $q \simeq \pm 2k_F$. Low energy spectrum only exists strictly around these points.
 
 Particle-hole excitations are always made of a combined creation and annihilation of fermions, thus intuitively remind of a ``bosonic character''. In order to interpret such excitations as bosons, however, they must be somewhat stable. This only happens in one dimension: here, particle-hole excitations \textit{are} emergent bosons. I won't enter in deep details here, recalling the main reference of this report \cite{giamarchi2003quantum} and its exceptional cover of the topic. To make the discussion here clearer, however, it must be cited that the reason for insurgence of boson fields is the fact that the use of a linear spectrum ensures independence of the particle-hole spectrum from the starting point on the (degenerated) Fermi surface, and thus makes the fermion-to-boson mapping possible.
+
+\begin{table}
+	\centering
+	\begin{tabular}{r c c}
+		Object && Density expression\\
+		\midrule
+		Fermionic field && $\displaystyle \hat \psi_s (x) = \hat U_s \exp\left\{ \sgn(s) \frac{2\pi}{L} \sum_q \frac{e^{iqx}}{q} \hat \rho_s (-q) \right\}$ \\
+		&&\\
+		Boson operator && $\displaystyle \hat b_q = \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \theta \left(\sgn(s) q\right) \hat \rho_s^\dagger (-q)$ \\
+		&&\\ 
+		Boson fields gradients && $\displaystyle \begin{aligned}
+			\nabla \hat \phi(x) &= - \pi \left[ \hat \rho_\mathrm{R}(x) + \hat \rho_\mathrm{L}(x) \right] \\ 
+			\nabla \hat \theta(x) &= \pi \left[ \hat \rho_\mathrm{R}(x) - \hat \rho_\mathrm{L}(x) \right]
+		\end{aligned}$
+	\end{tabular}
+	\caption{Summary of the relevant quantities of the bosonization scheme as expressions involving physical (side resolved) fermionic density.}
+	\label{tab:bosonization-formulas}
+\end{table}
 
 As a final remark, notice that combining Eqns.~\eqref{eq:free-field-hamiltonian} and \eqref{eq:fields-density-equations}, the above hamiltonian reduces to
 \begin{equation}\label{eq:free-field-hamiltonian-density-integral}
@@ -447,13 +474,13 @@ A very important feature of the bosonization scheme is the possibility of comput
 To treat this expression in a field-theoretical fashion, I express the density operator as
 \[
 	\begin{aligned}
-		\hat \rho(s) &= \left[
-			\hat \psi_\mathrm{R}(s) + \hat \psi_\mathrm{L}(s)
+		\hat \rho(s) &= \colon \left[
+			\hat \psi_\mathrm{R}^\dagger(s) + \hat \psi_\mathrm{L}^\dagger(s)
 		\right] \left[
 			\hat \psi_\mathrm{R}(s) + \hat \psi_\mathrm{L}(s)
-		\right] \\
+		\right] \colon \\
 		&= - \frac{1}{\pi} \nabla \hat \phi(s) + \left[
-			\hat \psi_\mathrm{R}(s) \hat \psi_\mathrm{L}(s) + \hat \psi_\mathrm{L}(s) \hat \psi_\mathrm{R}(s) 
+			\hat \psi_\mathrm{R}^\dagger(s) \hat \psi_\mathrm{L}(s) + \hat \psi_\mathrm{L}^\dagger(s) \hat \psi_\mathrm{R}(s) 
 		\right] \\
 		&= - \frac{1}{\pi} \nabla \hat \phi(s) + \frac{1}{2\pi\alpha} \left[
 			e^{i 2k_F x} e^{-i 2 \hat \phi(s)}
