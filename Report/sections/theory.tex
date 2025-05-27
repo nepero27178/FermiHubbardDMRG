@@ -88,6 +88,15 @@ At the very heart of the bosonization technique, lies a change of basis in opera
 \[
 	\hat \psi_s (x) \equiv \frac{1}{\sqrt{L}} \sum_k e^{ikx} \hat c_k^{(s)}
 \]
+which compose the total fermionic field just as
+\[
+	\hat \psi(x) = \hat \psi_\mathrm{R}(x) + \hat \psi_\mathrm{L}(x)
+\]
+I also define a shifted version of the fermionic field, just by centering the momenta around the Fermi points. This amounts to
+\begin{equation}\label{eq:shifted-fermionic-fields-definition}
+	\hat \psi_s (x) \equiv e^{i \sgn(s) k_F x} \hat \Psi_s (s)
+\end{equation}
+
 To derive the change of basis directly is non-trivial. However, it can be shown:
 \[
 	\comm{\hat \rho_s^\dagger (q)}{\hat \psi_s (x)} = -e^{iqx} \hat \psi_s (x)
@@ -133,7 +142,7 @@ For the sake of completeness, here I also report the expression for the fermioni
 	\hat \psi_s (x) = \frac{\hat U_s}{\sqrt{2\pi\alpha}} \exp\left\{
 		i \left(
 			\sgn(s) k_F - \frac{\pi}{L}
-		\right) x - \left(
+		\right) x - i \left(
 			\sgn(s) \hat \phi(x) + \hat \theta(x)
 		\right)
 	\right\}
@@ -309,7 +318,7 @@ one is able to complete the square for the $\nabla \theta$ part appearing in $\m
 \end{equation}
 which, exponentiated, is the path integral statistical weight.
 
-\subsubsection{Spinless fermions observables}
+\subsubsection{Spinless fermions observables}\label{subsubsec:spinless-fermions-observables}
 
 The big, heavy (but wondrous) theoretical part is over: let's get operative. My aim is to estimate the renormalized parameters $u$ and $K$. First, it must be understood how to get them out of some observables.
 
@@ -357,12 +366,12 @@ an expression canonically equivalent to Eq.~\eqref{eq:interacting-fields-hamilto
 	- \ev{\nabla \hat \phi(x)} = \mu \frac{K}{u}
 \]
 Finally:
-\[
-\begin{aligned}
-	\pdv{\rho}{\mu}	&= - \frac{1}{\pi L} \pdv{}{\mu} \int_0^L dx \, \ev{\nabla \hat \phi(x)} \\
-	&= \pdv{}{\mu} \mu \frac{K}{\pi u} \times \frac{1}{L} \int_0^L dx = \frac{K}{\pi u}
-\end{aligned}
-\]
+\begin{equation}
+	\begin{aligned}
+		\pdv{\rho}{\mu}	&= - \frac{1}{\pi L} \pdv{}{\mu} \int_0^L dx \, \ev{\nabla \hat \phi(x)} \\
+		&= \pdv{}{\mu} \mu \frac{K}{\pi u} \times \frac{1}{L} \int_0^L dx = \frac{K}{\pi u} \label{eq:charge-compressibility}
+	\end{aligned}
+\end{equation}
 Then, to measure the ratio $u/K$ I need to measure the quantity $(\pi \Delta \rho / \Delta \mu)^{-1}$ (times $\hbar$, to be dimensionally correct). This most certainly is a simple quantity to be measured by the means of a DMRG simulation.
 
 \paragraph{Charge stiffness}
@@ -521,4 +530,48 @@ The oscillatory character of the correlation function with the site index parity
 
 \paragraph{Superconducting correlations.}
 
-\todo
+The superconducting phase is gapless and governed by a tendency to fermion pairing. Consider the NN-pairing operator
+\[
+	\hat \psi(x) \hat \psi(x)
+\]
+Of course, defined like this, such an operator identically vanishes: two fermions cannot be annihilated simultaneously at $x$. Consider the slight extension
+\[
+	\hat{\mathcal{O}}_\mathrm{SU}(x) \equiv \hat \psi (x+\delta x) \hat \psi (x)
+\]
+For a lattice the spatial shift can be taken to be $\delta x = a$, the lattice spacing. This operator describes for a lattice the tendency to pairing \textit{locally}. Now, when expanded in terms of Right and Left fields,
+\[
+	\begin{aligned}
+		\hat \psi (x+a) \hat \psi(x) &= \left[
+			\hat \psi_\mathrm{R} (x+a) +
+			\hat \psi_\mathrm{L} (x+a)
+		\right] \left[
+			\hat \psi_\mathrm{R} (x) +
+			\hat \psi_\mathrm{L} (x)
+		\right] \\
+		&= (\mathrm{RR}) + (\mathrm{RL}) + (\mathrm{LR}) + (\mathrm{LL})
+	\end{aligned}
+\]
+the $(\mathrm{RR})$ and $(\mathrm{LL})$ terms are strongly suppressed in the $a \to 0$ term due to Pauli principle. The terms $(\mathrm{RL})$ and $(\mathrm{LR})$ are dominant. Since
+\[
+	\begin{aligned}
+		(\mathrm{RL}) + (\mathrm{LR}) &= \hat \psi_\mathrm{R} (x+a) \hat \psi_\mathrm{L} (x) + \hat \psi_\mathrm{L} (x+a) \hat \psi_\mathrm{R} (x) \\
+		&= e^{ik_F a} \hat \Psi_\mathrm{R} (x+a) \hat \Psi_\mathrm{L} (x) + e^{-ik_F a} \hat \Psi_\mathrm{L} (x+a) \hat \Psi_\mathrm{R} (x) \\
+		&= e^{ik_F a} \hat \Psi_\mathrm{R} (x+a) \hat \Psi_\mathrm{L} (x) - e^{-ik_F a} \hat \Psi_\mathrm{R} (x) \hat \Psi_\mathrm{L} (x+a)\\
+		&\simeq 2i \sin(k_F a) \hat \Psi_\mathrm{R} (x) \hat \Psi_\mathrm{L} (x) \\
+		&\simeq \frac{i \sin(k_F a)}{\pi\alpha} e^{-i \left[ \hat \phi(x) + \hat \theta(x) \right] } e^{i \left[ \hat \phi(x) - \hat \theta(x) \right]} \\
+		(\text{half filling})&\simeq \frac{i}{\pi\alpha} e^{-2i\hat\theta(x)}
+	\end{aligned}
+\]
+I used a sequence of approximations: the continuum limit was taken, $a \to 0$, using the slow variation of the shifted fields $\hat \Psi_s$; then the fields $\hat \Psi_s$ were written explicitly in terms of their bosonic counterpart (ignoring the Klein factors), and finally I merged the two exponential operators ignoring the correction terms.
+
+The superconducting correlator is defined as
+\[
+	\mathcal{C}_\mathrm{SU}(x) = \ev{\hat{\mathcal{O}}_\mathrm{SU}^\dagger(x) \hat{\mathcal{O}}_\mathrm{SU}(x)}
+\]
+It can be shown that using the previous result gives:
+\begin{equation}\label{eq:superconducting-correlation-power-law}
+	\mathcal{C}_\mathrm{SU}(x) = \frac{1}{(\pi\alpha)^2} \left(
+		\frac{\alpha}{x}
+	\right)^{1/2K}
+\end{equation}
+The most important detail to notice with respect to the $\mathrm{CDW}$ correlator of Eq.~\eqref{eq:density-density-correlation-power-law} is the inverted power-law dependence. \todo

@@ -321,12 +321,7 @@ I take a continuum limit: with fixed $L$, I employ $a \to 0^+$. Then, transformi
 \[
 	\hat c_k^{(s)} = \frac{1}{\sqrt{L}} \int_0^L dx \, e^{-ikx} \hat \psi_s(x) 
 \]
-
-I define a shifted version of the fermionic field, just by centering the momenta around the Fermi points. This amounts to
-\[
-	\hat \psi_s (x) \equiv e^{i \sgn(s) k_F x} \hat \Psi_s (s)
-\]
-Then $q$ is defined with respect to the Fermi point $k = \sgn(s) k_F$, such that $q = k - \sgn(s) k_F$. It follows
+Recall the shifted fields $\hat \Psi_s(x)$ of Eq.~\eqref{eq:shifted-fermionic-fields-definition}. Being $q$ defined with respect to the Fermi point $k = \sgn(s) k_F$, such that $q = k - \sgn(s) k_F$,
 \[
 	\hat c_k^{(s)} = \frac{1}{\sqrt{L}} \int_0^L dx \, e^{-iqx} \hat \Psi_s(x)
 \]
@@ -374,7 +369,7 @@ We identify $\hat n_j/a \to \hat \rho(x=ja)$ as the continuum density, thus givi
 		\vphantom{A^A} (j+1)a
 	\right)
 \end{equation}
-The detailed derivation can be found in \cite[Sec.~6.1.2]{giamarchi2003quantum}. The starting point is the expansion of $\hat \rho$, carried out in terms of physical fields $\hat \psi$ or shifted fields $\hat \Psi_s$,
+The detailed derivation can be found in \cite[Sec.~6.1.2]{giamarchi2003quantum}. The starting point is the expansion of $\hat \rho$, carried out in terms of physical fields $\hat \psi_s$ or shifted fields $\hat \Psi_s$ as defined in Eq.~\eqref{eq:shifted-fermionic-fields-definition},
 \begin{equation}\label{eq:density-operator-shifted-fermionic-fields}
 	\begin{aligned}
 		\hat \rho(x) &= - \frac{1}{\pi} \nabla \hat \phi(x) + \left[
@@ -466,4 +461,4 @@ It's done. Recalling the bosonic structure of the general bosonized spinless Lut
 		\right)
 	\end{cases}
 \end{equation}
-This simple result is a consequence of the many approximations I made. It is far from exact and strictly perturbative. By the means of Bethe Ansatz, a much better result can be obtained.
+This simple result is a consequence of the many approximations I made. It is far from exact and strictly perturbative. By the means of Bethe Ansatz, a much better result can be obtained. It must be said, by the time the author got to this point, the hopes for the simulated data to be anywhere near any of these results were narrow.

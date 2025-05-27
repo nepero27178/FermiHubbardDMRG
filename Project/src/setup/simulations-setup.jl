@@ -1,6 +1,6 @@
 #!/usr/bin/julia
 
-LL = collect(2^l for l in 3:1:6)		# Sizes
+LL = collect(10+x for x in 0:8:40)		# Sizes
 NN = LL									# Unitary filling
 
 # Ising Ferromagnet (analog) DMRG parameters
@@ -23,7 +23,7 @@ Resolution = Dict([
 			 ])
 			 
 # Horizontal sweeps
-HorizontalLL = [10, 20, 30] 
+HorizontalLL = [10+x for x in 0:8:40] # Odd particles number
 HorizontalVV = collect(range(start=-3.0, stop=3.0, length=Resolution["Low"]))
 Horizontalμμ = [0.6, 0.8]
 
@@ -33,9 +33,9 @@ Horizontalμμ = [0.6, 0.8]
 # RectangularVV = collect(range(start=0.0, stop=0.35, length=Resolution["Medium"]))
 # Rectangularμμ = collect(range(start=0.0, stop=1.0, length=Resolution["Medium"]))
 
-RectangularLL = [16]
-RectangularVV = collect(range(start=-3.0, stop=3.0, length=Resolution["Test"]))
-Rectangularμμ = collect(range(start=0.0, stop=3.0, length=Resolution["Test"]))
+RectangularLL = [42]
+RectangularVV = collect(range(start=-10.0, stop=10.0, length=Resolution["Low"]))
+Rectangularμμ = collect(range(start=0.0, stop=3.0, length=Resolution["Low"]))
 
 # Rectangular selection sweeps
 RectangularSelectionLL = [50] # [40, 50, 60]

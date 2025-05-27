@@ -3,7 +3,7 @@
 \contentsline {subsubsection}{\numberline {1.1.1}Boson operators}{3}{subsubsection.1.1.1}%
 \contentsline {paragraph}{Fermionic-bosonic correspondence}{4}{section*.3}%
 \contentsline {subsubsection}{\numberline {1.1.2}Field-theoretic representation of the free hamiltonian}{4}{subsubsection.1.1.2}%
-\contentsline {subsubsection}{\numberline {1.1.3}Inserting interactions}{5}{subsubsection.1.1.3}%
+\contentsline {subsubsection}{\numberline {1.1.3}Inserting interactions}{6}{subsubsection.1.1.3}%
 \contentsline {paragraph}{$g_4$ process.}{6}{section*.6}%
 \contentsline {paragraph}{$g_2$ process.}{7}{section*.7}%
 \contentsline {subsubsection}{\numberline {1.1.4}The euclidean action}{7}{subsubsection.1.1.4}%
@@ -12,14 +12,14 @@
 \contentsline {paragraph}{Charge stiffness}{9}{figure.caption.10}%
 \contentsline {paragraph}{Equal-time Green's function.}{10}{section*.11}%
 \contentsline {paragraph}{Equal-time density-density correlations.}{11}{section*.12}%
-\contentsline {paragraph}{Superconducting correlations.}{11}{section*.13}%
-\contentsline {section}{\numberline {2}The Fermi-Hubbard model}{12}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{13}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Non-interacting ground-state}{16}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Bosonization of the free model}{17}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{18}{subsection.2.4}%
-\contentsline {section}{\numberline {3}Algorithms and simulations}{21}{section.3}%
-\contentsline {subsection}{\numberline {3.1}General strategy and target(s)}{21}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Finite-size DMRG}{21}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Data analysis and results}{22}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{22}{subsection.4.1}%
+\contentsline {paragraph}{Superconducting correlations.}{12}{section*.13}%
+\contentsline {section}{\numberline {2}The Fermi-Hubbard model}{13}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{14}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Non-interacting ground-state}{17}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Bosonization of the free model}{18}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{19}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Algorithms and simulations}{22}{section.3}%
+\contentsline {subsection}{\numberline {3.1}General strategy and target(s)}{22}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Finite-size DMRG}{22}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Data analysis and results}{23}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{23}{subsection.4.1}%

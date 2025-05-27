@@ -279,7 +279,7 @@ function RectangularSweep(
 				verbose=false
 			)
             task3 = @spawn RunDMRGAlgorithm(
-				[L, L/2-2, 1.0, V, μ, 0.0],	# Remove two particles
+				[L, L/2-2, 1.0, V, μ, 0.0],		# Remove two particles
 				DMRGParameters,
 				"Fast", # UserMode
 				true;	# FixedN
@@ -308,7 +308,7 @@ function RectangularSweep(
             ECounterClock = fetch(task5)
             
             k = 4/( L * (EAdd+ERemove-2*E) )
-            D = pi*L * (EClock+ECounterClock-2*E)/4
+            D = pi*L * (EClock+ECounterClock-2*E)/(4ε^2)
         end
         
         write(DataFile,"$V; $μ; $E; $k; $D\n")

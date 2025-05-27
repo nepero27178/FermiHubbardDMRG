@@ -5,7 +5,44 @@ This section is devoted to delineate the system properties we aim to simulate. T
 
 \subsection{General strategy and target(s)}
 
-Our final aim is to extract the Bosonization parameters $u$ and $K$ for the spinless Fermi-Hubbard model of Eq.~\eqref{eq:spinless-hamiltonian-pbc}. For the $\mathrm{XXZ}$ system, the expected phase transition is from a ferromagnetic state to a state dominated by spin fluctuations. \todo
+My final aim is to extract the Bosonization parameters $u$ and $K$ for the spinless Fermi-Hubbard model of Eq.~\eqref{eq:spinless-hamiltonian-pbc}. As said in Sec.~\ref{subsubsec:spinless-fermions-observables}, for a spinless model the task can be easy enough by performing the calculation of the charge compressibility $\kappa$ and the charge stiffness $\mathcal{D}$. From Eq.~\eqref{eq:charge-compressibility} and \eqref{eq:charge-stiffness} respectively,
+\begin{equation}\label{eq:charge-compressibility-stiffness-definitions}
+	\kappa = \frac{K}{\pi u}
+	\qquad\text{and}\qquad
+	\mathcal{D} = uK
+\end{equation}
+which in turn implies
+\begin{equation}\label{eq:u-K-formulas}
+	u = \sqrt{\frac{\mathcal{D}}{\pi\kappa}}
+	\qquad\text{and}\qquad
+	K = \sqrt{\pi\kappa\mathcal{D}}
+\end{equation}
+Coherently with the definitions I used, the observables $\kappa$ and $\mathcal{D}$ were calculated as follows. Let me define:
+\[
+	E\left[
+		L,N,\eta;\frac{V}{t},\frac{\mu}{t}
+	\right]
+\]
+as the ground-state energy for the model setup specified by its arguments $L$ (size), $N$ (number of particles), $\eta$ (adimensional magnetic flux) and parameters $V/t$ (reduced NN interaction) and $\mu/t$ (reduced chemical potential). From now on I omit $V/t$ and $\mu/t$ as explicit parameters. Now, charge compressibility is given by
+\[
+	\kappa^{-1} = L \pdv[2]{E}{N}
+\]
+which is well approximated at half-filling by
+\begin{equation}\label{eq:charge-compressibility-approximation}
+	\kappa_{1/2}(L) \equiv \left[
+		\frac{E[L,L/2+2,0]+E[L,L/2-2,0]-2E[L,L/2,0]}{4}
+	\right]^{-1}
+\end{equation}
+(usually one adds or removes $2$ particles in order to avoid even-odd effects). Similarly, charge stiffness is given by
+\[
+	\mathcal{D} = \pi L \pdv[2]{E}{\eta}
+\]
+which as well is approximated at half filling by
+\begin{equation}\label{eq:charge-stiffness-approximation}
+	\mathcal{D}_{1/2}(L) \equiv
+	\frac{E[L,L/2,\delta\eta]+E[L,L/2,-\delta\eta]-2E[L,L/2,0]}{4(\delta\eta)^2}
+\end{equation}
+for a ``small'' flux variation $\delta\eta$. It is important to notice here that the charge compressibility is expected to vanish in gapped phases. The reason is simple: if $\partial_\mu \rho=0$, that means that shifting infinitesimally the chemical potential does not increase charge density -- there is no single-particle state that can accommodate additional particles. Thus, there is a gap. A simple and good signal that a phase has become gapless is the non-vanishing charge compressibility.
 
 \subsection{Finite-size DMRG}
 
