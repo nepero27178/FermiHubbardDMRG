@@ -8,44 +8,46 @@
 			xlabel={$\Delta$},		ylabel={$h/J$},
 			xlabel style={right}, 	ylabel style={above},
 			xtick={1},				ytick={1},
-			xticklabel style={below},
-			yticklabel style={below right, xshift=0.1cm},
-			xmin=-1.5, 				ymin=-2,
-			xmax=2.5, 				ymax=2
+			xticklabel style={below right},
+			yticklabel style={below left, xshift=0.1cm},
+			xmin=-2.5, 				ymin=-2,
+			xmax=1.5, 				ymax=2
 		]
-		\addplot[name path=HAFUpCurved, domain=1:1.5, dashed] 
-			{2*(x-1)^4};
-		\addplot[name path=HAFUpStraight, domain=1.5:2.5, dashed] 
-			{x-1.375};
-		\addplot[name path=HAFDownCurved, domain=1:1.5, dashed] 
-			{-2*(x-1)^4};
-		\addplot[name path=HAFDownStraight, domain=1.5:2.5, dashed] 
-			{-x+1.375};
-		\addplot[name path=HFUp1, domain=-1:1.5, dashed] 
-			{x+1};
-		\addplot[name path=HFUp2, domain=1.5:2.5, dashed] 
-			{x+1};
-		\addplot[name path=HFDown1, domain=-1:1.5, dashed] 
-			{-x-1};
-		\addplot[name path=HFDown2, domain=1.5:2.5, dashed] 
-			{-x-1};
-		\addplot[name path=Border, domain=-1.5:2.5]
-			{-x};
+		\addplot[name path=HAFUpCurved, domain=-1.5:-1, dashed] 
+			{2*(x+1)^4};
+		\addplot[name path=HAFUpStraight, domain=-2.5:-1.5, dashed] 
+			{-x-1.375};
+		\addplot[name path=HAFDownCurved, domain=-1.5:-1, dashed] 
+			{-2*(x+1)^4};
+		\addplot[name path=HAFDownStraight, domain=-2.5:-1.5, dashed] 
+			{x+1.375};
+		\addplot[name path=HFUp1, domain=-1.5:1, dashed] 
+			{-x+1};
+		\addplot[name path=HFUp2, domain=-2.5:-1.5, dashed] 
+			{-x+1};
+		\addplot[name path=HFDown1, domain=-1.5:1, dashed] 
+			{x-1};
+		\addplot[name path=HFDown2, domain=-2.5:-1.5, dashed] 
+			{x-1};
+		\addplot[name path=Border, domain=-2.5:1.5]
+			{x};
 		\path[name path=SupportDown] 
-			(-1.5,-3) -- (2.5,-3);
+			(-2.5,-3) -- (1.5,-3);
 		\addplot[pattern=north west lines, pattern color=gray!50]
 			fill between [of = SupportDown and Border];
 
-		\node[anchor=south west, color=tabblue]
+		\node[anchor=south east, color=tabblue]
 			at (axis cs:0,0) {XY};
-		\node[anchor=south east, color=tabred]
+		\node[anchor=south west, color=tabred]
 			at (axis cs:0,1) {HF};
-		\node[anchor=south west, color=tabgreen]
-			at (axis cs:1.75,0) {HAF};
-		\node[anchor=north east] 
-			at (axis cs:2.5,2) {$\mu/t > 0$};
-		\node[anchor=south west] 
-			at (axis cs:-1.5,-2) {$\mu/t < 0$};
+		\node[anchor=south east, color=tabgreen]
+			at (axis cs:-1.75,0) {HAF};	
+			
+			
+		\node[anchor=north west] 
+			at (axis cs:-2.5,2) {$\mu/t > 0$};
+		\node[anchor=south east] 
+			at (axis cs:1.5,-2) {$\mu/t < 0$};
 
 	\end{axis}
 \end{tikzpicture}

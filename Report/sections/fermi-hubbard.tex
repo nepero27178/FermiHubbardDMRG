@@ -66,7 +66,7 @@ The model presented above can be obtained rather easily through a Jordan-Wigner 
 \begin{equation}\label{eq:xxz-hamiltonian}
 	\hat H_\mathrm{XXZ} \equiv \sum_{\ev{j,k}} \left[
 		J_{xy} \left( 
-			\hat S_j^x \hat S_k^x + \hat S_k^y \hat S_j^y
+			\hat S_j^x \hat S_k^x + \hat S_j^y \hat S_k^y
 		\right) + J_z \hat S_j^z \hat S_k^z
 	\right] - h \sum_{j=1}^L \hat S_j^z 
 \end{equation}
@@ -190,22 +190,15 @@ The first line holds because the $L$-th site must be empty, thus leaving unchang
 	The APBC-$\mathrm{XXZ}$ model is mapped onto a spinless fermion system with even number of fermions.
 \end{itemize}
 For the sake of simplicity, I will limit this project to the first situation with an odd number of fermions. Since the PBC-$\mathrm{XXZ}$ admits for an exact Bethe-Ansatz solution, we can link the phase transitions of the two models.
-
 Apart from a constant energy shift, the hamiltonian \eqref{eq:xxz-hamiltonian-intermediate} is \textit{de-facto} identical to the spinless model of Eq.~\eqref{eq:spinless-hamiltonian-pbc} via the mapping
 \begin{equation}\label{eq:xxz-fermions-parameters-map}
-	t = \frac{J_{xy}}{2}
+	t = -\frac{J_{xy}}{2}
 	\qquad
 	V = J_z
 	\qquad
 	\mu = h + J_z
 \end{equation}
-A schematics of this mapping\footnote{
-	Note here that the \textit{exact} mapping between the two models up to this point would have been $t = - J_{xy}/2$. This sign flip is actually irrelevant for what concerns the goodness of the map: the zero-field PBC-$\mathrm{XXZ}$ phases are inverted under the canonical transformation given from sign-flipping the $xy$ spin components while leaving unchanged the $z$ one (see below). The same symmetry is implemented canonically for fermions by the fermionic-canonical transformation
-	\[
-	\hat c_i \to (-1)^i \hat c_i
-	\]
-	which is essentially a $\pi$ momentum shift. This transformation flips the hopping term sign leaving the others unchanged. Finally, this same sign problem would not have arisen if I would have chosen a slightly different but physically equivalent Jordan-Wigner mapping, connecting up-spins to holes and down-spins to particles.
-} is given in Fig.~\ref{fig:jordan-wigner-mapping}.
+A schematics of this mapping is given in Fig.~\ref{fig:jordan-wigner-mapping}.
 
 \subsection*{Phase diagrams}
 
@@ -218,7 +211,7 @@ The phase diagram of the $\mathrm{XXZ}$ model is readily obtained by the means o
 	\label{fig:xxz-phase-diagram}
 \end{figure}
 
-We can safely assume $J_{xy}>0$ and only consider the relative sign of $J_z$. This is easily seen: if we map
+We can safely assume $J_{xy}<0$ and only consider the relative sign of $J_z$. This is easily seen: if we map
 \[
 	J_{xy} \to - J_{xy}
 	\qquad
@@ -226,37 +219,39 @@ We can safely assume $J_{xy}>0$ and only consider the relative sign of $J_z$. Th
 \]
 which is, exchange the hopping sign, this is equivalent to flipping the sign of the $xy$ spin component while leaving the $z$ component unchanged. Such a map is canonical (does not impact the spin algebra). The phase diagram for negative-sign hopping is anti-symmetric with respect to this inversion. The same holds for finite field. The basic, field free phase diagram is represented schematically in Fig.~\ref{fig:xxz-phase-diagram}.
 \begin{enumerate}
-	\item The system tends to an Ising Ferromagnet for $J_z / J_{xy} < -1$, with dominant behavior the complete alignment of spins (which maps onto the spinless Fermi-Hubbard model as a completely filled chain). 
+	\item The system tends to an Ising Anti-Ferromagnet for $J_z / J_{xy} < -1$, with dominant behavior the complete anti-alignment of spins (which maps onto the spinless Fermi-Hubbard model as an half-filled chain). 
 	\item Moving across the first Heisenberg boundary, $J_z = - J_{xy}$, the dominant behavior for energy lowering is spin diffusion up to a perfect local fields free situation of $J_z = 0$. This phase maps onto the spinless Fermi-Hubbard model as a superconducting phase.
-	\item Crossing the second Heisenberg boundary, $J_z = J_{xy}$, the system tends to an Ising Anti-Ferromagnet, dominated by the Néel state configuration. The latter maps onto an half-filling and Mott-localized fermionic chain.
+	\item Crossing the second Heisenberg boundary, $J_z = J_{xy}$, the system tends to an Ising Ferromagnet, dominated by the uniform state configuration. The latter maps onto a completely filled fermionic chain.
 \end{enumerate}
-For a fixed number system, this is the expected phase dynamics.
-
+For a fixed number system, this is the expected phase dynamics, schematically represented in Fig.~\ref{fig:xxz-phase-diagram}.
+%
 \begin{figure}
 	\centering
 	\input{pictures/fermi-hubbard/xxz-field-phase-diagram}
-	\caption{Schematics of the phase boundaries for the $\mathrm{XXZ}$ model as extracted by \citeauthor{rakov2016symmetries} \cite{rakov2016symmetries}. Notice the two zero-field phase-transition points $(-1,0)$ and $(1,0)$.}
+	\caption{Schematics of the phase boundaries for the $\mathrm{XXZ}$ model as extracted by \citeauthor{franchini2016integrable} \cite[Sec.~4.1]{franchini2016integrable}. Notice the two zero-field phase-transition points $(-1,0)$ and $(1,0)$.}
 	\label{fig:xxz-field-phase-diagram}
 \end{figure}
-
-Now, define $J$ and $\Delta$ as in \cite{rakov2016symmetries}, which is
+%
+Now, define $J$ and $\Delta$ as does \citeauthor{franchini2016integrable} in \cite[Sec.~4.1]{franchini2016integrable}, which is
 \[
-	J_{xy} \equiv J
+	J_{xy} \equiv -J
 	\qquad\qquad
-	J_z \equiv J\Delta
+	J_z \equiv -J\Delta
 \]
 This gives the mapping:
 \begin{equation}\label{eq:xxz-fermions-parameters-map-2}
 	t = \frac{J}{2}
 	\qquad
-	\frac{V}{t} = 2\Delta
+	\frac{V}{t} = -2\Delta
 	\qquad
 	\frac{\mu}{t} = 2 \left(
-		\frac{h}{J} + \Delta
+		\frac{h}{J} - \Delta
 	\right)
 \end{equation}
-Within this parametrization, the analytical phase diagram is the one depicted in Fig.~\ref{fig:xxz-field-phase-diagram} \cite{rakov2016symmetries}.
-Now, I use $\mu/t > 0$. This maps on the $\mathrm{XXZ}$ model as $h/J > -\Delta$, a condition depicted in Fig.~\ref{fig:jordan-wigner-mapping}. Thus, running simulations in a regime $\mu/t > 0$ and $V/t \in \mathbb{R}$, what one expects is to encounter all three phases. Now, I need to reconnect this expectation in a bosonization framework.
+Within this parametrization, the analytical phase diagram\footnote{
+	This phase diagram is obtained exactly by the means of Bethe Ansatz \cite{franchini2016integrable, rakov2016symmetries}.
+} is the one depicted in Fig.~\ref{fig:xxz-field-phase-diagram}.
+Now, I use $\mu/t > 0$. This maps on the $\mathrm{XXZ}$ model as $h/J > \Delta$, a condition depicted in Fig.~\ref{fig:jordan-wigner-mapping}. Thus, running simulations in a regime $\mu/t > 0$ and $V/t \in \mathbb{R}$, what one expects is to encounter all three phases. Now, I need to reconnect this expectation in a bosonization framework.
 
 \begin{figure}
 	\centering

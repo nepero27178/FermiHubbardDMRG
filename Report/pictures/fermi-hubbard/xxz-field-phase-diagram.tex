@@ -10,26 +10,26 @@
 			xtick={-1,0,1},			ytick={-1,0,1},
 			xticklabel style={yshift=-0.1cm},
 			yticklabel style={xshift=-0.2cm},
-			xmin=-1.5, 				ymin=-2,
-			xmax=2.5, 				ymax=2
+			xmin=-2.5, 				ymin=-2,
+			xmax=1.5, 				ymax=2
 		]
 		
-		\addplot[name path=HAFUpCurved, domain=1:1.5, dashed] 
-			{2*(x-1)^4};
-		\addplot[name path=HAFUpStraight, domain=1.5:2.5, dashed] 
-			{x-1.375};
-		\addplot[name path=HAFDownCurved, domain=1:1.5, dashed] 
-			{-2*(x-1)^4};
-		\addplot[name path=HAFDownStraight, domain=1.5:2.5, dashed] 
-			{-x+1.375};
-		\addplot[name path=HFUp1, domain=-1:1.5, dashed] 
-			{x+1};
-		\addplot[name path=HFUp2, domain=1.5:2.5, dashed] 
-			{x+1};
-		\addplot[name path=HFDown1, domain=-1:1.5, dashed] 
-			{-x-1};
-		\addplot[name path=HFDown2, domain=1.5:2.5, dashed] 
-			{-x-1};
+		\addplot[name path=HAFUpCurved, domain=-1.5:-1, dashed] 
+			{2*(x+1)^4};
+		\addplot[name path=HAFUpStraight, domain=-2.5:-1.5, dashed] 
+			{-x-1.375};
+		\addplot[name path=HAFDownCurved, domain=-1.5:-1, dashed] 
+			{-2*(x+1)^4};
+		\addplot[name path=HAFDownStraight, domain=-2.5:-1.5, dashed] 
+			{x+1.375};
+		\addplot[name path=HFUp1, domain=-1.5:1, dashed] 
+			{-x+1};
+		\addplot[name path=HFUp2, domain=-2.5:-1.5, dashed] 
+			{-x+1};
+		\addplot[name path=HFDown1, domain=-1.5:1, dashed] 
+			{x-1};
+		\addplot[name path=HFDown2, domain=-2.5:-1.5, dashed] 
+			{x-1};
 			
 		\addplot [tabblue!25] 
 			fill between [of = HAFUpCurved and HFUp1];
@@ -45,10 +45,14 @@
 		\addplot[color=tabgreen!25]
 			fill between [of = HAFUpStraight and HAFDownStraight];
 			
-		\path[name path=SupportUp1] (-1.5,3) -- (-1,3);
-		\path[name path=SupportUp2] (-1,3) -- (2.5,3);
-		\path[name path=SupportDown1] (-1.5,-3) -- (-1,-3);
-		\path[name path=SupportDown2] (-1,-3) -- (2.5,-3);
+		\path[name path=SupportUp1]
+			(1,3) -- (1.5,3);
+		\path[name path=SupportUp2] 
+			(-2.5,3) -- (1,3);
+		\path[name path=SupportDown1] 
+			(1,-3) -- (1.5,-3);
+		\path[name path=SupportDown2]
+			(-2.5,-3) -- (1,-3);
 		
 		\addplot[color=tabred!25]
 			fill between [of = SupportUp1 and SupportDown1];
@@ -59,10 +63,10 @@
 		
 		\node[anchor=south east, color=tabblue]
 			at (axis cs:0,0) {XY};
-		\node[anchor=south east, color=tabred]
-			at (axis cs:-1,0) {HF};
-		\node[anchor=south west, color=tabgreen]
-			at (axis cs:1.75,0) {HAF};
+		\node[anchor=south west, color=tabred]
+			at (axis cs:1,0) {HF};
+		\node[anchor=south east, color=tabgreen]
+			at (axis cs:-1.75,0) {HAF};
 		
 		\fill
 			(axis cs:-1,0) circle (1pt)

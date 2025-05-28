@@ -167,8 +167,8 @@ function RunDMRGAlgorithm(
         printstyled("Starting simulation...\n", color=:yellow)
     end
 
-	# Initialize lattice 
-    sites = siteinds("Fermion", L, conserve_nf=FixedN)
+	# Initialize lattice (conserving fermionic parity!)
+    sites = siteinds("Fermion", L, conserve_nf=FixedN, conserve_nfparity=true)
     
     # Compute hamiltonian (two-cases separation is needed in order to simplify
     # initialization).
@@ -193,12 +193,12 @@ function RunDMRGAlgorithm(
 
     # Run DMRG algorithm and print results
     E, psi = dmrg(H, psi0; nsweeps, maxdim, cutoff, outputlevel=verbose)
-    FinalAmplitude = dot(psi0, psi)
-    @info "Superposition of final state with the initializer" FinalAmplitude
 
     # Sanity checks: calculate whether Ntot has been conserved, and the found 
     # ground state is actually an eigenstate of H.
     if verbose
+    	 FinalAmplitude = dot(psi0, psi)
+	    @info "Superposition of final state with the initializer" FinalAmplitude
     	ParticlesNumber = GetTotalFermionNumber(psi)
         VarE = inner(H, psi, H, psi) - E^2
 		EnergyRelativeError = sqrt(VarE)/E
@@ -283,7 +283,7 @@ function RunDMRGAlgorithm(
     	return E, nMean, nVariance, DensityFluctuations, LocalE, Populations, Entropy
     	
     elseif Fast
-    	return E
+    	return E, psi
     end
 end
 
@@ -312,7 +312,7 @@ function main()
     DMRGParameters = [nsweep, maxlinkdim, cutoff]
     
     # Choose one: "OrderParameters" / "Correlators" / "Debug" / "Fast"
-    UserMode = "Correlators"
+    UserMode = "Fast"
 
 	if UserMode=="Fast"
 		for i in 1:80
@@ -366,8 +366,8 @@ Relative fluctuation: $(round.(sqrt.(nVariance)./nMean, digits=4))
 Populations: $(round.(Populations, digits=4))
 Bipartite entropy: $(round.(Entropy, digits=4))")
     	
-	else
-		E = Observables
+	elseif UserMode=="Fast"
+		E, _ = Observables
 		println("Results of the simulation:
 Energy of ground state: $(round.(E, digits=4))")
 

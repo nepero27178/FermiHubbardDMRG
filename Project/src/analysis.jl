@@ -48,9 +48,9 @@ function main()
 			for L in LL
                 FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/L=$(L).txt"#_High.txt"
 
-				EFilePathOut = HeatmapDir * "Energy_L=$(L)_High-Resolution.pdf" 			# Ground-state energy plot
-	            kFilePathOut = HeatmapDir * "Compressibility_L=$(L)_High-Resolution.pdf" 	# Compressibility plot
-    	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L)_High-Resolution.pdf"       	# Charge stiffness plot
+				EFilePathOut = HeatmapDir * "Energy_L=$(L).pdf" 			# Ground-state energy plot
+	            kFilePathOut = HeatmapDir * "Compressibility_L=$(L).pdf" 	# Compressibility plot
+    	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L).pdf"       	# Charge stiffness plot
 				
 	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, EFilePathOut, kFilePathOut, DFilePathOut)
    			end

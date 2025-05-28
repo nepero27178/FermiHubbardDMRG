@@ -67,7 +67,7 @@ function PlotHeatmap(
 
     if kFilePathOut != ""
         hk = heatmap(
-        	unique(VV), unique(μμ), Compressibilities, 
+        	unique(VV), unique(μμ)[3:end], Compressibilities[3:end,:], 
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
 			title=L"Compressibility ($L=%$L$)"

@@ -67,6 +67,35 @@
       \endverb
       \keyw{Bosonization,Refermionization,Luttinger liquids}
     \endentry
+    \entry{franchini2016integrable}{book}{}
+      \name{author}{1}{}{%
+        {{hash=b5da0724fbdf382e394b144b9e429944}{%
+           family={Franchini},
+           familyi={F\bibinitperiod},
+           given={Fabio},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{b5da0724fbdf382e394b144b9e429944}
+      \strng{fullhash}{b5da0724fbdf382e394b144b9e429944}
+      \strng{bibnamehash}{b5da0724fbdf382e394b144b9e429944}
+      \strng{authorbibnamehash}{b5da0724fbdf382e394b144b9e429944}
+      \strng{authornamehash}{b5da0724fbdf382e394b144b9e429944}
+      \strng{authorfullhash}{b5da0724fbdf382e394b144b9e429944}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9783319484860}
+      \field{journaltitle}{Lecture Notes in Physics}
+      \field{month}{09}
+      \field{title}{An Introduction to Integrable Techniques for One-Dimensional Quantum Systems}
+      \field{volume}{940}
+      \field{year}{2016}
+      \true{nocite}
+      \verb{doi}
+      \verb 10.1007/978-3-319-48487-7
+      \endverb
+    \endentry
     \entry{giamarchi2003quantum}{book}{}
       \name{author}{1}{}{%
         {{hash=a9a9c4c944540b0a4524a533ee1f3d2d}{%

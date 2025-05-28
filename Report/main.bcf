@@ -2358,20 +2358,23 @@
     <bcf:citekey order="8">haldane1981luttinger</bcf:citekey>
     <bcf:citekey order="9">giamarchi2003quantum</bcf:citekey>
     <bcf:citekey order="10">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="11">rakov2016symmetries</bcf:citekey>
-    <bcf:citekey order="12">rakov2016symmetries</bcf:citekey>
-    <bcf:citekey order="13">rakov2016symmetries</bcf:citekey>
-    <bcf:citekey order="14">rakov2016symmetries</bcf:citekey>
-    <bcf:citekey order="15">rakov2016symmetries</bcf:citekey>
-    <bcf:citekey order="16">rakov2016symmetries</bcf:citekey>
-    <bcf:citekey order="17">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="11">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="12">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="13">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="14">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="15">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="16">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="17">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="17">rakov2016symmetries</bcf:citekey>
     <bcf:citekey order="18">giamarchi2003quantum</bcf:citekey>
     <bcf:citekey order="19">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="0" nocite="1">*</bcf:citekey>
     <bcf:citekey order="20">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="21">senechal1999introduction</bcf:citekey>
-    <bcf:citekey order="22">haldane1981luttinger</bcf:citekey>
-    <bcf:citekey order="23">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="0" nocite="1">*</bcf:citekey>
+    <bcf:citekey order="21">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="22">senechal1999introduction</bcf:citekey>
+    <bcf:citekey order="23">haldane1981luttinger</bcf:citekey>
+    <bcf:citekey order="24">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="25">rakov2016symmetries</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

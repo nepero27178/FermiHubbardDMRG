@@ -1,14 +1,18 @@
 \begin{tikzpicture}[
 		scale=2
 	]
-	\draw[color=black, -stealth]
-		(-2,0) -- (2,0) node[anchor=west]
+	\draw[color=tabred]
+		(-2,0) -- (-1,0);
+	\draw[color=tabblue]
+		(-1,0) -- (1,0);
+	\draw[color=tabgreen, -stealth]
+		(1,0) -- (2,0) node[anchor=west]
 			{$J_z/J_{xy}$};
 	\draw[color=black]
 		(-1,-0.05) node [anchor=north] 
 			{$-1$}
 		-- (-1,0.05) node[anchor=south, color=black] ()
-			{HF}
+			{HAF}
 		(0,-0.05) node [anchor=north] 
 			{$0$}
 		-- (0,0.05) node[anchor=south, color=tabblue]
@@ -16,12 +20,12 @@
 		(1,-0.05) node [anchor=north] 
 			{$1$} 
 		-- (1,0.05) node[anchor=south, color=black]
-			{HAF};
+			{HF};
 		
 		\node[anchor=south, color=tabred]
 			at (-1.5,0)
-				{IF};
+				{IAF};
 		\node[anchor=south, color=tabgreen]
 			at (1.5,0)
-				{IAF};
+				{IF};
 \end{tikzpicture}
