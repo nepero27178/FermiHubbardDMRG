@@ -1,7 +1,7 @@
 \clearpage
 \section{Algorithms and simulations}
 
-This section is devoted to delineate the system properties we aim to simulate. The algorithm used is finite-size DMRG, implemented in the \href{https://docs.julialang.org/en/}{\texttt{Julia language}} via the well supported \href{https://itensor.github.io/ITensors.jl/stable/index.html}{\texttt{ITensors.jl}} \href{https://itensor.github.io/ITensorMPS.jl/stable/}{\texttt{ITensorsMPS.jl}} packages.
+This section is devoted to delineate the system properties we aim to simulate. The algorithm used is finite-size DMRG, implemented in the \href{https://docs.julialang.org/en/}{\texttt{Julia language}} via the well supported \href{https://itensor.github.io/ITensors.jl/stable/index.html}{\texttt{ITensors.jl}}, \href{https://itensor.github.io/ITensorMPS.jl/stable/}{\texttt{ITensorsMPS.jl}} packages.
 
 \subsection{General strategy and target(s)}
 
@@ -23,7 +23,10 @@ Coherently with the definitions I used, the observables $\kappa$ and $\mathcal{D
 		L,N,\eta;\frac{V}{t},\frac{\mu}{t}
 	\right]
 \]
-as the ground-state energy for the model setup specified by its arguments $L$ (size), $N$ (number of particles), $\eta$ (adimensional magnetic flux) and parameters $V/t$ (reduced NN interaction) and $\mu/t$ (reduced chemical potential). From now on I omit $V/t$ and $\mu/t$ as explicit parameters. Now, charge compressibility is given by
+as the ground-state energy for the model setup specified by its arguments $L$ (size), $N$ (number of particles), $\eta$ (adimensional magnetic flux) and parameters $V/t$ (reduced NN interaction) and $\mu/t$ (reduced chemical potential). From now on I omit $V/t$ and $\mu/t$ as explicit parameters. 
+
+\paragraph{Charge compressibility.}
+Charge compressibility is given by
 \[
 	\kappa^{-1} = L \pdv[2]{E}{N}
 \]
@@ -33,7 +36,14 @@ which is well approximated at half-filling by
 		\frac{E[L,L/2+2,0]+E[L,L/2-2,0]-2E[L,L/2,0]}{4}
 	\right]^{-1}
 \end{equation}
-(usually one adds or removes $2$ particles in order to avoid even-odd effects). Similarly, charge stiffness is given by
+(usually one adds or removes $2$ particles in order to avoid even-odd effects). This strategy is good for mapping the compressibility in the canonical ensemble, for which the energy is minimized each time given a fixed particles number. For a mapping of compressibility over the $[V/t,\mu/t]$ evidently one needs to let the particles number vary in order to find the gran-canonical ground state. I adopted a rather rough but coherent strategy, approximated the compressibility via its finite-differences derivative formulation
+\[
+	\kappa \simeq \frac{\Delta \rho}{\Delta \mu} = \frac{1}{L} \frac{\Delta}{\Delta \mu} \langle \hat N \rangle
+\]
+where $\langle \hat N \rangle$ is the expected total particles number evaluated at two subsequent simulations with identical $V/t$ and chemical potential differing by $\Delta \mu$.
+
+\paragraph{Charge stiffness.}
+Similarly, charge stiffness is given by
 \[
 	\mathcal{D} = \pi L \pdv[2]{E}{\eta}
 \]
@@ -43,6 +53,18 @@ which as well is approximated at half filling by
 	\frac{E[L,L/2,\delta\eta]+E[L,L/2,-\delta\eta]-2E[L,L/2,0]}{4(\delta\eta)^2}
 \end{equation}
 for a ``small'' flux variation $\delta\eta$. It is important to notice here that the charge compressibility is expected to vanish in gapped phases. The reason is simple: if $\partial_\mu \rho=0$, that means that shifting infinitesimally the chemical potential does not increase charge density -- there is no single-particle state that can accommodate additional particles. Thus, there is a gap. A simple and good signal that a phase has become gapless is the non-vanishing charge compressibility.
+
+%For a model defined on a lattice of lattice of $L \in \mathbb{N}$ sites with periodic boundary conditions, Born-Von Karman conditions apply, implying a limitation on the possible momenta:
+%\[
+%	k_n = \frac{2\pi}{L} n
+%	\qquad\text{with}\qquad
+%	n \in \mathbb{Z}
+%\]
+%This conditions implies $k_F = \pi$ at half-filling. Now, when imposing a finite flux through the ring -- a condition which, as discussed in Eq.~\eqref{eq:spinless-hamiltonian-tbc}, for arbitrary phase implies twisted boundary conditions with the hopping parameter transformation $t \to T = t^{i\phi}$ -- in order to maintain a coherent mapping with the $\mathrm{XXZ}$ model two things are needed: preservation of periodic boundary conditions (which is, twisting of $2\pi$ multiples or, equivalently, flux quantizatiom) and fermionic parity conservation. The latter is a built-in method of the \href{https://itensor.github.io/ITensorMPS.jl/stable/}{\texttt{ITensorsMPS.jl}} package. The former I implemented by simply choosing as hopping twisting phase the smallest non-zero crystal momentum allowed,
+%\[
+%	\phi = \frac{2\pi}{L}
+%\]
+%This condition is equivalent to requiring precisely one flux quantum to thread the ring.
 
 \subsection{Finite-size DMRG}
 

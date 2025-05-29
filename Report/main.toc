@@ -20,6 +20,8 @@
 \contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{19}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Algorithms and simulations}{22}{section.3}%
 \contentsline {subsection}{\numberline {3.1}General strategy and target(s)}{22}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Finite-size DMRG}{22}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Data analysis and results}{23}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{23}{subsection.4.1}%
+\contentsline {paragraph}{Charge compressibility.}{22}{section*.21}%
+\contentsline {paragraph}{Charge stiffness.}{22}{section*.22}%
+\contentsline {subsection}{\numberline {3.2}Finite-size DMRG}{23}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Data analysis and results}{24}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{24}{subsection.4.1}%

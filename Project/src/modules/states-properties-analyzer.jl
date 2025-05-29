@@ -45,28 +45,30 @@ end
 function main()
 
 	global Counter = 0
-	L = 40
-	N = 20
+	L = 50
+	N = 25
 	η = 0.0
 	
 	print("Should I run the simulations? (y/n) ")
 	Compute = readline()
 	
-	for XY in [true false]
+	for Phase in ["XY", "IAF", "IF"]
 	
 		DirPathOut = PROJECT_ROOT * "/simulations/states-properties/"
 		mkpath(DirPathOut)
 		
-		if XY			# XY state (Jordan-Wigner mapping)  
-			V = 0.25
-			μ = 0.5
+		if Phase=="XY"			# XY state (Jordan-Wigner mapping)  
+			V = 0.1
+			μ = 0.0
 			FilePathOut = DirPathOut * "XY_V=$(V)_μ=$(μ).txt"
-			
-		elseif !XY		# FE state (Jordan-Wigner mapping), Mott insulating
-			V = 3
-			μ = 2
-			FilePathOut = DirPathOut * "FE_V=$(V)_μ=$(μ).txt"
-		
+		elseif Phase=="IAF"		# IAF state (Jordan-Wigner mapping), Mott insulating
+			V = 2.5
+			μ = 0.0
+			FilePathOut = DirPathOut * "IAF_V=$(V)_μ=$(μ).txt"	
+		elseif Phase=="IF"		# IF state (Jordan-Wigner mapping), Mott insulating
+			V = -2.5
+			μ = 0.0
+			FilePathOut = DirPathOut * "IF_V=$(V)_μ=$(μ).txt"
 		end
 		
 		@info "State parameters" L N V μ
@@ -84,7 +86,7 @@ function main()
 		mkpath(DirPathOut)
 		
 		# Run both for fixed and variable fermions number
-		for ConserveNumber in [true false]
+		for ConserveNumber in [true, false]
 	
 			global Counter += 1
 			println("Simulation ($Counter/4): XY=$(XY) and ",
@@ -106,21 +108,21 @@ function main()
 				end			
 			end
 	
-			PlotPopulations(
-				DirPathOut,
-				P,
-				ModelParameters,
-				XY,
-				ConserveNumber
-			)
-			PlotBipartiteEntropy(
-				DirPathOut,
-				S,
-				ModelParameters,
-				XY,
-				ConserveNumber
-			)
-			printstyled("Plots ready!\n", color=:green)
+#			PlotPopulations(
+#				DirPathOut,
+#				P,
+#				ModelParameters,
+#				XY,
+#				ConserveNumber
+#			)
+#			PlotBipartiteEntropy(
+#				DirPathOut,
+#				S,
+#				ModelParameters,
+#				XY,
+#				ConserveNumber
+#			)
+#			printstyled("Plots ready!\n", color=:green)
 		end
 	end
 end

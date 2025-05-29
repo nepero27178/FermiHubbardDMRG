@@ -9,13 +9,15 @@ function PlotHeatmap(
         PhaseBoundariesFilePath="",
         EFilePathOut="",
         kFilePathOut="",
-        DFilePathOut=""
+        DFilePathOut="",
+        nFilePathOut="";
+        verbose=false
     )
     
 Returns: none (plots in folder).    
     
-Plot heatmaps of ground-state energy, compressibility and charge stiffness of
-the system from data saved in `FilePathIn`.
+Plot heatmaps of ground-state energy, compressibility, charge stiffness and
+particle density of the system from data saved in `FilePathIn`.
 """
 function PlotHeatmap(
         L::Int64,
@@ -23,18 +25,23 @@ function PlotHeatmap(
         PhaseBoundariesFilePath="",
         EFilePathOut="",		    # Energy heatmap
         kFilePathOut="",			# Charge stiffness
-        DFilePathOut=""             # Compressibility heatmap
+        DFilePathOut="",            # Compressibility heatmap
+        ρFilePathOut="";			# Density heatmap
+        verbose=false
     )
     
     # Extract data coming from rectangular-sweep
     Data = readdlm(FilePathIn, ';', '\n'; comments=true)
-	@info "Data" Data
+    if verbose
+		@info "Data" Data
+	end
 
     VV = Data[:,1]
     μμ = Data[:,2]
     EE = Data[:,3]
     kk = Data[:,4]
     DD = Data[:,5]
+    ρρ = Data[:,6]
 
     NumV = length(unique(VV))
     Numμ = length(unique(μμ))
@@ -42,11 +49,13 @@ function PlotHeatmap(
     Energies = zeros(Numμ, NumV)
     Compressibilities = zeros(Numμ, NumV)
     Stiffnesses = zeros(Numμ, NumV)
+    Densities = zeros(Numμ, NumV)
 
     for jj in 1:NumV
         Energies[:,jj] = EE[ Numμ*(jj-1)+1 : Numμ*jj ]
         Compressibilities[:,jj] = kk[ Numμ*(jj-1)+1 : Numμ*jj ]
         Stiffnesses[:,jj] = DD[ Numμ*(jj-1)+1 : Numμ*jj ]
+        Densities[:,jj] = ρρ[ Numμ*(jj-1)+1 : Numμ*jj ]
     end
 
     if EFilePathOut != ""
@@ -70,7 +79,8 @@ function PlotHeatmap(
         	unique(VV), unique(μμ)[3:end], Compressibilities[3:end,:], 
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
-			title=L"Compressibility ($L=%$L$)"
+			title=L"Compressibility ($L=%$L$)",
+			#clim=(0,1)
 		)
 
 #        if PhaseBoundariesFilePath != ""
@@ -86,7 +96,8 @@ function PlotHeatmap(
         	unique(VV), unique(μμ), Stiffnesses, 
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
-			title=L"Charge stiffness ($L=%$L$)"
+			title=L"Charge stiffness ($L=%$L$)",
+			clim=(-50,50)
 		)
 
 #        if PhaseBoundariesFilePath != ""
@@ -96,7 +107,91 @@ function PlotHeatmap(
         savefig(hD, DFilePathOut)
         println("Charge stiffness plot for L=$L saved on file!")
     end
+    
+    if ρFilePathOut != ""
+        hρ = heatmap(
+        	unique(VV), unique(μμ), Densities, 
+			xlabel=L"V/t",
+			ylabel=L"$\mu/t$",
+			title=L"Charge density ($L=%$L$)"
+		)
+
+#        if PhaseBoundariesFilePath != ""
+#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
+#        end
+
+        savefig(hρ, ρFilePathOut)
+        println("Charge density plot for L=$L saved on file!")
+    end
 end
+
+function PlotZeroFieldSweep(
+        FilePathIn::String;
+        EFilePathOut="",		    # Energy heatmap
+        kFilePathOut="",			# Charge stiffness
+        DFilePathOut=""             # Compressibility heatmap
+    )
+    
+    # Extract data coming from rectangular-sweep
+    Data = readdlm(FilePathIn, ';', '\n'; comments=true)
+	@info "Data" Data
+
+    LL = Data[:,1]
+    VV = Data[:,2]
+    EE = Data[:,3]
+    kk = Data[:,4]
+    DD = Data[:,5]
+
+    NumL = length(unique(LL))
+    NumV = length(unique(VV))
+    
+    Energies = zeros(NumV, NumL)
+    Compressibilities = zeros(NumV, NumL)
+    Stiffnesses = zeros(NumV, NumL)
+
+    for jj in 1:NumL
+        Energies[:,jj] = EE[ NumV*(jj-1)+1 : NumV*jj ]
+        Compressibilities[:,jj] = kk[ NumV*(jj-1)+1 : NumV*jj ]
+        Stiffnesses[:,jj] = DD[ NumV*(jj-1)+1 : NumV*jj ]
+    end
+
+    if EFilePathOut != ""
+        pE = plot(
+        	unique(VV), Energies, 
+			xlabel=L"$V/t$",
+			ylabel=L"$E$",
+			title=L"Ground-state energy ($L=%$L$)"
+		)
+
+        savefig(pE, EFilePathOut)
+        println("Zero-field energy plot for L=$L saved on file!")
+    end
+
+    if kFilePathOut != ""
+        pk = plot(
+        	unique(VV), Compressibilities[3:end,:], 
+			xlabel=L"$V/t$",
+			ylabel=L"$\kappa_{1/2}$",
+			title=L"Compressibility ($L=%$L$)"
+		)
+
+        savefig(pk, kFilePathOut)
+        println("Zero-field compressibility plot for L=$L saved on file!")
+    end
+    
+    if DFilePathOut != ""
+        pD = plot(
+        	unique(VV), Stiffnesses, 
+			xlabel=L"$V/t$",
+			ylabel=L"$\mathcal{D}_{1/2}$",
+			title=L"Charge stiffness ($L=%$L$)"
+		)
+
+        savefig(pD, DFilePathOut)
+        println("Zero-field charge stiffness plot for L=$L saved on file!")
+    end
+end
+
 
 """
 Add the phase boundaries to the heatmap, for the closest size L available,

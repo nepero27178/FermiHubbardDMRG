@@ -120,24 +120,74 @@ function HorizontalSweep(
         	" (simulation $j/$l for L=$L)")
         
         # Use @sync to wait for all tasks to complete
+#        @sync begin
+#            E, Γ, eΓ, O, eO =  RunDMRGAlgorithm(
+#            	[L, L/2, 1.0, V, μ0, 0.0], 
+#				DMRGParameters,
+#				"Correlators",
+#				true;	# FixedN, chemical potential is just a shift
+#				verbose=false
+#			)
+
+#            # Write results to the file
+#            write(DataFile, "$L; $V; $E; $Γ; $eΓ; $O, $eO\n")
+#        end
+        
         @sync begin
-            E, Γ, eΓ, O, eO =  RunDMRGAlgorithm(
-            	[L, L/2, 1.0, V, μ0, 0.0], 
+            # Create tasks for each DMRG call
+            task1 = @spawn RunDMRGAlgorithm(
+            	[L, L/2, 1.0, V, μ0, 0.0],		# Central
 				DMRGParameters,
-				"Correlators",
-				false;	# FixedN
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
+			)
+			task2 = @spawn RunDMRGAlgorithm(
+            	[L, L/2, 1.0, V, μ0, ε], 		# Rotate clockwise
+				DMRGParameters,
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
+			)
+			task3 = @spawn RunDMRGAlgorithm(
+            	[L, L/2, 1.0, V, μ0, -ε], 		# Rotate counter-clockwise
+				DMRGParameters,
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
+			)
+			task4 = @spawn RunDMRGAlgorithm(
+            	[L, L/2+2, 1.0, V, μ0, 0.0], 	# Add two particles
+				DMRGParameters,
+				"Fast", # UserMode
+				true;	# FixedN
+				verbose=false
+			)
+			task5 = @spawn RunDMRGAlgorithm(
+            	[L, L/2-2, 1.0, V, μ0, 0.0], 	# Remove two particles
+				DMRGParameters,
+				"Fast", # UserMode
+				true;	# FixedN
 				verbose=false
 			)
 
-            # Write results to the file
-            write(DataFile, "$L; $V; $E; $Γ; $eΓ; $O, $eO\n")
+            # Wait for all tasks to complete and collect results
+            E, psi = fetch(task1)
+            EClock, _ = fetch(task2)
+            ECounterClock, _ = fetch(task3)
+            EAdd, _ = fetch(task4)
+            EPop, _ = fetch(task5)
+            
+            D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
+            k = 4/(L*(EAdd + EPop - 2*E))
+            
+            write(DataFile, "$L; $V; $E; $k; $D\n")
         end
     end
     
     close(DataFile)
     println("Data for L=$L saved on file!")
 end
-
 
 # ----------------------------- Rectangular sweep ------------------------------
 
@@ -236,88 +286,21 @@ function RectangularSweepBoundaries(
 #    close(DataFile)
 end
 
-#@doc raw"""
-
-#"""
-#function RectangularSweep(
-#		L::Int64,
-#		N::Int64,
-#		VV::Vector{Float64},
-#		μμ::Vector{Float64},
-#		DMRGParameters::Vector{Any},
-#		FilePathOut::String
-#	)
-#    
-#    global ε
-#    DataFile = open(FilePathOut,"a")
-
-#    for (j,V) in enumerate(VV), (m,μ) in enumerate(μμ)
-#        
-#        ModelParameters = [L, N, 1.0, V, μ, 0.0]
-
-#		println("Running DMRG for L=$L, V=$(round(V, digits=3)),", 
-#			"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
-#			"$j/$(length(VV)) in V)")
-
-#		E = 0 # Initalize energy to save variable
-#		k = 0 # Initalize compressibility to save variable
-#		D = 0 # Initalize stiffness to save variable
-#        @sync begin
-#            # Create tasks for each DMRG call
-#            task1 = @spawn RunDMRGAlgorithm(
-#            	[L, L/2, 1.0, V, μ, 0.0],		# Central
-#				DMRGParameters,
-#				"Fast", # UserMode
-#				true;	# FixedN
-#				verbose=false
-#			)
-#            task2 = @spawn RunDMRGAlgorithm(
-#            	[L, L/2+2, 1.0, V, μ, 0.0], 	# Add two particles
-#				DMRGParameters,
-#				"Fast", # UserMode
-#				true;	# FixedN
-#				verbose=false
-#			)
-#            task3 = @spawn RunDMRGAlgorithm(
-#				[L, L/2-2, 1.0, V, μ, 0.0],		# Remove two particles
-#				DMRGParameters,
-#				"Fast", # UserMode
-#				true;	# FixedN
-#				verbose=false
-#			)
-#			task4 = @spawn RunDMRGAlgorithm(
-#            	[L, L/2, 1.0, V, μ, ε], 		# Rotate clockwise
-#				DMRGParameters,
-#				"Fast", # UserMode
-#				false;	# FixedN
-#				verbose=false
-#			)
-#			task5 = @spawn RunDMRGAlgorithm(
-#            	[L, L/2, 1.0, V, μ, -ε], 		# Rotate counter-clockwise
-#				DMRGParameters,
-#				"Fast", # UserMode
-#				false;	# FixedN
-#				verbose=false
-#			)
-
-#            # Wait for all tasks to complete and collect results
-#            E = fetch(task1)
-#            EAdd = fetch(task2)
-#            ERemove = fetch(task3)
-#            EClock = fetch(task4)
-#            ECounterClock = fetch(task5)
-#            
-#            k = 4/( L * (EAdd+ERemove-2*E) )
-#            D = pi*L * (EClock+ECounterClock-2*E)/(4ε^2)
-#        end
-#        
-#        write(DataFile,"$V; $μ; $E; $k; $D\n")
-#	end
-
-#    close(DataFile)
-#end
 @doc raw"""
+function RectangularSweep(
+		L::Int64,
+		N::Int64,
+		VV::Vector{Float64},
+		μμ::Vector{Float64},
+		DMRGParameters::Vector{Any},
+		FilePathOut::String
+	)
+	
+Returns: none (data saved on file).
 
+Performs a rectangular sweep in the `[V/t,μ/t]` space for a closed chain with
+`L` site and initialized to `N` particles states. Data are saved at
+`FilePathOut` after DMRG simulations with parameters `DMRGParameters`.
 """
 function RectangularSweep(
 		L::Int64,
@@ -377,15 +360,15 @@ function RectangularSweep(
             NTotAvg = GetTotalFermionNumber(psi)
         end
         
+        Rho = NTotAvg/L
         if m>1
-			Rho = NTotAvg/L
 			k = (Rho - CachedRho) / (μ - μμ[m-1])	# Compressibility
 			CachedRho = Rho							# Next step
         elseif m==1
         	k = NaN									# Avoid segmentation fault
         end
         
-        write(DataFile,"$V; $μ; $E; $k; $D\n")
+        write(DataFile,"$V; $μ; $E; $k; $D; $Rho\n")
 	end
 
     close(DataFile)

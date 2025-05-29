@@ -77,14 +77,14 @@ function main()
         
         elseif UserMode=="--horizontal"
 
-            @warn "Mode under construction."
-
+			@warn "Mode under construction!"
+		
 #			# Horizontal sweeps
 #			LL = HorizontalLL				# Imported from setup
 #	    	JJ = HorizontalJJ				# Imported from setup
 #	    	μ0μ0 = Horizontalμμ				# Imported from setup
 #	    	
-#	    	DirPathOut = PROJECT_ROOT * "/simulations/horizontal_sweep"
+#	    	DirPathOut = PROJECT_ROOT * "/simulations/horizontal-sweep"
 #    		mkpath(DirPathOut)
 #	    	
 #	    	for μ0 in μ0μ0
@@ -110,6 +110,42 @@ function main()
 #			end
 #					
 #			println("Done!")
+			
+        # -------------------------- Zero field sweep --------------------------
+        
+        elseif UserMode=="--zero-field"
+
+			# Horizontal sweeps
+			LL = HorizontalLL				# Imported from setup
+	    	JJ = HorizontalJJ				# Imported from setup
+	    	μ0μ0 = [0.0]					# Imported from setup
+	    	
+	    	DirPathOut = PROJECT_ROOT * "/simulations/zero-field-sweep"
+    		mkpath(DirPathOut)
+	    	
+	    	for μ0 in μ0μ0
+	    		
+	    		FilePathOut = DirPathOut * "/μ0=$(μ0)_L=$(LL).txt"
+	    	
+				DataFile = open(FilePathOut,"w")
+				write(DataFile,"# Hubbard model DMRG. This file contains many sizes. nmax=$nmax, μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")
+				write(DataFile,"# L; V; E; k; D [calculated $(now())]\n")
+				close(DataFile)
+	    	
+		    	for L in LL
+    	    		println("Starting calculation of observables for L=$L...")
+    	    		
+    	    		# Note: here we use XY DMRG parameters everywhere
+					HorizontalSweep(L, nmax, JJ, μ0, DMRGParametersXY, FilePathOut)
+				end
+				
+				DataFile = open(FilePathOut,"a")
+					write(DataFile,"# [finished at $(now())]\n")
+				close(DataFile)
+				
+			end
+					
+			println("Done!")
 
         # -------------------------- Rectangular sweep -------------------------
         
@@ -131,7 +167,7 @@ function main()
 				FilePathOut = DirPathOut * "/L=$L.txt"
 				DataFile = open(FilePathOut, "w")
 					write(DataFile,"# Fermi-Hubbard model DMRG. L=$L, N=$N\n")
-					write(DataFile,"# V; μ; E; k; D; [calculated $(now())]\n")
+					write(DataFile,"# V; μ; E; k; D; ρ [calculated $(now())]\n")
 				close(DataFile)
 				
 				println("Starting calculation of observables for L=$L...")

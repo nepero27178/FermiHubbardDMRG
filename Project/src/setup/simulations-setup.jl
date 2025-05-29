@@ -23,7 +23,7 @@ Resolution = Dict([
 ])
 			 
 # Horizontal sweeps
-HorizontalLL = [10+x for x in 0:8:40] # Odd particles number
+HorizontalLL = [10+x for x in 0:4:30] # Odd particles number
 HorizontalVV = collect(range(start=-3.0, stop=3.0, length=Resolution["Low"]))
 Horizontalμμ = [0.6, 0.8]
 
@@ -33,9 +33,9 @@ Horizontalμμ = [0.6, 0.8]
 # RectangularVV = collect(range(start=0.0, stop=0.35, length=Resolution["Medium"]))
 # Rectangularμμ = collect(range(start=0.0, stop=1.0, length=Resolution["Medium"]))
 
-RectangularLL = [18]
-RectangularVV = collect(range(start=-3.0, stop=3.0, length=Resolution["High"]))
-Rectangularμμ = collect(range(start=0.0, stop=3.0, length=Resolution["High"]))
+RectangularLL = [14]
+RectangularVV = collect(range(start=-3.0, stop=3.0, length=Resolution["Medium"]))
+Rectangularμμ = collect(range(start=0.0, stop=3.0, length=Resolution["Medium"]))
 
 # Rectangular selection sweeps
 RectangularSelectionLL = [50] # [40, 50, 60]

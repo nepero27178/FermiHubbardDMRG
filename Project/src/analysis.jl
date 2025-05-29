@@ -16,8 +16,8 @@ using Dates
 
 function main()    
 
-    ModeErrorMsg = "Input error: use option --heatmap, --boundaries, --gamma, gamma-K
-    or --gamma-MISF"
+    ModeErrorMsg = "Input error: use option --heatmap, " * 
+    "--boundaries, --zero-field"
 	
 	if length(ARGS) != 1
 		# If user does not specify the user mode
@@ -35,8 +35,7 @@ function main()
             global HorizontalLL, RectangularLL # Imported from setup
             
 			PhaseBoundariesLL = HorizontalLL
-            LL = RectangularLL
-            L = 10             
+            LL = RectangularLL   
             μ0 = 0.0
             Cutoff = 0.05
 
@@ -51,6 +50,7 @@ function main()
 				EFilePathOut = HeatmapDir * "Energy_L=$(L).pdf" 			# Ground-state energy plot
 	            kFilePathOut = HeatmapDir * "Compressibility_L=$(L).pdf" 	# Compressibility plot
     	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L).pdf"       	# Charge stiffness plot
+		        ρFilePathOut = ZeroFieldDir * "Density_L=$(L).pdf"       	# Charge density plot
 				
 	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, EFilePathOut, kFilePathOut, DFilePathOut)
    			end
@@ -59,9 +59,35 @@ function main()
 
 #            EstimateFractionOrderParameter(L, FilePathIn, PhaseBoundariesFilePath, Cutoff)
 
+		# ----------------------------------------------------------------------
+        # ------------------------- Conserve particles -------------------------
+        # ----------------------------------------------------------------------
+
+        elseif UserMode=="--zero-field"
+
+            global HorizontalLL, RectangularLL # Imported from setup
+            
+			PhaseBoundariesLL = HorizontalLL
+            LL = RectangularLL          
+            μ0 = 0.0
+            Cutoff = 0.05
+
+            PhaseBoundariesFilePath = "" # PROJECT_ROOT * "/../simulations/horizontal_sweep/μ0=$(μ0)_L=$PhaseBoundariesLL.txt"
+            ZeroFieldDir = PROJECT_ROOT * "/../analysis/zero-field/"
+            mkpath(HeatmapDir)
+
+            FilePathIn = PROJECT_ROOT * "/../simulations/zero-field-sweep/μ0=$(μ0)_L=$(LL).txt"#_High.txt"
+
+			@warn "Go on from: analysis.jl, Line 80"
+
+			EFilePathOut = ZeroFieldDir * "Energy_L=$(L).pdf" 			# Ground-state energy plot
+            kFilePathOut = ZeroFieldDir * "Compressibility_L=$(L).pdf" 	# Compressibility plot
+	        DFilePathOut = ZeroFieldDir * "Stiffness_L=$(L).pdf"       	# Charge stiffness plot
+			
+            PlotZeroFieldSweep(L, FilePathIn; EFilePathOut, kFilePathOut, DFilePathOut)
 
         # ----------------------------------------------------------------------
-        # --------------------- Boundary between SF and MI ---------------------
+        # --------------------- Boundary between XY and MI ---------------------
         # ----------------------------------------------------------------------
 
         elseif UserMode=="--boundaries"
@@ -91,79 +117,6 @@ function main()
 
             # FindMottTip(FilePathFit, verbose=true)
 
-        # ----------------------------------------------------------------------
-        # ----------------------- Correlation function Γ -----------------------
-        # ----------------------------------------------------------------------
-
-        elseif UserMode=="--gamma"
-    
-            @warn "Mode under construction."
-        
-#            global HorizontalLL, RectangularLL # Imported from setup
-#
-#            μ0 = 0.08 # CHANGE!
-#            rrMin = [2, 4, 6, 8]
-#            rrMax = [12, 14, 16, 18]
-#            JMin = 0.20
-#            LMin = 20
-#
-#            GammaDir = PROJECT_ROOT * "/../analysis/gamma/μ0=$(μ0)/"
-#            mkpath(GammaDir)
-#
-#            FilePathIn = PROJECT_ROOT * "/../simulations/horizontal_sweep/μ0=$(μ0)_L=$HorizontalLL.txt"
-#            FilePathFit = GammaDir * "fitted_Luttinger_parameter_μ0=$μ0.txt"
-#
-#            # (Step 1) Perform all the fits for all J>J_min
-#            FitRoutineGamma(FilePathIn, FilePathFit; rrMin, rrMax, JMin, LMin)
-#
-#            # (Step 2) Plot Γ(r) vs r for one  given (J, μ0) ( j ∈ [1, 50] )
-#            # j = 43 corresponds to J=0.30
-#            # ! NOTE: already plotted for all the μ0 we have. !
-#            # for j in 12:2:50
-#            #     mkpath(GammaDir*"data_plot/")
-#            #     FileGammaPlot = GammaDir * "data_plot/data_gamma_j=$(j)_μ0=$μ0.pdf"
-#            #     PlotPowerLawGamma(FilePathIn, μ0, j; FilePathOut=FileGammaPlot, overwrite=false)
-#            # end
-#
-#            # (Step 3) Plot K_∞ vs J, reading data from Step 1
-#            FilePathInK = GammaDir * "fitted_Luttinger_parameter_μ0=$μ0.txt"
-#            for rMin in [2,4,6,8]
-#                FilePathOutKInfty = GammaDir * "fitted_Luttinger_plot_μ0=$(μ0)_rMin=$rMin.pdf"
-#                PlotFitResultsK(FilePathInK, μ0, rMin; FilePathOut=FilePathOutKInfty)
-#            end
-#        
-#        elseif UserMode=="--gamma-MISF"
-#            global HorizontalLL
-#            μ0 = 0.6
-#
-#            FilePathIn = PROJECT_ROOT * "/../simulations/horizontal_sweep/μ0=$(μ0)_L=$HorizontalLL.txt"
-#            PhaseBoundariesFilePath = PROJECT_ROOT * "/../simulations/boundaries_sweep/μ0=0.0_L=$HorizontalLL.txt"
-#
-#            GammaDir = PROJECT_ROOT * "/../analysis/gamma/illustrative_plots/"
-#            mkpath(GammaDir)
-#
-#            FilePathOut1 = GammaDir * "gamma_MI_vs_SF.pdf"
-#            FilePathOut2 = GammaDir * "gamma_MI_vs_SF_phaseboundaries.pdf"
-#            PlotCorrelationFunctionsMIvsSF(FilePathIn; μ0, JMin=0.10, JMax=0.15, L=70, PhaseBoundariesFilePath,
-#                FilePathOut1, FilePathOut2)
-        
-        elseif UserMode=="--gamma-K"
-
-            @warn "Mode under construction."
-
-#            # Make an illustrative plot of K_∞ vs J, for one
-#            # rMin and one rMax, chosen with the definitions below.
-#
-#            global HorizontalLL
-#            μ0 = 0.0
-#            rMin = 8 
-#            rMax = 18
-#
-#            GammaDir = PROJECT_ROOT * "/../analysis/gamma/μ0=$(μ0)/"
-#            FilePathInK = GammaDir * "fitted_Luttinger_parameter_μ0=$μ0.txt"
-#            FilePathOutKInfty = GammaDir * "illustrative_K_μ0=$μ0.pdf"
-#            PlotIllustrativeResultK(FilePathInK, μ0, rMin, rMax; FilePathOut=FilePathOutKInfty)
-#
 		else
 			error(ModeErrorMsg)
 			exit()
