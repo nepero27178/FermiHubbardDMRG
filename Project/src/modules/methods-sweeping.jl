@@ -1,6 +1,7 @@
 #!/usr/bin/julia
 
 using Base.Threads
+using LinearAlgebra
 using DelimitedFiles  # For writedlm
 
 # ------------------------------ Boundaries sweep ------------------------------
@@ -46,25 +47,28 @@ function BoundariesSweep(
         @sync begin
             # Create tasks for each DMRG call
             task1 = @spawn RunDMRGAlgorithm(
-            	[L, L/2-1, 1.0, V, μ0, 0.0],
+            	[L, L/2+1, 1.0, V, μ0, 0.0],
 				DMRGParameters,
-				"Fast", # UserMode
-				true;	# FixedN
-				verbose=false
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=false,
+				FixedParity=false
 			)
             task2 = @spawn RunDMRGAlgorithm(
             	[L, L/2, 1.0, V, μ0, 0.0], 
 				DMRGParameters,
-				"Fast", # UserMode
-				true;	# FixedN
-				verbose=false
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=false,
+				FixedParity=false
 			)
             task3 = @spawn RunDMRGAlgorithm(
 				[L, L/2+1, 1.0, V, μ0, 0.0],
 				DMRGParameters,
-				"Fast", # UserMode
-				true;	# FixedN
-				verbose=false
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=false,
+				FixedParity=false
 			)
 
             # Wait for all tasks to complete and collect results
@@ -91,101 +95,117 @@ end
 
 @doc raw"""
 function HorizontalSweep(
-		L::Int64,
+		UserSubMode::String,	# Boundaries/StateAnalysis/Full
+		L::Int64, 
 		VV::Array{Float64},
 		μ0::Float64,
-		DMRGParameters::Vector{Any},                         
-		FilePathOut::String
+		DMRGParametersXY::Vector{Any},
+		DirPathOut::String
 	)
 	
-Returns: none (inline print).
+Returns: none (inline print and data saved on file).
 
-Run horizontal sweep (fixed μ0) to extract observables and correlator at
-increasing V/t.
+This function runs an horizontal sweep (fixed `μ0`) to extract observables and 
+correlator at increasing `V/t`. The string variable `UserSubMode` can take up
+the values \"Boundaries\", \"StateAnalysis\" and \"Full\".
+- \"Boundaries\": extract only the phase boundaries;
+- \"StateAnalysis\": only perform state analysis;
+- \"Full\": run both algorithms.
 """
 function HorizontalSweep(
-		L::Int64,
+		UserSubMode::String,	# Boundaries/StateAnalysis/Full
+		L::Int64, 
 		VV::Array{Float64},
 		μ0::Float64,
-		DMRGParameters::Vector{Any},                         
-		FilePathOut::String
+		DMRGParametersXY::Vector{Any},
+		BoundariesFilePathOut,
+		StateAnalysisFilePathOut
 	)
-    
-    DataFile = open(FilePathOut, "a")
+	
+	# DMRG metrhods dictionary for later selection
+	DMRGMethod = Dict([
+		("Boundaries", "Fast"),
+		("StateAnalysis", "StateAnalyzer"),
+		("Full", "StateAnalyzer"),
+	])
     println("Performing horizontal sweep at μ=$μ0...")
     
+    # Initialize matrices
     l = length(VV)
-    for (j, V) in enumerate(VV)
-    	println("Running DMRG for V=$(round(t, digits=3)), μ=$μ0", 
-        	" (simulation $j/$l for L=$L)")
-        
-        # Use @sync to wait for all tasks to complete
-#        @sync begin
-#            E, Γ, eΓ, O, eO =  RunDMRGAlgorithm(
-#            	[L, L/2, 1.0, V, μ0, 0.0], 
-#				DMRGParameters,
-#				"Correlators",
-#				true;	# FixedN, chemical potential is just a shift
-#				verbose=false
-#			)
-
-#            # Write results to the file
-#            write(DataFile, "$L; $V; $E; $Γ; $eΓ; $O, $eO\n")
-#        end
-        
-        @sync begin
-            # Create tasks for each DMRG call
-            task1 = @spawn RunDMRGAlgorithm(
-            	[L, L/2, 1.0, V, μ0, 0.0],		# Central
-				DMRGParameters,
-				"Fast", # UserMode
-				true;	# FixedN
-				verbose=false
-			)
-			task2 = @spawn RunDMRGAlgorithm(
-            	[L, L/2, 1.0, V, μ0, ε], 		# Rotate clockwise
-				DMRGParameters,
-				"Fast", # UserMode
-				true;	# FixedN
-				verbose=false
-			)
-			task3 = @spawn RunDMRGAlgorithm(
-            	[L, L/2, 1.0, V, μ0, -ε], 		# Rotate counter-clockwise
-				DMRGParameters,
-				"Fast", # UserMode
-				true;	# FixedN
-				verbose=false
-			)
-			task4 = @spawn RunDMRGAlgorithm(
-            	[L, L/2+2, 1.0, V, μ0, 0.0], 	# Add two particles
-				DMRGParameters,
-				"Fast", # UserMode
-				true;	# FixedN
-				verbose=false
-			)
-			task5 = @spawn RunDMRGAlgorithm(
-            	[L, L/2-2, 1.0, V, μ0, 0.0], 	# Remove two particles
-				DMRGParameters,
-				"Fast", # UserMode
-				true;	# FixedN
-				verbose=false
-			)
-
-            # Wait for all tasks to complete and collect results
-            E, psi = fetch(task1)
-            EClock, _ = fetch(task2)
-            ECounterClock, _ = fetch(task3)
-            EAdd, _ = fetch(task4)
-            EPop, _ = fetch(task5)
-            
-            D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
-            k = 4/(L*(EAdd + EPop - 2*E))
-            
-            write(DataFile, "$L; $V; $E; $k; $D\n")
-        end
-    end
     
-    close(DataFile)
+    for (j, V) in enumerate(VV)
+    	println("Running DMRG for V=$(round(V, digits=3)), μ=$μ0 (simulation $j/$l for L=$L)")
+        
+        # First DMRG call: real gran-canonical ground-stae
+        GroundState = RunDMRGAlgorithm(
+        	[L, L/2, 1.0, V, μ0, 0.0],4
+			DMRGParametersXY,
+			DMRGMethod[UserSubMode];	# Selected mode
+			verbose=false,
+			FixedN=false,				# Let the particles number vary
+			FixedParity=false			# Let the particles number parity vary
+		)
+		
+		if  UserSubMode=="StateAnalyzer" || UserSubMode=="Full" 
+			
+			E, e, _, n, Cnn, S = GroundState
+			ρ = sum(n)/L
+			δn2M = GetBlockVariance(n, Cnn)	# Imported from physics-definitions
+			StateAnalysisFile = open(StateAnalysisFilePathOut, "a")
+				write(StateAnalysisFile, "$L; $V; $E; $(δn2M); $S\n")
+			close(StateAnalysisFile)
+			
+		elseif  UserSubMode=="Boundaries"
+			E, _ = GroundState
+		end
+		
+		if  UserSubMode=="Boundaries" ||  UserSubMode=="Full"
+		
+			# Additional DMRG calls, needed to extract phase boundaries and compressibility
+			EF = zeros(3) 	# Col 1: L, col 2: L-1, col 3: L-2
+			EAF = zeros(5)	# Col 1: L/2+2, col 2: L/2+1, col 3: L/2, col 4: L/2-1, col 5: L/2-2
+		
+			# Three DMRG calls (HF boundary)
+			for (k,n) in enumerate([0,1,2])
+				TmpE, _ = RunDMRGAlgorithm(
+			    	[L, L-n, 1.0, V, μ0, 0.0],
+					DMRGParametersXY,
+					"Fast"; # UserMode
+					verbose=false,
+					FixedN=true,
+					FixedParity=true
+				)
+				EF[k] = TmpE
+			end
+			
+			# Five DMRG calls (HAF boundary)
+			for (k,n) in enumerate([-2,-1,0,1,2])
+				TmpE, _ = RunDMRGAlgorithm(
+			    	[L, L/2-n, 1.0, V, μ0, 0.0],
+					DMRGParametersXY,
+					"Fast"; # UserMode
+					verbose=false,
+					FixedN=true,
+					FixedParity=true
+				)
+				EAF[k] = TmpE
+			end
+		
+			uΔm1 = EF[2] - EF[1] 	# Unitary-fililng, minus 1 particle
+			uΔm2 = EF[3] - EF[1]	# Unitary-fililng, minus 2 particles
+			
+			# Half-Δ boundary
+			hΔm2 = EAF[1] - EAF[3] # Half-filling, minus 2 particles
+			hΔm1 = EAF[2] - EAF[3] # Half-filling, minus 1 particle
+			hΔp1 = EAF[4] - EAF[3] # Half-filling, plus 1 particle
+			hΔp2 = EAF[5] - EAF[3] # Half-filling, plus 2 particles
+		
+			BoundariesFile = open(BoundariesFilePathOut, "a")
+				write(BoundariesFile, "$L; $V; $(hΔm1); $(hΔp1); $(hΔm2); $(hΔp2); $(uΔm1); $(uΔm2)\n")
+			close(BoundariesFile)
+		
+		end
+    end
     println("Data for L=$L saved on file!")
 end
 
@@ -332,23 +352,26 @@ function RectangularSweep(
             task1 = @spawn RunDMRGAlgorithm(
             	[L, L/2, 1.0, V, μ, 0.0],		# Central
 				DMRGParameters,
-				"Fast", # UserMode
-				false;	# FixedN
-				verbose=false
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=false,
+				FixedParity=false
 			)
 			task2 = @spawn RunDMRGAlgorithm(
             	[L, L/2, 1.0, V, μ, ε], 		# Rotate clockwise
 				DMRGParameters,
-				"Fast", # UserMode
-				false;	# FixedN
-				verbose=false
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=false,
+				FixedParity=false
 			)
 			task3 = @spawn RunDMRGAlgorithm(
             	[L, L/2, 1.0, V, μ, -ε], 		# Rotate counter-clockwise
 				DMRGParameters,
-				"Fast", # UserMode
-				false;	# FixedN
-				verbose=false
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=false,
+				FixedParity=false
 			)
 
             # Wait for all tasks to complete and collect results
@@ -373,63 +396,3 @@ function RectangularSweep(
 
     close(DataFile)
 end
-
-# -------------------------------- Path sweep ----------------------------------
-
-# UNDER CONSTRUCTION!
-
-# function PathSweep(Path::NamedTuple(Name::String, Values::Vector{Tuple{Int64, Int64}}),
-# 				   L::Int64,
-# 				   N::Int64,
-# 				   nmax::Int64,
-# 				   DMRGParametersMI::Vector{Any},
-# 				   DMRGParametersSF::Vector{Any},
-# 				   FilePathIn::String,				# To evaluate if a given point is MI or SF
-# 				   FilePathOut::String)
-				   
-# 	Sizes, Couplings, Energies, UpBoundaries, DownBoundaries, _, _ = readdlm(FilePathIn, ';', Float64, '\n'; comments=true)
-# 	IndicesList = findall(==(L), Sizes)
-				   
-# 	for Point in Path.Values
-# 		J, μ = Point
-				                      
-# 		# Possible improvement: we know how many simulations have been performed for each L
-#     	Index = IndicesList[findall(==(J), Couplings[IndicesList])]
-#     	μUp = UpBoundaries[Index]
-#     	μDown = DownBoundaries[Index]
-        
-#         ModelParameters = [L, N, nmax, J, μ]
-# 		inMottLobe = false
-		
-# 		if (μ>=μDown && μ<=μUp)
-# 			inMottLobe=true
-# 		end
-		
-# 		if inMottLobe
-#             _, _, _, C = RunDMRGAlgorithm(ModelParameters,
-#                                           DMRGParametersMI;
-#                                           ComputeC = true,
-#                                           FixedN = false)
-#         else
-#         	_, _, _, C = RunDMRGAlgorithm(ModelParameters,
-#                                           DMRGParametersSF;
-# 	                                      ComputeC = true,
-# 	                                      FixedN = false)
-#         end                
-        
-#         # Perform DFT
-#         D = 0
-#         q = 2*pi/L
-#         for r in 1:length(C)
-#         	D += (-1)^(2*r/L) * C[r] # Numerically smarter than using the imaginary unit
-#         end
-#         K = 1/(L*D)
-        
-#         DataFile = open(FilePathOut, "a")
-#         write(DataFile, "$L, $J, $μ, $D, $K")
-		
-# 	end
-# 	close(DataFile)
-#     println("Data for L=$L saved on file!")
-# end
-

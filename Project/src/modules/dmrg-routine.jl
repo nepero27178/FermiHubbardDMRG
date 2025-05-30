@@ -80,11 +80,12 @@ end
 
 @doc raw"""
 function RunDMRGAlgorithm(
-		ModelParameters::Vector{Float64},
-		DMRGParameters::Vector{Any},
-		UserMode::String,
-        FixedN::Bool;
-		verbose=false,
+		ModelParameters::Vector{Float64},		# Model parameters
+		DMRGParameters::Vector{Any},			# Parameters for DMRG
+		UserMode::String;						# Parametric input
+		verbose=false,							# Do not print at line
+		FixedN=false							# Let N vary
+		FixedParity=false						# Let parity vary
 	)::Any
 
 Returns: results of DMRG optimization and relevant observables as Float(s)64
@@ -96,19 +97,21 @@ Input:
 
     - ModelParameters: array of [L::Int64, N::Int64, t::Float64, V::Float64, μ::Float64, η::Float64]
     - DMRGParameters: array of [nsweeps::Int64, maxdim::Int64, cutoff::Vector{Float64}]
+    - UserMode: string from the set [\"Debug\", \"Fast\", ...]
     							
 Parametric input:
 
-    - ComputeAllObservables: boolean variable, if false only E, nVariance and Γ are computed (default: false)
-    - ComputeGamma: boolean variable, if false all positional correalators are not extracted (default: false)
-    - ComputeC: boolean variable, if false all positional correalators are not extracted (default: false)
+    - verbose=false (print at line)
+    - FixedN=false (fix particles number)
+    - FixedParity=false (fix particles number parity)
 """
 function RunDMRGAlgorithm(
 		ModelParameters::Vector{Float64},		# Model parameters
 		DMRGParameters::Vector{Any},			# Parameters for DMRG
-		UserMode::String,						# Parametric input
-		FixedN::Bool;							# Let N vary
-		verbose=false							# Do not print at line
+		UserMode::String;						# Parametric input
+		verbose=false,							# Do not print at line
+		FixedN=false,							# Let N vary
+		FixedParity=false						# Let parity vary
 	)::Any
     
     L, N = Int64.(ModelParameters[1:2])
@@ -120,16 +123,18 @@ function RunDMRGAlgorithm(
 	end 
 
 	# Evaluate UserMode
-	ModeErrorMsg = "Input error: use as argument \"OrderParameters\", \"Correlator\", \"Debug\" or \"Fast\":
+	ModeErrorMsg = "Input error: use as argument \"OrderParameters\", \"Correlator\", \"Fast\", \"StateAnalyzer\"  or \"Debug\":
 - \"OrderParameters\": return E, nVariance, aAvg;
 - \"Correlator\": return E, Γ, eΓ;
-- \"Debug\": return E, LocalE, nMean, nVariance;
-- \"Fast\": return E."
+- \"Fast\": return E;
+- \"StateAnalyzer\": return [...]
+- \"Debug\": return E, LocalE, nMean, nVariance;"
 	
 	OrderParameters=false
 	Correlators=false
-	Debug=false
 	Fast=false
+	StateAnalyzer=false
+	Debug=false
 	
 	if UserMode=="OrderParameters"
 		
@@ -140,20 +145,22 @@ function RunDMRGAlgorithm(
 #   	aAvg = 0		 						# <a> on central site
 	
 	elseif UserMode=="Correlators"
-		
 		Correlators=true
-		
-	elseif UserMode=="Debug"
-	
-		Debug=true
-		nMean = zeros(L)				# Mean number of particles per site
-		nVariance = zeros(L) 			# Variance on n_i, for all sites i
-    	LocalE = zeros(L)				# Local contribution to the energy
-    	Populations = zeros(L,2)	 	# Single site populations
-    	Entropy = zeros(L-1)			# Bipartite entropy
     
     elseif UserMode == "Fast"
     	Fast = true
+    	
+    elseif UserMode == "StateAnalyzer"
+    	StateAnalyzer=true
+    	SiteDensity = zeros(L)			# Mean number of particles per site
+    	LocalE = zeros(L)				# Local contribution to the energy
+#    	Populations = zeros(L,2)	 	# Single site populations
+    	Entropy = zeros(L-1)			# Bipartite entropy (extend to L sites)
+    	
+    elseif UserMode=="Debug"
+
+		@warn "Mode Debug under construction."
+		Debug=true
     		
 	else
 		error(ModeErrorMsg)
@@ -167,8 +174,8 @@ function RunDMRGAlgorithm(
         printstyled("Starting simulation...\n", color=:yellow)
     end
 
-	# Initialize lattice (conserving fermionic parity!)
-    sites = siteinds("Fermion", L, conserve_nf=FixedN, conserve_nfparity=true)
+	# Initialize lattice
+    sites = siteinds("Fermion", L, conserve_nf=FixedN, conserve_nfparity=FixedParity)
     
     # Compute hamiltonian (two-cases separation is needed in order to simplify
     # initialization).
@@ -197,7 +204,7 @@ function RunDMRGAlgorithm(
     # Sanity checks: calculate whether Ntot has been conserved, and the found 
     # ground state is actually an eigenstate of H.
     if verbose
-    	 FinalAmplitude = dot(psi0, psi)
+		FinalAmplitude = dot(psi0, psi)
 	    @info "Superposition of final state with the initializer" FinalAmplitude
     	ParticlesNumber = GetTotalFermionNumber(psi)
         VarE = inner(H, psi, H, psi) - E^2
@@ -252,24 +259,26 @@ function RunDMRGAlgorithm(
 		
 		return E, Γ, eΓ, O, eO
     
-    elseif Debug
+	elseif Fast
+    	return E, psi
+    
+    elseif StateAnalyzer
+    
+#		R = floor(Int64, L/2)	# Max distance
+#		DensityFluctuations = zeros(R)
+#		for r in 1:R
+#			Tmp = 0
+#			for j in 1:L
+#				Tmp += DensityCorrelator[j,mod1(j+r,L)]
+#			end
+#			Tmp /= R
+#			DensityFluctuations[r] = Tmp
+#		end
 		
 		DensityCorrelator = GetDensityCorrelator(psi)
-		R = floor(Int64, L/2)	# Max distance
-		DensityFluctuations = zeros(R)
-		for r in 1:R
-			Tmp = 0
-			for j in 1:L
-				Tmp += DensityCorrelator[j,mod1(j+r,L)]
-			end
-			Tmp /= R
-			DensityFluctuations[r] = Tmp
-		end
-		
 	    for i in 1:L
 	    	# Locally defined
-	    	nMean[i] = expect(psi, "n"; sites=i)
-			nVariance[i] = DensityCorrelator[i,i]
+	    	SiteDensity[i] = expect(psi, "n"; sites=i)
 			LocalE[i] = inner(psi', GetLocalHamiltonianMPO(sites, i, t, V, μ), psi)
     	end
     	Populations = GetLocalPopulation(psi)
@@ -279,12 +288,14 @@ function RunDMRGAlgorithm(
     		Entropy[b] = GetVonNeumannEntropy(psi, b)
     	end
     	
-    	ShowDensityProfile(psi)    	
-    	return E, nMean, nVariance, DensityFluctuations, LocalE, Populations, Entropy
-    	
-    elseif Fast
-    	return E, psi
-    end
+    	# ShowDensityProfile(psi)    	
+    	# return E, nMean, nVariance, DensityFluctuations, LocalE, Populations, Entropy
+		return E, LocalE, psi, SiteDensity, DensityCorrelator, Entropy
+
+	elseif Debug
+		@warn "Mode Debug under construction."
+	end
+
 end
 
 # ------------------------------------------------------------------------------

@@ -50,9 +50,9 @@ function main()
 				EFilePathOut = HeatmapDir * "Energy_L=$(L).pdf" 			# Ground-state energy plot
 	            kFilePathOut = HeatmapDir * "Compressibility_L=$(L).pdf" 	# Compressibility plot
     	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L).pdf"       	# Charge stiffness plot
-		        ρFilePathOut = ZeroFieldDir * "Density_L=$(L).pdf"       	# Charge density plot
+		        ρFilePathOut = HeatmapDir * "Density_L=$(L).pdf"       	# Charge density plot
 				
-	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, EFilePathOut, kFilePathOut, DFilePathOut)
+	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, EFilePathOut, kFilePathOut, DFilePathOut, ρFilePathOut)
    			end
             
 #            FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/L=$(L)_High.txt"
@@ -92,30 +92,19 @@ function main()
 
         elseif UserMode=="--boundaries"
         	
-			μ0 = 0.0 #Horizontalμμ[3] # CHANGE!
+			μ0 = Horizontalμμ[1] # Change!
 
-            FilePathIn = PROJECT_ROOT * "/../simulations/boundaries-sweep/μ0=$(μ0)_L=$HorizontalLL.txt"
+            FilePathIn = PROJECT_ROOT * "/../simulations/horizontal-sweep/boundaries/μ0=$(μ0)_L=$HorizontalLL.txt"
             PhaseBoundariesDir = PROJECT_ROOT * "/../analysis/phase-boundaries/μ0=$(μ0)/"
             mkpath(PhaseBoundariesDir)
 
-            FilePathPlot = PhaseBoundariesDir * "phaseboundaries_μ0=$(μ0).pdf"
-            FilePathFit = PhaseBoundariesDir * "fitted-phase-boundaries_μ0=$(μ0).txt"
-            
-            FilePathPlotOut = PhaseBoundariesDir * "phaseboundaries-fit_μ0=$(μ0).pdf"
-            FilePathSinglePlotOut = PhaseBoundariesDir * "phaseboundaries-fit-single_μ0=$(μ0).pdf"
-
-            # Uncomment the needed analysis.
-            #PlotPhaseBoundaries(FilePathIn; gap=false, FilePathOut=FilePathPlot, μ0)
-            # FitPhaseBoundaries(FilePathIn, FilePathFit; FilePathPlotOut, FilePathSinglePlotOut, μ0)
             PlotPhaseBoundaries(
             	FilePathIn;
-                FilePathOut=PhaseBoundariesDir*"colored_PB.pdf",
-                HideDataPoints=false,
-                DrawMottLobe=false,
-                MottLobeFilePath=PROJECT_ROOT * "/../analysis/phase-boundaries/μ0=$μ0/fitted-phase-boundaries_μ0=$μ0.txt",
+                FilePathOut = PhaseBoundariesDir * "phase-boundaries_μ0=$(μ0).pdf",
+                # double=true
             )
-
-            # FindMottTip(FilePathFit, verbose=true)
+            
+            # PlotCompressibility..
 
 		else
 			error(ModeErrorMsg)

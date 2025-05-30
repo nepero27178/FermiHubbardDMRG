@@ -10,7 +10,7 @@ function PlotHeatmap(
         EFilePathOut="",
         kFilePathOut="",
         DFilePathOut="",
-        nFilePathOut="";
+        nFilePathOut="",
         verbose=false
     )
     
@@ -26,7 +26,7 @@ function PlotHeatmap(
         EFilePathOut="",		    # Energy heatmap
         kFilePathOut="",			# Charge stiffness
         DFilePathOut="",            # Compressibility heatmap
-        ρFilePathOut="";			# Density heatmap
+        ρFilePathOut="",			# Density heatmap
         verbose=false
     )
     
@@ -238,133 +238,96 @@ end
 
 # ----------------------------- Phase boundaries -------------------------------
 
-"""
-Plot the phase boundaries between the Mott Insulator (MI) and Superfluid (SF) 
-phases, calculated from RectangularSweep. If `gap=true`, plot the charge gap
-instead of the phase boundaries. If `overwrite=true`, clear previous plots. 
-If `CustomLL` specified, plot only those sizes.
+@doc raw"""
+
 """
 function PlotPhaseBoundaries(
         FilePathIn::String; 
         FilePathOut="",
         gap=false,
-        overwrite=true, 
+        double=false,
         CustomLL=[],
-        μ0=0.0,
-        HideDataPoints=false,
-        DrawMottLobe=false,
-        MottLobeFilePath=PROJECT_ROOT * "/analysis/phase-boundaries/fitted-phase-boundaries.txt",
+        μ0=0.0
     )
     
-    global HorizontalLL # Imported from setup
     BoundariesData = readdlm(FilePathIn, ';', '\n'; comments=true)
-    
-    # gr(legend_background_color=RGBA{Float64}(1, 1, 1, 0.8))
-
-    if overwrite
-        plot()
-    end
 
     # Extract unique L values
     if CustomLL==[]
-        LL = HorizontalLL # unique(BoundariesData[:, 1])
+        LL = unique(BoundariesData[:, 1])
     else
         LL = CustomLL
     end
 
-	tt = 0	# Initialize tt to use it outside the for loop
-	if !HideDataPoints
-		for (l, L) in enumerate(LL)
-		    indices = (BoundariesData[:, 1] .== L)
-		    tt = BoundariesData[indices,2]
-		    μUp = BoundariesData[indices,4]
-		    μDown = BoundariesData[indices,5]
-		    
-		    if gap
-		        plot!(
-                    tt,                 μUp - μDown, 
-                    xlabel=L"$t$",      ylabel=L"$\Delta E_{\mathrm{gap}}$", 
-                    title=L"Charge gap as a function of $t$ ($\mu_0=%$μ0$)",
-                    seriestype=:scatter,
-                    markersize=1.5,
-                    label=L"$L=%$L$",
-                    color=MyColors[l % length(MyColors)]
-                )
-		    else
-		        plot!(
-                    tt,                 -μDown .+ 2 * μ0, 
-                    xlabel=L"$J$",      ylabel=L"$\mu$",
-                    label=L"$L=%$L$",
-                    title=L"Extrapolation of $\mu_c^\pm(t)$ ($\mu_0=%$μ0$)",
-                    seriestype=:scatter,
-                    markersize=1.5,
-                    color=MyColors[l % length(MyColors)]
-                )
-
-		        plot!(
-                    tt,                 μUp, 
-                    seriestype=:scatter,
-                    label="",
-                    markersize=1.5,
-                    color=MyColors[l % length(MyColors)]
-                )
-		    end
+	VV = 0	# Initialize VV to use it outside the for loop
+	for (l, L) in enumerate(LL)
+	    jj =  (BoundariesData[:, 1] .== L)
+	    VV =   BoundariesData[jj,2]
+	    uΔm1 = BoundariesData[jj,7]
+		uΔm2 = BoundariesData[jj,8]
+		
+		# Half-Δ boundary
+		hΔm2 = BoundariesData[jj,5]
+		hΔm1 = BoundariesData[jj,3]
+		hΔp1 = BoundariesData[jj,4]
+		hΔp2 = BoundariesData[jj,6]
+		
+		if double
+			uμm = uΔm2
+			hμp = hΔp2
+			hμm = hΔm2
+		elseif !double
+			uμm = uΔm1
+			hμp = hΔp1
+			hμm = hΔm1
 		end
-	elseif HideDataPoints
-		plot()
-    end
-    
-    if DrawMottLobe
+	    
+	    if gap
+	        plot!(
+                VV, hμp - hμm, 
+                xlabel=L"$V/t$", ylabel=L"$\Delta E_{\mathrm{gap}}$", 
+                title=L"Charge gap as a function of $V/t$ ($\mu_0=%$μ0$)",
+                #seriestype=:scatter,
+                markersize=1.5,
+                label=L"$L=%$L$",
+                color=MyColors[l % length(MyColors)]
+            )
+	    else
+	        plot!(
+                VV, -hμm .+ 2 * μ0, 
+                xlabel=L"$V/t$", ylabel=L"$\mu$",
+                label=L"$L=%$L$",
+                title=L"Extrapolation of $\mu_c^\pm$ ($\mu_0=%$μ0$)",
+                #seriestype=:scatter,
+                markersize=1.5,
+                color=MyColors[l % length(MyColors)]
+            )
 
-        @warn "Mode under construction."
-
-#    	MottLobeData = readdlm(MottLobeFilePath, ',', '\n'; comments=true)
-#    	JJ = MottLobeData[:,1]
-#    	ΔEp = MottLobeData[:,2]
-#    	ΔEm = MottLobeData[:,3]
-#    	
-#    	plot!(JJ, [zeros(length(JJ)) ΔEp],
-#			  linewidth=0,
-#			  fillrange=[-ΔEm ones(length(JJ))],
-#			  fillcolor="red",
-#			  fillalpha=0.1,
-#			  label=nothing,
-#              xlimits=(minimum(JJ), maximum(JJ)),
-#              ylimits=(minimum(-ΔEm), maximum(ΔEp)),
-#              xlabel=L"$J$",
-#              ylabel=L"$\mu$",
-#              title="Phases of the model")
-#    	
-#    	plot!(JJ, -ΔEm,
-#			  linewidth=0,
-#			  fillrange=ΔEp,
-#			  fillcolor="blue",
-#			  fillalpha=0.1,
-#			  label=nothing)
-#			  
-#        # MI / SF text
-#		annotate!(0.07, 0.35, text(L"MI ($\rho=1$)", 10))
-#        annotate!(0.18, 0.62, text("SF", 10))
-#        annotate!(0.18, 0.09, text("SF", 10))
-#
-#        # Phase boundaries
-#        plot!(JJ, [ΔEp, -ΔEm],
-#              label=[L"\mu_c^+ \, (L \rightarrow \infty)" L"\mu_c^- \, (L \rightarrow \infty)"],
-#              color=["black" "black"],
-#              linestyle=[:dash :dashdot])
-#
-#        # Intersection point (Mott tip)
-#        scatter!([0.308], [0.080], markersize=1.5, xerr=[0.004], yerr=[0.008],
-#            label="Intersection", color="blue", msw=0.5, markerstrokecolor="blue")
-
-    end
+	        plot!(
+                VV, hμp, 
+                #seriestype=:scatter,
+                label="",
+                markersize=1.5,
+                color=MyColors[l % length(MyColors)]
+            )
+            
+            plot!(
+                VV, -uμm .+ 2 * μ0, 
+                #seriestype=:scatter,
+                label="",
+                markersize=1.5,
+                color=MyColors[l % length(MyColors)]
+            )
+	    end
+	    
+	end
     
     if !=(FilePathOut,"")
         savefig(FilePathOut)
         if gap
-            println("\nGap for L=$(Int.(LL)) plotted to ", FilePathOut)
+            println("Gap for L=$(Int.(LL)) plotted to ", FilePathOut)
         else
-            println("\nPhase boundaries for L=$(Int.(LL)) plotted to ", FilePathOut)
+            println("Phase boundaries for L=$(Int.(LL)) plotted to ", FilePathOut)
         end
     else
     	gui()

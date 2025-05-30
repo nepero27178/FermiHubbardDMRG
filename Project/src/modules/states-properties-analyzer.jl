@@ -8,10 +8,27 @@ include(PROJECT_ROOT * "/dmrg-routine.jl")
 include(PROJECT_ROOT * "/methods-plotting.jl")
 PROJECT_ROOT *= "/../.."
 
+@doc raw"""
 function GetStateProperties(
 		FilePathOut::String,
 		ModelParameters::Vector{Float64},
-		ConserveNumber::Bool
+		ConserveNumber::Bool,
+		ConserveParity::Bool
+	)
+	
+Returns: E, nMean, nVariance, DensityFluctuations, LocalE, P, S
+
+This functions computes, given some `ModelParameters` and a logical input about
+conserving or not the particles number (`ConserveNumber`) and the particles 
+number parity (`ConserveParity`), energy, mean density and variance density,
+the density fluctuation matrix, the local energy per site, the single-particle
+state populations and the bipartite entropy.
+"""
+function GetStateProperties(
+		FilePathOut::String,
+		ModelParameters::Vector{Float64},
+		ConserveNumber::Bool,
+		ConserveParity::Bool
 	)
 
 	# ------------------------------- Simulation ------------------------------- 
@@ -24,17 +41,81 @@ function GetStateProperties(
 	Observables = RunDMRGAlgorithm(
 		ModelParameters,
 		DMRGParameters,
-		"Debug",
-		ConserveNumber
+		"StateAnalyzer"; #UserMode
+		verbose=true,
+		FixedN=ConserveNumber,
+		FixedParity=ConserveParity
 	)
-									
-	E, nMean, nVariance, DensityFluctuations, LocalE, P, S = Observables
+	
+	
+	# GO ON FROM HERE
+	# Extract compressibility and charge stiffness of the state: to be understood
+	# if to be done as in Eq 5.4.1 conserving the particles number or not
+	
+	for N in L/2:2:L-2
+		# Get compressibility and charge stiffnesss
+		@sync begin
+			# Create tasks for each DMRG call
+			task1 = @spawn RunDMRGAlgorithm(
+				[L, N, 1.0, V, μ0, 0.0],		# Central
+				DMRGParameters,
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=true,
+				FixedParity=true
+			)
+			task2 = @spawn RunDMRGAlgorithm(
+				[L, N, 1.0, V, μ0, ε], 		# Rotate clockwise
+				DMRGParameters,
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=true,
+				FixedParity=true
+			)
+			task3 = @spawn RunDMRGAlgorithm(
+				[L, N, 1.0, V, μ0, -ε], 		# Rotate counter-clockwise
+				DMRGParameters,
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=true,
+				FixedParity=true
+			)
+			task4 = @spawn RunDMRGAlgorithm(
+				[L, N+2, 1.0, V, μ0, 0.0], 	# Add two particles
+				DMRGParameters,
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=true,
+				FixedParity=true
+			)
+			task5 = @spawn RunDMRGAlgorithm(
+				[L, N-2, 1.0, V, μ0, 0.0], 	# Remove two particles
+				DMRGParameters,
+				"Fast"; # UserMode
+				verbose=false,
+				FixedN=true,
+				FixedParity=true
+			)
+
+			# Wait for all tasks to complete and collect results
+			E, psi = fetch(task1)
+			EClock, _ = fetch(task2)
+			ECounterClock, _ = fetch(task3)
+			EAdd, _ = fetch(task4)
+			EPop, _ = fetch(task5)
+			
+			D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
+			k = 4/(L*(EAdd + EPop - 2*E))
+		end
+	end
+	
+	# Energy, local energy, state, local denisty, density-density correlator, entropy
+	E, e, psi, n, Cnn, S, k, D = Observables
 
 	# --------------------------------- Write ----------------------------------
 
 	DataFile = open(FilePathOut, "a")
-	write(DataFile, "$ConserveNumber; $E; $LocalE; $nMean; $nVariance; ",
-		"$DensityFluctuations; $P; $S\n")
+		write(DataFile, "$ConserveNumber; $E; $e; $n; $nC; $S\n")
 	close(DataFile)
 	
 	return Observables
@@ -74,6 +155,8 @@ function main()
 		@info "State parameters" L N V μ
 		
 		ModelParameters = [L, N, 1.0, V, μ, 0.0]
+		ConserveNumber = true
+		ConserveParity = true
 		
 		if Compute=="y"
 			DataFile = open(FilePathOut, "w")
@@ -85,45 +168,13 @@ function main()
 		DirPathOut = PROJECT_ROOT * "/analysis/states-properties/"
 		mkpath(DirPathOut)
 		
-		# Run both for fixed and variable fermions number
-		for ConserveNumber in [true, false]
-	
-			global Counter += 1
-			println("Simulation ($Counter/4): XY=$(XY) and ",
-				"FixedN=$(ConserveNumber).")
-	
-			if Compute=="y"
-				Observables = GetStateProperties(
-					FilePathOut,
-					ModelParameters,
-					ConserveNumber
-				)
-				_, _, _, _, Γ, P, S = Observables
-			elseif Compute=="n"
-				ObservablesData = readdlm(FilePathOut, ';', Any, comments=true)
-				for Index in 1:2
-					if ObservablesData[Index,1]==ConserveNumber
-						Γ, P, S = ObservablesData[6:8]
-					end
-				end			
-			end
-	
-#			PlotPopulations(
-#				DirPathOut,
-#				P,
-#				ModelParameters,
-#				XY,
-#				ConserveNumber
-#			)
-#			PlotBipartiteEntropy(
-#				DirPathOut,
-#				S,
-#				ModelParameters,
-#				XY,
-#				ConserveNumber
-#			)
-#			printstyled("Plots ready!\n", color=:green)
-		end
+		Observables = GetStateProperties(
+			FilePathOut,
+			ModelParameters,
+			ConserveNumber,
+			ConserveParity
+		)
+		E, e, psi, n, Cnn, S = Observables
 	end
 end
 

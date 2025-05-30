@@ -202,14 +202,14 @@ A schematics of this mapping is given in Fig.~\ref{fig:jordan-wigner-mapping}.
 
 \subsection*{Phase diagrams}
 
-The phase diagram of the $\mathrm{XXZ}$ model is readily obtained by the means of exact methods like Bethe Ansatz. Of course, the dominant parameter is the ratio $J_z/J_{xy}$ which measures the dominant contribution to energy given by spin-spin NN interaction ($z$ term) and spin diffusion ($xy$ term). Whenever $\abs{J_z} = \abs{J_{xy}}$, the model is of the Heisenberg class.
-
 \begin{figure}
 	\centering
 	\input{pictures/fermi-hubbard/xxz-phase-diagram}
 	\caption{Schematics for the $\mathrm{XXZ}$ model phase diagram. We are here considering a zero-field model, $h=0$ (which is mapped by the maps \eqref{eq:xxz-fermions-parameters-map} to a $\mu = J_z$ model). H indicates Heisenberg, I indicates Ising; F stands for Ferromagnet, AF for Anti-Ferromagnet; XY stands for pure $\mathrm{XY}$ model. The color of each label recalls the dominant interaction of Fig.~\ref{fig:jordan-wigner-mapping}.}
 	\label{fig:xxz-phase-diagram}
 \end{figure}
+
+The phase diagram of the $\mathrm{XXZ}$ model is readily obtained by the means of exact methods like Bethe Ansatz. Of course, the dominant parameter is the ratio $J_z/J_{xy}$ which measures the dominant contribution to energy given by spin-spin NN interaction ($z$ term) and spin diffusion ($xy$ term). Whenever $\abs{J_z} = \abs{J_{xy}}$, the model is of the Heisenberg class.
 
 We can safely assume $J_{xy}<0$ and only consider the relative sign of $J_z$. This is easily seen: if we map
 \[
@@ -224,14 +224,6 @@ which is, exchange the hopping sign, this is equivalent to flipping the sign of 
 	\item Crossing the second Heisenberg boundary, $J_z = J_{xy}$, the system tends to an Ising Ferromagnet, dominated by the uniform state configuration. The latter maps onto a completely filled fermionic chain.
 \end{enumerate}
 For a fixed number system, this is the expected phase dynamics, schematically represented in Fig.~\ref{fig:xxz-phase-diagram}.
-%
-\begin{figure}
-	\centering
-	\input{pictures/fermi-hubbard/xxz-field-phase-diagram}
-	\caption{Schematics of the phase boundaries for the $\mathrm{XXZ}$ model as extracted by \citeauthor{franchini2016integrable} \cite[Sec.~4.1]{franchini2016integrable}. Notice the two zero-field phase-transition points $(-1,0)$ and $(1,0)$.}
-	\label{fig:xxz-field-phase-diagram}
-\end{figure}
-%
 Now, define $J$ and $\Delta$ as does \citeauthor{franchini2016integrable} in \cite[Sec.~4.1]{franchini2016integrable}, which is
 \[
 	J_{xy} \equiv -J
@@ -251,6 +243,14 @@ This gives the mapping:
 Within this parametrization, the analytical phase diagram\footnote{
 	This phase diagram is obtained exactly by the means of Bethe Ansatz \cite{franchini2016integrable, rakov2016symmetries}.
 } is the one depicted in Fig.~\ref{fig:xxz-field-phase-diagram}.
+%
+\begin{figure}[t]
+	\centering
+	\input{pictures/fermi-hubbard/xxz-field-phase-diagram}
+	\caption{Schematics of the phase boundaries for the $\mathrm{XXZ}$ model as extracted by \citeauthor{franchini2016integrable} \cite[Sec.~4.1]{franchini2016integrable}. Notice the two zero-field phase-transition points $(-1,0)$ and $(1,0)$.}
+	\label{fig:xxz-field-phase-diagram}
+\end{figure}
+%
 Now, I use $\mu/t > 0$. This maps on the $\mathrm{XXZ}$ model as $h/J > \Delta$, a condition depicted in Fig.~\ref{fig:jordan-wigner-mapping}. Thus, running simulations in a regime $\mu/t > 0$ and $V/t \in \mathbb{R}$, what one expects is to encounter all three phases. Now, I need to reconnect this expectation in a bosonization framework.
 
 \begin{figure}

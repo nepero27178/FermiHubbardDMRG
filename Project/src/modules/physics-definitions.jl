@@ -161,6 +161,45 @@ function GetDensityCorrelator(
 									  
 end
 
+@doc raw"""
+function GetBlockVariance(
+		n::Vector{Float64},
+		Cnn::Matrix{Float64}
+	)::Vector{Float64}
+	
+Returns: `δn2M::Vector{Float64}`, the mean density variance over blocks. 
+"""
+function GetBlockVariance(
+		n::Vector{Float64},
+		Cnn::Matrix{Float64}
+	)::Vector{Float64}
+	# Connected density correlation matrix
+	cCnn = Cnn .- n*n'
+	
+	# Ghost matrix to employ matricial PBC
+	Ghost = [
+		cCnn cCnn;
+		cCnn zeros(size(cCnn));
+	]
+
+	L = size(Cnn,1)
+	δn2M = zeros(Int64(L/2)+1)
+	Matrixδn2M = zeros(Int64(L/2)+1,L)
+	for (m,M) in enumerate(0:1:Int64(L/2)), s in 1:L
+		Matrixδn2M[m,s] = sum(
+			Ghost[
+				s:s+M,
+				s:s+M
+			]
+		)
+	end
+	
+	δn2M = mean(Matrixδn2M,dims=2)[:,1] # Indexing needed to format to Vector
+	
+	return δn2M
+end
+
+
 # Superconducting order parameter and fluctuations correlator.
 
 @doc raw"""

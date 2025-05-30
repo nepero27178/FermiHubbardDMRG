@@ -27,9 +27,7 @@ referred to with their names. Check the setup file to modify the definitions.
 """
 function main()
     
-	ModeErrorMsg = "Input error: use option --boundaries, --horizontal, " *
-				   "--rectangular, --rectangular-boundaries or " *
-				   "--rectangular-selection"
+	ModeErrorMsg = "Input error: use option --horizontal or --rectangular"
 	
 	if length(ARGS) != 1
 		# If user does not specify the user mode
@@ -43,48 +41,140 @@ function main()
         
         if UserMode=="--boundaries"
 
-			# Horizontal sweeps
-			LL = HorizontalLL				# Imported from setup
-	    	VV = HorizontalVV				# Imported from setup
-	    	μ0 = 0.0						# Imported from setup
-	    	
-	    	DirPathOut = PROJECT_ROOT * "/simulations/boundaries-sweep"
-    		mkpath(DirPathOut)
-	    		
-    		FilePathOut = DirPathOut * "/μ0=$(μ0)_L=$(LL).txt"
-    	
-			DataFile = open(FilePathOut,"w")
-			write(DataFile,"# Spinless Fermi-Hubbard model DMRG. This file ",
-				"contains many sizes. μ0=$μ0, nsweeps=$nsweeps, ",
-				"cutoff=$cutoff\n")
-			write(DataFile,"# L; V; E; μ+; μ- [calculated $(now())]\n")
-			close(DataFile)
-    	
-	    	for L in LL
-	    		println("Starting calculation of observables for L=$L...")
-	    		
-	    		# Note: here we use XY (analog) DMRG parameters everywhere
-				BoundariesSweep(L, VV, DMRGParametersXY, FilePathOut)
-			end
-			
-			DataFile = open(FilePathOut,"a")
-			write(DataFile,"# [finished $(now())]\n")
-			close(DataFile)
-					
-			println("Done!")
+#			# Horizontal sweeps
+#			LL = HorizontalLL				# Imported from setup
+#	    	VV = HorizontalVV				# Imported from setup
+#	    	μ0 = 0.0						# Imported from setup
+#	    	
+#	    	DirPathOut = PROJECT_ROOT * "/simulations/boundaries-sweep"
+#    		mkpath(DirPathOut)
+#	    		
+#    		FilePathOut = DirPathOut * "/μ0=$(μ0)_L=$(LL).txt"
+#    	
+#			DataFile = open(FilePathOut,"w")
+#			write(DataFile,"# Spinless Fermi-Hubbard model DMRG. This file ",
+#				"contains many sizes. μ0=$μ0, nsweeps=$nsweeps, ",
+#				"cutoff=$cutoff\n")
+#			write(DataFile,"# L; V; E; μ+; μ- [calculated $(now())]\n")
+#			close(DataFile)
+#    	
+#	    	for L in LL
+#	    		println("Starting calculation of observables for L=$L...")
+#	    		
+#	    		# Note: here we use XY (analog) DMRG parameters everywhere
+#				BoundariesSweep(L, VV, DMRGParametersXY, FilePathOut)
+#			end
+#			
+#			DataFile = open(FilePathOut,"a")
+#			write(DataFile,"# [finished $(now())]\n")
+#			close(DataFile)
+#					
+#			println("Done!")
         
         # -------------------------- Horizontal sweep --------------------------
         
         elseif UserMode=="--horizontal"
-
-			@warn "Mode under construction!"
 		
+			# Horizontal sweeps
+			LL = HorizontalLL				# Imported from setup
+	    	VV = HorizontalVV				# Imported from setup
+	    	μ0μ0 = Horizontalμμ				# Imported from setup
+
+			Waiting=true
+			print("Choose your method: (Boundaries/StateAnalysis/Full) ")
+			UserSubMode = readline()
+			
+			BoundariesDirPathOut = ""
+			StateAnalysisDirPathOut = ""
+			
+			while Waiting
+			
+				if UserSubMode=="Boundaries" || UserSubMode=="StateAnalysis" || UserSubMode=="Full"
+					
+					Waiting=false
+					BoundariesDirPathOut = PROJECT_ROOT * "/simulations/horizontal-sweep/boundaries"
+					mkpath(BoundariesDirPathOut) 
+					
+					StateAnalysisDirPathOut = PROJECT_ROOT * "/simulations/horizontal-sweep/state-analysis"
+					mkpath(StateAnalysisDirPathOut) 
+					
+				else
+					print("Invalid input. Choose your method: (Boundaries/StateAnalysis/Full) ")
+					UserSubMode = readline()
+				end
+			
+			end
+	    	
+	    	for μ0 in μ0μ0
+	    	
+	    		# Prepare output files paths
+	    		BoundariesFilePathOut = ""
+	    		StateAnalysisFilePathOut = ""
+	    		
+	    		if UserSubMode=="Boundaries" || UserSubMode=="Full"
+		    		BoundariesFilePathOut = BoundariesDirPathOut * "/μ0=$(μ0)_L=$(LL).txt"
+		    		
+					# Prepare file headers
+					BoundariesFile = open(BoundariesFilePathOut,"w")
+						write(BoundariesFile,"# SFH Charge gaps. μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")
+						write(BoundariesFile,"# L; V; hΔ-1; hΔ+1; hΔ-2; hΔ+2; uΔ-1; uΔ-2 [calculated $(now())]\n")
+					close(BoundariesFile)
+		    	
+		    	end	
+		    		
+				if UserSubMode=="StateAnalysis"	|| UserSubMode=="Full"
+	    			StateAnalysisFilePathOut = StateAnalysisDirPathOut * "/μ0=$(μ0)_L=$(LL).txt"
+	    			
+	    			# Prepare file headers
+					StateAnalysisFile = open(StateAnalysisFilePathOut,"w")
+						write(StateAnalysisFile,"# SFH state properties. μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")
+						write(StateAnalysisFile,"# L; V; E; δn_M^2; S [calculated $(now())]\n")
+					close(StateAnalysisFile)
+				end
+	    	
+	    		# Run horizontal sweep by selected UserSubMode
+		    	for L in LL
+    	    		println("Starting calculation of observables for L=$L...")
+					HorizontalSweep(
+						UserSubMode,	# Boundaries/StateAnalysis/Full
+						L, 
+						VV,
+						μ0,
+						DMRGParametersXY,
+						BoundariesFilePathOut,
+						StateAnalysisFilePathOut
+					)
+				end
+				
+				if UserSubMode=="Boundaries" || UserSubMode=="Full"
+				
+					BoundariesFile = open(BoundariesFilePathOut,"a")
+						write(BoundariesFile,"# [finished at $(now())]\n")
+					close(BoundariesFile)
+		    		
+				end
+				
+				if UserSubMode=="StateAnalysis"	|| UserSubMode=="Full"
+					
+					StateAnalysisFile = open(StateAnalysisFilePathOut,"a")
+						write(StateAnalysisFile,"# [finished at $(now())]\n")
+					close(StateAnalysisFile)
+					
+				end
+			end
+					
+			println("Done!")
+			
+        # -------------------------- Zero field sweep --------------------------
+        
+        elseif UserMode=="--zero-field"
+
 #			# Horizontal sweeps
 #			LL = HorizontalLL				# Imported from setup
 #	    	JJ = HorizontalJJ				# Imported from setup
-#	    	μ0μ0 = Horizontalμμ				# Imported from setup
+#	    	μ0μ0 = [0.0]					# Imported from setup
 #	    	
-#	    	DirPathOut = PROJECT_ROOT * "/simulations/horizontal-sweep"
+#	    	DirPathOut = PROJECT_ROOT * "/simulations/zero-field-sweep"
 #    		mkpath(DirPathOut)
 #	    	
 #	    	for μ0 in μ0μ0
@@ -93,59 +183,23 @@ function main()
 #	    	
 #				DataFile = open(FilePathOut,"w")
 #				write(DataFile,"# Hubbard model DMRG. This file contains many sizes. nmax=$nmax, μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")
-#				write(DataFile,"# L; J; E; Γ; eΓ; [calculated $(now())]\n")
+#				write(DataFile,"# L; V; E; k; D [calculated $(now())]\n")
 #				close(DataFile)
 #	    	
 #		    	for L in LL
 #    	    		println("Starting calculation of observables for L=$L...")
 #    	    		
-#    	    		# Note: here we use superfluid DMRG parameters everywhere
-#					HorizontalSweep(L, nmax, JJ, μ0, DMRGParametersSF, FilePathOut)
+#    	    		# Note: here we use XY DMRG parameters everywhere
+#					HorizontalSweep(L, nmax, JJ, μ0, DMRGParametersXY, FilePathOut)
 #				end
 #				
 #				DataFile = open(FilePathOut,"a")
-#				write(DataFile,"# [finished at $(now())]\n")
+#					write(DataFile,"# [finished at $(now())]\n")
 #				close(DataFile)
 #				
 #			end
 #					
 #			println("Done!")
-			
-        # -------------------------- Zero field sweep --------------------------
-        
-        elseif UserMode=="--zero-field"
-
-			# Horizontal sweeps
-			LL = HorizontalLL				# Imported from setup
-	    	JJ = HorizontalJJ				# Imported from setup
-	    	μ0μ0 = [0.0]					# Imported from setup
-	    	
-	    	DirPathOut = PROJECT_ROOT * "/simulations/zero-field-sweep"
-    		mkpath(DirPathOut)
-	    	
-	    	for μ0 in μ0μ0
-	    		
-	    		FilePathOut = DirPathOut * "/μ0=$(μ0)_L=$(LL).txt"
-	    	
-				DataFile = open(FilePathOut,"w")
-				write(DataFile,"# Hubbard model DMRG. This file contains many sizes. nmax=$nmax, μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")
-				write(DataFile,"# L; V; E; k; D [calculated $(now())]\n")
-				close(DataFile)
-	    	
-		    	for L in LL
-    	    		println("Starting calculation of observables for L=$L...")
-    	    		
-    	    		# Note: here we use XY DMRG parameters everywhere
-					HorizontalSweep(L, nmax, JJ, μ0, DMRGParametersXY, FilePathOut)
-				end
-				
-				DataFile = open(FilePathOut,"a")
-					write(DataFile,"# [finished at $(now())]\n")
-				close(DataFile)
-				
-			end
-					
-			println("Done!")
 
         # -------------------------- Rectangular sweep -------------------------
         

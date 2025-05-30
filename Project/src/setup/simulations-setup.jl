@@ -23,9 +23,9 @@ Resolution = Dict([
 ])
 			 
 # Horizontal sweeps
-HorizontalLL = [10+x for x in 0:4:30] # Odd particles number
-HorizontalVV = collect(range(start=-3.0, stop=3.0, length=Resolution["Low"]))
-Horizontalμμ = [0.6, 0.8]
+HorizontalLL = [6]
+HorizontalVV = [0.0, 0.1] # collect(range(start=-3.0, stop=3.0, length=Resolution["Test"]))
+Horizontalμμ = [0.0]
 
 # Rectangular sweeps
 
