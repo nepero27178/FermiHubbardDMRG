@@ -54,18 +54,22 @@ which as well is approximated at half filling by
 \end{equation}
 for a ``small'' flux variation $\delta\eta$. It is important to notice here that the charge compressibility is expected to vanish in gapped phases. The reason is simple: if $\partial_\mu \rho=0$, that means that shifting infinitesimally the chemical potential does not increase charge density -- there is no single-particle state that can accommodate additional particles. Thus, there is a gap. A simple and good signal that a phase has become gapless is the non-vanishing charge compressibility.
 
-%For a model defined on a lattice of lattice of $L \in \mathbb{N}$ sites with periodic boundary conditions, Born-Von Karman conditions apply, implying a limitation on the possible momenta:
-%\[
-%	k_n = \frac{2\pi}{L} n
-%	\qquad\text{with}\qquad
-%	n \in \mathbb{Z}
-%\]
-%This conditions implies $k_F = \pi$ at half-filling. Now, when imposing a finite flux through the ring -- a condition which, as discussed in Eq.~\eqref{eq:spinless-hamiltonian-tbc}, for arbitrary phase implies twisted boundary conditions with the hopping parameter transformation $t \to T = t^{i\phi}$ -- in order to maintain a coherent mapping with the $\mathrm{XXZ}$ model two things are needed: preservation of periodic boundary conditions (which is, twisting of $2\pi$ multiples or, equivalently, flux quantizatiom) and fermionic parity conservation. The latter is a built-in method of the \href{https://itensor.github.io/ITensorMPS.jl/stable/}{\texttt{ITensorsMPS.jl}} package. The former I implemented by simply choosing as hopping twisting phase the smallest non-zero crystal momentum allowed,
-%\[
-%	\phi = \frac{2\pi}{L}
-%\]
-%This condition is equivalent to requiring precisely one flux quantum to thread the ring.
-
 \subsection{What I actually did}
 
-All I described in the above section is a rather good strategy, provided you can simulate a big long chubby chain with a lot of fermions. It turns out, taken into account my computational resources, the entire strategy turns out to be a little optimistic. It would have been wiser to understand my limits earlier, but that's how life goes, I guess. \todo
+All I described in the above section is a rather good strategy, provided you can simulate a big long chubby chain with a lot of fermions. It turns out, taken into account my computational resources, the entire strategy turns out to be a little optimistic. It would have been wiser to understand my limits earlier, but that's how life goes, I guess.
+
+\subsubsection*{Single-point characterization}
+
+A good task is to characterize the three phases by choosing one precise set of parameters representative of each. Each choice $(V/t,\mu/t)$ describes a model whose solution is a given physical phase.
+
+{\color{tabred}
+	\begin{itemize}
+		\item Study of precise states (one for each phase): block density variance, compressibility and charge stiffness, plot of the correlation functions;
+		\item Study of charge gaps;
+		\item Density heatmap and phase identification.
+	\end{itemize}
+}
+
+\subsubsection*{Observables heatmaps}
+
+\todo

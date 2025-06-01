@@ -1,0 +1,70 @@
+\begin{tikzpicture}
+	
+	% GO ON; HFUP 1-x -> x+1
+	
+	\begin{axis}[
+			axis lines=center,
+			axis on top,
+			height=0.5\textwidth,
+			width=0.75\textwidth,
+			xlabel={$V/t$},		ylabel={$\mu/t$},
+			xlabel style={right}, 	ylabel style={above},
+			xtick={2},				ytick={2},
+			xticklabel style={below},
+			yticklabel style={right, xshift=0.5em},
+			xmin=-3, 				ymin=0,
+			xmax=4, 				ymax=4
+		]
+		\addplot[name path=MIhUpCurved, domain=2:3, dashed] 
+			{4 * (x/2 - 1)^4 + x};
+		\addplot[name path=MIhUpStraight, domain=3:4, dashed] 
+			{2*(x-1.375)};
+		\addplot[name path=MIhDownCurved, domain=2:3, dashed] 
+			{-4 * (x/2 - 1)^4 + x};
+		\addplot[name path=MIhDownStraight, domain=3:4, dashed]
+			{2*1.375};
+		\addplot[name path=MI1, domain=-3:2, dashed] 
+			{2*x+2};
+			
+		\node[anchor=center, color=tabred]
+			at (axis cs:-1,2) {$\mathrm{MI}_1$};
+		\node[anchor=center, color=tabblue]
+			at (axis cs:1,1) {$\mathrm{SU}$};
+		\node[anchor=south west, color=tabgreen]
+			at (axis cs:3.2,3) {$\mathrm{MI}_{1/2}$};
+			
+		\path[name path=SupportZero1]
+			(-3,0) -- (2,0);
+		\path[name path=SupportZero2]
+			(2,0) -- (3,0);
+		\path[name path=SupportZero3]
+			(3,0) -- (4,0);
+		\path[name path=SupportUp1] 
+			(-3,4) -- (-1,4);
+		\path[name path=SupportUp2] 
+			(2,4) -- (3,4);
+		\path[name path=SupportUp3] 
+			(3,4) -- (4,4);
+			
+		\addplot[color=tabred!25]
+			fill between [of = MI1 and SupportUp1];
+		
+		\addplot[color=tabblue!25]
+			fill between [of = MI1 and SupportZero1];
+		\addplot[color=tabblue!25]
+			fill between [of = MIhUpCurved and SupportUp2];
+		\addplot[color=tabblue!25]
+			fill between [of = MIhUpStraight and SupportUp3];
+		\addplot[color=tabblue!25]
+			fill between [of = MIhDownCurved and SupportZero2];
+		\addplot[color=tabblue!25]
+			fill between [of = MIhDownStraight and SupportZero3];
+		
+		\addplot[color=tabgreen!25]
+			fill between [of = MIhDownCurved and MIhUpCurved];
+		\addplot[color=tabgreen!25]
+			fill between [of = MIhDownStraight and MIhUpStraight];
+		
+		
+	\end{axis}
+\end{tikzpicture}

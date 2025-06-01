@@ -210,7 +210,14 @@ A schematics of this mapping is given in Fig.~\ref{fig:jordan-wigner-mapping}.
 \end{figure}
 
 The phase diagram of the $\mathrm{XXZ}$ model is readily obtained by the means of exact methods like Bethe Ansatz. Of course, the dominant parameter is the ratio $J_z/J_{xy}$ which measures the dominant contribution to energy given by spin-spin NN interaction ($z$ term) and spin diffusion ($xy$ term). Whenever $\abs{J_z} = \abs{J_{xy}}$, the model is of the Heisenberg class.
-
+%
+\begin{figure}[t]
+	\centering
+	\input{pictures/fermi-hubbard/xxz-field-phase-diagram}
+	\caption{Schematics of the phase boundaries for the $\mathrm{XXZ}$ model as extracted by \citeauthor{franchini2016integrable} \cite[Sec.~4.1]{franchini2016integrable}. Notice the two zero-field phase-transition points $(-1,0)$ and $(1,0)$.}
+	\label{fig:xxz-field-phase-diagram}
+\end{figure}
+%
 We can safely assume $J_{xy}<0$ and only consider the relative sign of $J_z$. This is easily seen: if we map
 \[
 	J_{xy} \to - J_{xy}
@@ -224,6 +231,14 @@ which is, exchange the hopping sign, this is equivalent to flipping the sign of 
 	\item Crossing the second Heisenberg boundary, $J_z = J_{xy}$, the system tends to an Ising Ferromagnet, dominated by the uniform state configuration. The latter maps onto a completely filled fermionic chain.
 \end{enumerate}
 For a fixed number system, this is the expected phase dynamics, schematically represented in Fig.~\ref{fig:xxz-phase-diagram}.
+%
+\begin{figure}
+	\centering
+	\input{pictures/fermi-hubbard/jordan-wigner-phase-diagram}
+	\caption{The same phase diagram as in Fig.~\ref{fig:xxz-field-phase-diagram}, completed with the requirement $h/J < \Delta$. The shaded area is excluded from the mapping. Note that a positive chemical potential excludes the Antiferromagnetic phase.}
+	\label{fig:jordan-wigner-phase-diagram}
+\end{figure}
+%
 Now, define $J$ and $\Delta$ as does \citeauthor{franchini2016integrable} in \cite[Sec.~4.1]{franchini2016integrable}, which is
 \[
 	J_{xy} \equiv -J
@@ -243,22 +258,18 @@ This gives the mapping:
 Within this parametrization, the analytical phase diagram\footnote{
 	This phase diagram is obtained exactly by the means of Bethe Ansatz \cite{franchini2016integrable, rakov2016symmetries}.
 } is the one depicted in Fig.~\ref{fig:xxz-field-phase-diagram}.
-%
-\begin{figure}[t]
-	\centering
-	\input{pictures/fermi-hubbard/xxz-field-phase-diagram}
-	\caption{Schematics of the phase boundaries for the $\mathrm{XXZ}$ model as extracted by \citeauthor{franchini2016integrable} \cite[Sec.~4.1]{franchini2016integrable}. Notice the two zero-field phase-transition points $(-1,0)$ and $(1,0)$.}
-	\label{fig:xxz-field-phase-diagram}
-\end{figure}
-%
-Now, I use $\mu/t > 0$. This maps on the $\mathrm{XXZ}$ model as $h/J > \Delta$, a condition depicted in Fig.~\ref{fig:jordan-wigner-mapping}. Thus, running simulations in a regime $\mu/t > 0$ and $V/t \in \mathbb{R}$, what one expects is to encounter all three phases. Now, I need to reconnect this expectation in a bosonization framework.
+Now, I use $\mu/t > 0$. This maps on the $\mathrm{XXZ}$ model as $h/J > \Delta$, a condition depicted in Fig.~\ref{fig:jordan-wigner-phase-diagram}. Expressing the phase borders as functions of $\Delta$, one is able to map the phase diagram of the PBC-$\mathrm{XXZ}$ model onto the spinless Fermi-Hubbard phase diagram of Fig.~\ref{fig:expected-sfh-phase-diagram}. Three phases are present, as expected intuitively. Two are Mott-localized, respectively with unitary filling ($\mathrm{MI}_1$ in figure) and with half-filling ($\mathrm{MI}_{1/2}$ in figure).
 
+Such a phase diagram is easy to explain physically. Three mechanisms are present: the NN interaction repels or attracts fermions, the hopping part favors density diffusion, the chemical potential gains favor by incrementing the total density. If the interaction is strongly attractive, energy is lowered by maximizing the number of fermions -- we are in the $\mathrm{MI}_1$ phase on the left. If the interaction is strongly repulsive, either the system gains energy by keeping the density low and delocalized (energy is gained thanks to the spatial superposition of the wavefunction across sites) or, if the chemical potential is large enough, by maximizing the particles number while minimizing the number of pairs across nearest neighbors sites -- we are in the $\mathrm{MI}_{1/2}$ phase on the left. In between, the expected phase is expected to present superconducting ($\mathrm{SU}$) features.
+%
 \begin{figure}
 	\centering
-	\input{pictures/fermi-hubbard/jordan-wigner-phase-diagram}
-	\caption{The same phase diagram as in Fig.~\ref{fig:xxz-field-phase-diagram}, completed with the requirement $h/J < \Delta$. The shaded area is excluded from the mapping. Note that a positive chemical potential excludes the Antiferromagnetic phase.}
-	\label{fig:jordan-wigner-phase-diagram}
+	\input{pictures/fermi-hubbard/expected-sfh-phase-diagram}
+	\caption{The expected phase diagram for the spinless Fermi-Hubbard model, obtained thanks via the \eqref{eq:xxz-fermions-parameters-map-2} mapping of the phase diagram in Fig.~\ref{fig:xxz-field-phase-diagram}.}
+	\label{fig:expected-sfh-phase-diagram}
 \end{figure}
+%
+Running simulations in a regime $\mu/t > 0$ and $V/t \in \mathbb{R}$, what one expects is to encounter all three phases. Now, I need to reconnect this expectation in a bosonization framework.
 
 \subsection{Non-interacting ground-state}
 

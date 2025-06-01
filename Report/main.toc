@@ -15,13 +15,13 @@
 \contentsline {paragraph}{Superconducting correlations.}{12}{section*.13}%
 \contentsline {section}{\numberline {2}The Fermi-Hubbard model}{13}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{14}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Non-interacting ground-state}{16}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.2}Non-interacting ground-state}{17}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Bosonization of the free model}{18}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{19}{subsection.2.4}%
-\contentsline {section}{\numberline {3}Algorithms and simulations}{21}{section.3}%
-\contentsline {subsection}{\numberline {3.1}What I would have liked to do}{21}{subsection.3.1}%
-\contentsline {paragraph}{Charge compressibility.}{21}{section*.21}%
-\contentsline {paragraph}{Charge stiffness.}{21}{section*.22}%
-\contentsline {subsection}{\numberline {3.2}What I actually did}{22}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Data analysis and results}{23}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{23}{subsection.4.1}%
+\contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{20}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Algorithms and simulations}{22}{section.3}%
+\contentsline {subsection}{\numberline {3.1}What I would have liked to do}{22}{subsection.3.1}%
+\contentsline {paragraph}{Charge compressibility.}{22}{section*.22}%
+\contentsline {paragraph}{Charge stiffness.}{22}{section*.23}%
+\contentsline {subsection}{\numberline {3.2}What I actually did}{23}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Data analysis and results}{24}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{24}{subsection.4.1}%

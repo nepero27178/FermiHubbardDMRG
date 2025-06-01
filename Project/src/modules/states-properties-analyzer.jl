@@ -1,6 +1,7 @@
 #!/usr/bin/julia
 
 using DelimitedFiles
+using Base.Threads
 
 PROJECT_ROOT = @__DIR__
 include(PROJECT_ROOT * "/../setup/graphic-setup.jl")
@@ -30,7 +31,11 @@ function GetStateProperties(
 		ConserveNumber::Bool,
 		ConserveParity::Bool
 	)
-
+	
+	ε = 0.01
+	Δμ = 0.1
+	L, N, _, V, μ, _ = ModelParameters
+	
 	# ------------------------------- Simulation ------------------------------- 
 
 	nsweep = 10
@@ -42,83 +47,60 @@ function GetStateProperties(
 		ModelParameters,
 		DMRGParameters,
 		"StateAnalyzer"; #UserMode
-		verbose=true,
+		verbose=false,
 		FixedN=ConserveNumber,
 		FixedParity=ConserveParity
 	)
 	
-	
-	# GO ON FROM HERE
-	# Extract compressibility and charge stiffness of the state: to be understood
-	# if to be done as in Eq 5.4.1 conserving the particles number or not
-	
-	for N in L/2:2:L-2
-		# Get compressibility and charge stiffnesss
-		@sync begin
-			# Create tasks for each DMRG call
-			task1 = @spawn RunDMRGAlgorithm(
-				[L, N, 1.0, V, μ0, 0.0],		# Central
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=true,
-				FixedParity=true
-			)
-			task2 = @spawn RunDMRGAlgorithm(
-				[L, N, 1.0, V, μ0, ε], 		# Rotate clockwise
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=true,
-				FixedParity=true
-			)
-			task3 = @spawn RunDMRGAlgorithm(
-				[L, N, 1.0, V, μ0, -ε], 		# Rotate counter-clockwise
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=true,
-				FixedParity=true
-			)
-			task4 = @spawn RunDMRGAlgorithm(
-				[L, N+2, 1.0, V, μ0, 0.0], 	# Add two particles
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=true,
-				FixedParity=true
-			)
-			task5 = @spawn RunDMRGAlgorithm(
-				[L, N-2, 1.0, V, μ0, 0.0], 	# Remove two particles
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=true,
-				FixedParity=true
-			)
-
-			# Wait for all tasks to complete and collect results
-			E, psi = fetch(task1)
-			EClock, _ = fetch(task2)
-			ECounterClock, _ = fetch(task3)
-			EAdd, _ = fetch(task4)
-			EPop, _ = fetch(task5)
-			
-			D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
-			k = 4/(L*(EAdd + EPop - 2*E))
-		end
-	end
-	
 	# Energy, local energy, state, local denisty, density-density correlator, entropy
-	E, e, psi, n, Cnn, S, k, D = Observables
+	E, e, psi, n, Cnn, S = Observables
+	ρ = sum(n)/L
+	δn2M = GetBlockVariance(n, Cnn)
+	
+	# Get compressibility and charge stiffnesss
+	@sync begin
+		# Create tasks for each DMRG call
+		task1 = @spawn RunDMRGAlgorithm(
+			[L, N, 1.0, V, μ+Δμ, 0.0],		# Central
+			DMRGParameters,
+			"Fast"; # UserMode
+			verbose=false,
+			FixedN=ConserveNumber,
+			FixedParity=ConserveParity
+		)
+		task2 = @spawn RunDMRGAlgorithm(
+			[L, N, 1.0, V, μ, ε], 			# Rotate clockwise
+			DMRGParameters,
+			"Fast"; # UserMode
+			verbose=false,
+			FixedN=ConserveNumber,
+			FixedParity=ConserveParity
+		)
+		task3 = @spawn RunDMRGAlgorithm(
+			[L, N, 1.0, V, μ, -ε], 		# Rotate counter-clockwise
+			DMRGParameters,
+			"Fast"; # UserMode
+			verbose=false,
+			FixedN=ConserveNumber,
+			FixedParity=ConserveParity
+		)
+
+		# Wait for all tasks to complete and collect results
+		EShift, _ = fetch(task1)
+		EClock, _ = fetch(task2)
+		ECounterClock, _ = fetch(task3)
+		
+		D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
+		k = (EShift-E) / Δμ
+	end
 
 	# --------------------------------- Write ----------------------------------
 
 	DataFile = open(FilePathOut, "a")
-		write(DataFile, "$ConserveNumber; $E; $e; $n; $nC; $S\n")
+		write(DataFile, "$ConservedN; $ConservedParity; $L; $N; $V; $μ; $E; $e; $n; $(δn2M); $S; $k; $D\n")
 	close(DataFile)
 	
-	return Observables
+	return E, e, n, δn2M, S, k, D
 end
 
 # ----------------------------------- Main -------------------------------------
@@ -126,55 +108,58 @@ end
 function main()
 
 	global Counter = 0
-	L = 50
-	N = 25
+	L = 70
+	N = Int64(L/2)
 	η = 0.0
 	
 	print("Should I run the simulations? (y/n) ")
 	Compute = readline()
 	
 	for Phase in ["XY", "IAF", "IF"]
-	
+		
 		DirPathOut = PROJECT_ROOT * "/simulations/states-properties/"
 		mkpath(DirPathOut)
 		
 		if Phase=="XY"			# XY state (Jordan-Wigner mapping)  
-			V = 0.1
-			μ = 0.0
+			V = 0.5
+			μ = 1.0
 			FilePathOut = DirPathOut * "XY_V=$(V)_μ=$(μ).txt"
 		elseif Phase=="IAF"		# IAF state (Jordan-Wigner mapping), Mott insulating
-			V = 2.5
-			μ = 0.0
+			V = 5.0
+			μ = 4.0
 			FilePathOut = DirPathOut * "IAF_V=$(V)_μ=$(μ).txt"	
 		elseif Phase=="IF"		# IF state (Jordan-Wigner mapping), Mott insulating
 			V = -2.5
-			μ = 0.0
+			μ = 1.0
 			FilePathOut = DirPathOut * "IF_V=$(V)_μ=$(μ).txt"
 		end
-		
-		@info "State parameters" L N V μ
-		
-		ModelParameters = [L, N, 1.0, V, μ, 0.0]
-		ConserveNumber = true
-		ConserveParity = true
-		
-		if Compute=="y"
-			DataFile = open(FilePathOut, "w")
-			write(DataFile, "# FixedN; E; LocalE; nMean; nVariance; ",
-				"DensityFluctuations; Populations; Entropy\n")
-			close(DataFile)
+
+		for ConserveNumber in [true, false], ConserveParity in [true, false]
+			
+			@info "State parameters" ConserveNumber ConserveParity L N V μ
+			ModelParameters = [L, N, 1.0, V, μ, 0.0]
+			
+			if Compute=="y"
+				DataFile = open(FilePathOut, "w")
+					write(DataFile, "# FixedN; FixedParity; "
+						* "L; N; V; μ; "
+						* "E; LocalE; Density; DensityBlockVariance; Entropy; "
+						* "Charge compressibility; Charge stiffness\n")
+				close(DataFile)
+			end
+			
+			DirPathOut = PROJECT_ROOT * "/analysis/states-properties/"
+			mkpath(DirPathOut)
+			
+			Observables = GetStateProperties(
+				FilePathOut,
+				ModelParameters,
+				ConserveNumber,
+				ConserveParity
+			)
+			E, e, n, δn2M, S, k, D = Observables
+			
 		end
-		
-		DirPathOut = PROJECT_ROOT * "/analysis/states-properties/"
-		mkpath(DirPathOut)
-		
-		Observables = GetStateProperties(
-			FilePathOut,
-			ModelParameters,
-			ConserveNumber,
-			ConserveParity
-		)
-		E, e, psi, n, Cnn, S = Observables
 	end
 end
 
