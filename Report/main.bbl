@@ -1,5 +1,5 @@
 % $ biblatex auxiliary file $
-% $ biblatex bbl format version 3.2 $
+% $ biblatex bbl format version 3.3 $
 % Do not modify the above lines!
 %
 % This is an auxiliary file used by the 'biblatex' package.
@@ -18,8 +18,8 @@
 
 
 \refsection{0}
-  \datalist[entry]{nty/global//global/global}
-    \entry{vonDelft1998bosonization}{article}{}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{vonDelft1998bosonization}{article}{}{}
       \name{author}{2}{}{%
         {{hash=bc8657e87346eec5c0e15953879f598c}{%
            family={Delft},
@@ -36,10 +36,12 @@
       }
       \strng{namehash}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{fullhash}{5707905a39869fcdb9f2fc9683c8ed75}
+      \strng{fullhashraw}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{bibnamehash}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{authorbibnamehash}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{authornamehash}{5707905a39869fcdb9f2fc9683c8ed75}
       \strng{authorfullhash}{5707905a39869fcdb9f2fc9683c8ed75}
+      \strng{authorfullhashraw}{5707905a39869fcdb9f2fc9683c8ed75}
       \field{sortinit}{D}
       \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
       \field{labelnamesource}{author}
@@ -67,7 +69,7 @@
       \endverb
       \keyw{Bosonization,Refermionization,Luttinger liquids}
     \endentry
-    \entry{franchini2016integrable}{book}{}
+    \entry{franchini2016integrable}{book}{}{}
       \name{author}{1}{}{%
         {{hash=b5da0724fbdf382e394b144b9e429944}{%
            family={Franchini},
@@ -77,10 +79,12 @@
       }
       \strng{namehash}{b5da0724fbdf382e394b144b9e429944}
       \strng{fullhash}{b5da0724fbdf382e394b144b9e429944}
+      \strng{fullhashraw}{b5da0724fbdf382e394b144b9e429944}
       \strng{bibnamehash}{b5da0724fbdf382e394b144b9e429944}
       \strng{authorbibnamehash}{b5da0724fbdf382e394b144b9e429944}
       \strng{authornamehash}{b5da0724fbdf382e394b144b9e429944}
       \strng{authorfullhash}{b5da0724fbdf382e394b144b9e429944}
+      \strng{authorfullhashraw}{b5da0724fbdf382e394b144b9e429944}
       \field{sortinit}{F}
       \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
       \field{labelnamesource}{author}
@@ -91,12 +95,11 @@
       \field{title}{An Introduction to Integrable Techniques for One-Dimensional Quantum Systems}
       \field{volume}{940}
       \field{year}{2016}
-      \true{nocite}
       \verb{doi}
       \verb 10.1007/978-3-319-48487-7
       \endverb
     \endentry
-    \entry{giamarchi2003quantum}{book}{}
+    \entry{giamarchi2003quantum}{book}{}{}
       \name{author}{1}{}{%
         {{hash=a9a9c4c944540b0a4524a533ee1f3d2d}{%
            family={Giamarchi},
@@ -109,10 +112,12 @@
       }
       \strng{namehash}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{fullhash}{a9a9c4c944540b0a4524a533ee1f3d2d}
+      \strng{fullhashraw}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{bibnamehash}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{authorbibnamehash}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{authornamehash}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \strng{authorfullhash}{a9a9c4c944540b0a4524a533ee1f3d2d}
+      \strng{authorfullhashraw}{a9a9c4c944540b0a4524a533ee1f3d2d}
       \field{sortinit}{G}
       \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
       \field{labelnamesource}{author}
@@ -132,7 +137,7 @@
       \verb https://doi.org/10.1093/acprof:oso/9780198525004.001.0001
       \endverb
     \endentry
-    \entry{haldane1981luttinger}{article}{}
+    \entry{haldane1981luttinger}{article}{}{}
       \name{author}{1}{}{%
         {{hash=3a0dc1a4bb58ef9e8936b4afcc45ebc6}{%
            family={Haldane},
@@ -142,10 +147,12 @@
       }
       \strng{namehash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
       \strng{fullhash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
+      \strng{fullhashraw}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
       \strng{bibnamehash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
       \strng{authorbibnamehash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
       \strng{authornamehash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
       \strng{authorfullhash}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
+      \strng{authorfullhashraw}{3a0dc1a4bb58ef9e8936b4afcc45ebc6}
       \field{sortinit}{H}
       \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
       \field{labelnamesource}{author}
@@ -169,7 +176,7 @@
       \verb https://dx.doi.org/10.1088/0022-3719/14/19/010
       \endverb
     \endentry
-    \entry{rakov2016symmetries}{article}{}
+    \entry{rakov2016symmetries}{article}{}{}
       \name{author}{3}{}{%
         {{hash=c824f6973fbf4985842dd642d4d9af1d}{%
            family={Rakov},
@@ -192,10 +199,12 @@
       }
       \strng{namehash}{297e1f2a199a203732e3c313c0994ddd}
       \strng{fullhash}{297e1f2a199a203732e3c313c0994ddd}
+      \strng{fullhashraw}{297e1f2a199a203732e3c313c0994ddd}
       \strng{bibnamehash}{297e1f2a199a203732e3c313c0994ddd}
       \strng{authorbibnamehash}{297e1f2a199a203732e3c313c0994ddd}
       \strng{authornamehash}{297e1f2a199a203732e3c313c0994ddd}
       \strng{authorfullhash}{297e1f2a199a203732e3c313c0994ddd}
+      \strng{authorfullhashraw}{297e1f2a199a203732e3c313c0994ddd}
       \field{sortinit}{R}
       \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
       \field{labelnamesource}{author}
@@ -218,7 +227,7 @@
       \verb https://link.aps.org/doi/10.1103/PhysRevB.93.054417
       \endverb
     \endentry
-    \entry{senechal1999introduction}{inproceedings}{}
+    \entry{senechal1999introduction}{inproceedings}{}{}
       \name{author}{1}{}{%
         {{hash=f0e0aad70136ce872a3974631ef486e0}{%
            family={Senechal},
@@ -228,10 +237,12 @@
       }
       \strng{namehash}{f0e0aad70136ce872a3974631ef486e0}
       \strng{fullhash}{f0e0aad70136ce872a3974631ef486e0}
+      \strng{fullhashraw}{f0e0aad70136ce872a3974631ef486e0}
       \strng{bibnamehash}{f0e0aad70136ce872a3974631ef486e0}
       \strng{authorbibnamehash}{f0e0aad70136ce872a3974631ef486e0}
       \strng{authornamehash}{f0e0aad70136ce872a3974631ef486e0}
       \strng{authorfullhash}{f0e0aad70136ce872a3974631ef486e0}
+      \strng{authorfullhashraw}{f0e0aad70136ce872a3974631ef486e0}
       \field{sortinit}{S}
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
       \field{labelnamesource}{author}
@@ -245,7 +256,7 @@
       \verb cond-mat/9908262
       \endverb
     \endentry
-    \entry{sirker2006openXXZ}{article}{}
+    \entry{sirker2006openXXZ}{article}{}{}
       \name{author}{2}{}{%
         {{hash=7d9f07212465f3b6b67eb93a6738f857}{%
            family={Sirker},
@@ -260,10 +271,12 @@
       }
       \strng{namehash}{3481aa07720fc76313bdba33a19ee117}
       \strng{fullhash}{3481aa07720fc76313bdba33a19ee117}
+      \strng{fullhashraw}{3481aa07720fc76313bdba33a19ee117}
       \strng{bibnamehash}{3481aa07720fc76313bdba33a19ee117}
       \strng{authorbibnamehash}{3481aa07720fc76313bdba33a19ee117}
       \strng{authornamehash}{3481aa07720fc76313bdba33a19ee117}
       \strng{authorfullhash}{3481aa07720fc76313bdba33a19ee117}
+      \strng{authorfullhashraw}{3481aa07720fc76313bdba33a19ee117}
       \field{sortinit}{S}
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
       \field{labelnamesource}{author}

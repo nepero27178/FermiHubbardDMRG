@@ -185,6 +185,7 @@ function RunDMRGAlgorithm(
 	    H = GetHamiltonianMPO(sites, t, V, μ; Φ=2*pi*η)
 	end
     
+    #TODO Finalize state initialization phase-wise
     # Set starting state
     psi0 = SetStartingState(sites, N)
 	# Set Ferromagnetic state
@@ -289,7 +290,6 @@ function RunDMRGAlgorithm(
     	end
     	
     	# ShowDensityProfile(psi)    	
-    	# return E, nMean, nVariance, DensityFluctuations, LocalE, Populations, Entropy
 		return E, LocalE, psi, SiteDensity, DensityCorrelator, Entropy
 
 	elseif Debug

@@ -18,11 +18,11 @@ which in turn implies
 	K = \sqrt{\pi\kappa\mathcal{D}}
 \end{equation}
 Coherently with the definitions I used, the observables $\kappa$ and $\mathcal{D}$ were calculated as follows. Let me define:
-\[
-	E\left[
+\begin{equation}\label{eq:fixed-number-energy-definition}
+	E_g \left[
 		L,N,\eta;\frac{V}{t},\frac{\mu}{t}
 	\right]
-\]
+\end{equation}
 as the ground-state energy for the model setup specified by its arguments $L$ (size), $N$ (number of particles), $\eta$ (adimensional magnetic flux) and parameters $V/t$ (reduced NN interaction) and $\mu/t$ (reduced chemical potential). From now on I omit $V/t$ and $\mu/t$ as explicit parameters. 
 
 \paragraph{Charge compressibility.}
@@ -33,7 +33,7 @@ Charge compressibility is given by
 which is well approximated at half-filling by
 \begin{equation}\label{eq:charge-compressibility-approximation}
 	\kappa_{1/2}(L) \equiv \left[
-		\frac{E[L,L/2+2,0]+E[L,L/2-2,0]-2E[L,L/2,0]}{4}
+		\frac{E_g[L,L/2+2,0]+E_g[L,L/2-2,0]-2E_g[L,L/2,0]}{4}
 	\right]^{-1}
 \end{equation}
 (usually one adds or removes $2$ particles in order to avoid even-odd effects). This strategy is good for mapping the compressibility in the canonical ensemble, for which the energy is minimized each time given a fixed particles number. For a mapping of compressibility over the $[V/t,\mu/t]$ evidently one needs to let the particles number vary in order to find the gran-canonical ground state. I adopted a rather rough but coherent strategy, approximated the compressibility via its finite-differences derivative formulation
@@ -50,7 +50,7 @@ Similarly, charge stiffness is given by
 which as well is approximated at half filling by
 \begin{equation}\label{eq:charge-stiffness-approximation}
 	\mathcal{D}_{1/2}(L) \equiv
-	\frac{E[L,L/2,\delta\eta]+E[L,L/2,-\delta\eta]-2E[L,L/2,0]}{4(\delta\eta)^2}
+	\frac{E_g[L,L/2,\delta\eta]+E_g[L,L/2,-\delta\eta]-2E_g[L,L/2,0]}{4(\delta\eta)^2}
 \end{equation}
 for a ``small'' flux variation $\delta\eta$. It is important to notice here that the charge compressibility is expected to vanish in gapped phases. The reason is simple: if $\partial_\mu \rho=0$, that means that shifting infinitesimally the chemical potential does not increase charge density -- there is no single-particle state that can accommodate additional particles. Thus, there is a gap. A simple and good signal that a phase has become gapless is the non-vanishing charge compressibility.
 
@@ -58,18 +58,45 @@ for a ``small'' flux variation $\delta\eta$. It is important to notice here that
 
 All I described in the above section is a rather good strategy, provided you can simulate a big long chubby chain with a lot of fermions. It turns out, taken into account my computational resources, the entire strategy turns out to be a little optimistic. It would have been wiser to understand my limits earlier, but that's how life goes, I guess.
 
+\subsubsection*{Charge gaps}
+
+For a model of the class of the spinless Fermi-Hubbard, Eq.~\eqref{eq:spinless-hamiltonian-pbc}, the chemical potential part amounts to a pure energy shift when working inside a fixed-number subspace of the many-body Hilbert space. Let $E_g[L,N,\eta]$ be the ground-state energy of Eq.~\eqref{eq:fixed-number-energy-definition} at fixed particle number $N$. Moreover, let me define
+\[
+	\Delta_\rho^{\pm M}[\mu] \equiv E_g[L, \rho L \pm M, \eta] - E_g[L, \rho L, \eta]
+\]
+being $\rho \equiv N/L$ the charge filling and $M \in \mathbb{N}$ a given number of particles ($+$ sign) or holes ($-$ sign) added as elementary excitations. To diagonalize the model \eqref{eq:spinless-hamiltonian-pbc} at fixed particles number means that the energy difference must depend on $\mu/t$ only by the total number of particles, while on $V/t$ in some complicated unspecified way. This implies
+\[
+	\Delta_\rho^{\pm M}[\mu] \equiv f\left(
+		\rho, \frac{V}{t} 
+	\right) \mp M \mu
+	\quad\implies\quad
+	f\left(
+		\rho, \frac{V}{t} 
+	\right) = \Delta_\rho^{\pm M}[\mu] \pm M\mu
+\]
+The parametric dependence of the $\Delta$s on $\mu$ was specified explicitly. The left-hand side is independent of $\mu$. Let me define $\mu_\rho^\pm$ as the chemical potential at which the gap closes -- which is, the set of points on the $[V/t,\mu/t]$ plane where to add particles or holes does not cost energy. Then, computing the above equation's right-hand side at zero chemical potential, it must be
+\[
+	\mu_\rho^{\pm M} = \mp \frac{1}{M} \Delta_\rho^{\pm M}[0]
+\]
+Now, recall the notation of Fig.~\ref{fig:expected-sfh-phase-diagram}: for the half-filling Mott insulating region, $\mathrm{MI}_{1/2}$, the top and bottom borders shall be given by
+\[
+	\mu_{1/2}^{\pm 1} = \mp \Delta_{1/2}^{\pm 1}[0]
+	\qquad\text{and}\qquad
+	\mu_{1/2}^{\pm 2} = \mp \frac{1}{2} \Delta_{1/2}^{\pm 2}[0]
+\]
+I reported both the expressions for $M=1$ and $M=2$: in our PBC-$\mathrm{XXZ}$ general scheme it is formally more correct to perform fixed-$N$ computations preserving the fermion number parity. For the unitary-filling region, $\mathrm{MI}_1$, of course it is not possible to add particles; as expected, just a $-$ phase boundary can be defined at unitary density
+\[
+	\mu_1^{-1} = -\Delta_1^{-1}[0]
+	\qquad\text{and}\qquad
+	\mu_1^{-2} = -\frac{1}{2} \Delta_1^{-2}[0]
+\]
+To compute $\Delta_\rho^{\pm M}[\mu]$ is just a matter of computing ground-state energies. This procedure allows for a simple estimation of the phase boundaries and, most importantly, provides insight on the finite-size effects.
+
 \subsubsection*{Single-point characterization}
 
 A good task is to characterize the three phases by choosing one precise set of parameters representative of each. Each choice $(V/t,\mu/t)$ describes a model whose solution is a given physical phase.
 
-{\color{tabred}
-	\begin{itemize}
-		\item Study of precise states (one for each phase): block density variance, compressibility and charge stiffness, plot of the correlation functions;
-		\item Study of charge gaps;
-		\item Density heatmap and phase identification.
-	\end{itemize}
-}
+{\color{tabred} [Study of precise states (one for each phase): block density variance, compressibility and charge stiffness, plot of the correlation functions, bipartite entropy.]}
 
 \subsubsection*{Observables heatmaps}
-
-\todo
+{\color{tabred} [Density heatmap and phase identification.]}

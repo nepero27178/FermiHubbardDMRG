@@ -4,93 +4,6 @@ using Base.Threads
 using LinearAlgebra
 using DelimitedFiles  # For writedlm
 
-# ------------------------------ Boundaries sweep ------------------------------
-
-@doc raw"""
-function BoundariesSweep(
-		L::Int64,
-		VV::Array{Float64},
-		DMRGParameters::Vector{Any},                         
-		FilePathOut::String; 
-		μ0=0.0
-	)
-	
-Returns: none (inline print).
-
-# TODO To be completely understood..
-
-This function computes the estimated positions for the gapped/gapless phase
-transitions boundaries. Keeping the fermionic parity constant, we add/remove 2
-femions from the chain and compute the respective ground states keeping each
-time fixed the number of fermions. The difference in energy, apart from simple
-chemical potential shifts, must be all due to the hopping-interaction part only
-parametrized by V/t.
-"""
-function BoundariesSweep(
-		L::Int64,
-		VV::Array{Float64},
-		DMRGParameters::Vector{Any},                         
-		FilePathOut::String; 
-		μ0=0.0
-	)
-    
-    # ModelParameters: we set V=1.0, η=0.0
-    DataFile = open(FilePathOut, "a")
-    println("Extracting boundaries...")
-    
-    l = length(VV)
-    for (j, V) in enumerate(VV)
-        println("Running DMRG for V=$(round(V, digits=3)), μ=$μ0", 
-        	" (simulation $j/$l for L=$L)")
-        
-        # Use @sync to wait for all tasks to complete
-        @sync begin
-            # Create tasks for each DMRG call
-            task1 = @spawn RunDMRGAlgorithm(
-            	[L, L/2+1, 1.0, V, μ0, 0.0],
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=false,
-				FixedParity=false
-			)
-            task2 = @spawn RunDMRGAlgorithm(
-            	[L, L/2, 1.0, V, μ0, 0.0], 
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=false,
-				FixedParity=false
-			)
-            task3 = @spawn RunDMRGAlgorithm(
-				[L, L/2+1, 1.0, V, μ0, 0.0],
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=false,
-				FixedParity=false
-			)
-
-            # Wait for all tasks to complete and collect results
-            EDown = fetch(task1)
-            E = fetch(task2)
-            EUp = fetch(task3)
-
-            # Calculate chemical potentials
-            ΔUp = EUp - E
-            ΔDown = E - EDown
-            μUp = ΔUp/2 + μ0
-            μDown = - ΔDown - 2*μ0 # Sign problem otherwise
-
-            # Write results to the file
-            write(DataFile, "$L; $V; $E; $μUp; $μDown\n")
-        end
-    end
-    
-    close(DataFile)
-    println("Data for L=$L saved on file!")
-end
-
 # ------------------------------ Horizontal sweep ------------------------------
 
 @doc raw"""
@@ -134,11 +47,13 @@ function HorizontalSweep(
     l = length(VV)
     
     for (j, V) in enumerate(VV)
-    	println("Running DMRG for V=$(round(V, digits=3)), μ=$μ0 (simulation $j/$l for L=$L)")
+    	printstyled("\rRunning DMRG for V=$(round(V, digits=3)), ",
+            "μ=$μ0 (simulation $j/$l for L=$L)",
+            color=:yellow)
         
         # First DMRG call: real gran-canonical ground-stae
         GroundState = RunDMRGAlgorithm(
-        	[L, L/2, 1.0, V, μ0, 0.0],4
+        	[L, L/2, 1.0, V, μ0, 0.0],
 			DMRGParametersXY,
 			DMRGMethod[UserSubMode];	# Selected mode
 			verbose=false,
@@ -148,12 +63,15 @@ function HorizontalSweep(
 		
 		if  UserSubMode=="StateAnalyzer" || UserSubMode=="Full" 
 			
+            #TODO Add errors to the chain observables
+    
 			E, e, _, n, Cnn, S = GroundState
 			ρ = sum(n)/L
 			δn2M = GetBlockVariance(n, Cnn)	# Imported from physics-definitions
 			StateAnalysisFile = open(StateAnalysisFilePathOut, "a")
 				write(StateAnalysisFile, "$L; $V; $E; $(δn2M); $S\n")
 			close(StateAnalysisFile)
+            print("\e[2K")
 			
 		elseif  UserSubMode=="Boundaries"
 			E, _ = GroundState
@@ -181,7 +99,7 @@ function HorizontalSweep(
 			# Five DMRG calls (HAF boundary)
 			for (k,n) in enumerate([-2,-1,0,1,2])
 				TmpE, _ = RunDMRGAlgorithm(
-			    	[L, L/2-n, 1.0, V, μ0, 0.0],
+			    	[L, L/2+n, 1.0, V, μ0, 0.0],
 					DMRGParametersXY,
 					"Fast"; # UserMode
 					verbose=false,
@@ -203,10 +121,11 @@ function HorizontalSweep(
 			BoundariesFile = open(BoundariesFilePathOut, "a")
 				write(BoundariesFile, "$L; $V; $(hΔm1); $(hΔp1); $(hΔm2); $(hΔp2); $(uΔm1); $(uΔm2)\n")
 			close(BoundariesFile)
+            print("\e[2K")
 		
 		end
     end
-    println("Data for L=$L saved on file!")
+    printstyled("Data for L=$L saved on file!\n", color=:green)
 end
 
 # ----------------------------- Rectangular sweep ------------------------------
@@ -308,6 +227,7 @@ end
 
 @doc raw"""
 function RectangularSweep(
+        UserSubMode::String,
 		L::Int64,
 		N::Int64,
 		VV::Vector{Float64},
@@ -318,11 +238,15 @@ function RectangularSweep(
 	
 Returns: none (data saved on file).
 
-Performs a rectangular sweep in the `[V/t,μ/t]` space for a closed chain with
-`L` site and initialized to `N` particles states. Data are saved at
+The first variable `UserSubMode` is chosen between \"Density\" (only the charge
+density is extracted) and \"Full\" (also charge compressibility and charge
+stiffness are). `Full` mode requires (much) more computational resources. The
+function performs a rectangular sweep in the `[V/t,μ/t]` space for a closed 
+chain with `L` site and initialized to `N` particles states. Data are saved at
 `FilePathOut` after DMRG simulations with parameters `DMRGParameters`.
 """
 function RectangularSweep(
+        UserSubMode::String,	# Density/Full
 		L::Int64,
 		N::Int64,
 		VV::Vector{Float64},
@@ -333,65 +257,86 @@ function RectangularSweep(
     
     global ε
     DataFile = open(FilePathOut,"a")
-    CachedRho = 1/2	# Cache half-filling
+    ρCache = 1/2	# Cache half-filling
     NTotAvg = 0
 
     for (j,V) in enumerate(VV), (m,μ) in enumerate(μμ)
         
         ModelParameters = [L, N, 1.0, V, μ, 0.0]
-
-		println("Running DMRG for L=$L, V=$(round(V, digits=3)), ", 
+		printstyled("\rRunning DMRG for L=$L, V=$(round(V, digits=3)), ", 
 			"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
-			"$j/$(length(VV)) in V)")
+			"$j/$(length(VV)) in V)",
+            color=:yellow)
 
 		E = 0 # Initalize energy to save variable
-		k = 0 # Initalize compressibility to save variable
-		D = 0 # Initalize stiffness to save variable
-        @sync begin
-            # Create tasks for each DMRG call
-            task1 = @spawn RunDMRGAlgorithm(
-            	[L, L/2, 1.0, V, μ, 0.0],		# Central
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=false,
-				FixedParity=false
-			)
-			task2 = @spawn RunDMRGAlgorithm(
-            	[L, L/2, 1.0, V, μ, ε], 		# Rotate clockwise
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=false,
-				FixedParity=false
-			)
-			task3 = @spawn RunDMRGAlgorithm(
-            	[L, L/2, 1.0, V, μ, -ε], 		# Rotate counter-clockwise
-				DMRGParameters,
-				"Fast"; # UserMode
-				verbose=false,
-				FixedN=false,
-				FixedParity=false
-			)
 
-            # Wait for all tasks to complete and collect results
-            E, psi = fetch(task1)
-            EClock, _ = fetch(task2)
-            ECounterClock, _ = fetch(task3)
+        if UserSubMode=="Density"
+
+            E, psi = RunDMRGAlgorithm(
+            	[L, L/2, 1.0, V, μ, 0.0],		# Central
+			    DMRGParameters,
+			    "Fast"; # UserMode
+			    verbose=false,
+			    FixedN=false,
+			    FixedParity=false
+		    )
             
-            D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
             NTotAvg = GetTotalFermionNumber(psi)
+            ρ = NTotAvg/L
+            write(DataFile,"$V; $μ; $E; $ρ;\n")
+            print("\e[2K")
+
+        elseif UserSubMode=="Full"
+
+		    k = 0 # Initalize compressibility to save variable
+		    D = 0 # Initalize stiffness to save variable
+            @sync begin
+                # Create tasks for each DMRG call
+                task1 = @spawn RunDMRGAlgorithm(
+                	[L, L/2, 1.0, V, μ, 0.0],		# Central
+				    DMRGParameters,
+				    "Fast"; # UserMode
+				    verbose=false,
+				    FixedN=false,
+				    FixedParity=false
+			    )
+			    task2 = @spawn RunDMRGAlgorithm(
+                	[L, L/2, 1.0, V, μ, ε], 		# Rotate clockwise
+				    DMRGParameters,
+				    "Fast"; # UserMode
+				    verbose=false,
+				    FixedN=false,
+				    FixedParity=false
+			    )
+			    task3 = @spawn RunDMRGAlgorithm(
+                	[L, L/2, 1.0, V, μ, -ε], 		# Rotate counter-clockwise
+				    DMRGParameters,
+				    "Fast"; # UserMode
+				    verbose=false,
+				    FixedN=false,
+				    FixedParity=false
+			    )
+
+                # Wait for all tasks to complete and collect results
+                E, psi = fetch(task1)
+                EClock, _ = fetch(task2)
+                ECounterClock, _ = fetch(task3)
+                
+                D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
+                NTotAvg = GetTotalFermionNumber(psi)
+            end
+            
+            ρ = NTotAvg/L
+            if m>1
+			    k = (ρ - ρCache) / (μ - μμ[m-1])	# Compressibility
+			    ρCache = ρ							# Next step
+            elseif m==1
+            	k = NaN								# Avoid segmentation fault
+            end
+            
+            write(DataFile,"$V; $μ; $E; $ρ; $k; $D\n")
+            print("\e[2K")
         end
-        
-        Rho = NTotAvg/L
-        if m>1
-			k = (Rho - CachedRho) / (μ - μμ[m-1])	# Compressibility
-			CachedRho = Rho							# Next step
-        elseif m==1
-        	k = NaN									# Avoid segmentation fault
-        end
-        
-        write(DataFile,"$V; $μ; $E; $k; $D; $Rho\n")
 	end
 
     close(DataFile)

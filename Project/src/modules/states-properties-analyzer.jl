@@ -4,6 +4,7 @@ using DelimitedFiles
 using Base.Threads
 
 PROJECT_ROOT = @__DIR__
+include(PROJECT_ROOT * "/../setup/simulations-setup.jl")
 include(PROJECT_ROOT * "/../setup/graphic-setup.jl")
 include(PROJECT_ROOT * "/dmrg-routine.jl")
 include(PROJECT_ROOT * "/methods-plotting.jl")
@@ -32,16 +33,13 @@ function GetStateProperties(
 		ConserveParity::Bool
 	)
 	
-	ε = 0.01
-	Δμ = 0.1
+	ε = 0.1     # Arbitrary
+	Δμ = 0.5    # Arbitrary
 	L, N, _, V, μ, _ = ModelParameters
 	
 	# ------------------------------- Simulation ------------------------------- 
 
-	nsweep = 10
-	maxlinkdim = [10,50,75,200,500]
-	cutoff = [1E-8]
-	DMRGParameters = [nsweep, maxlinkdim, cutoff]
+	DMRGParameters = global DMRGParametersXY # Always use XY parameters
 	
 	Observables = RunDMRGAlgorithm(
 		ModelParameters,
@@ -53,9 +51,11 @@ function GetStateProperties(
 	)
 	
 	# Energy, local energy, state, local denisty, density-density correlator, entropy
-	E, e, psi, n, Cnn, S = Observables
+	E, lE, psi, n, Cnn, S = Observables
 	ρ = sum(n)/L
-	δn2M = GetBlockVariance(n, Cnn)
+	δn2M = GetBlockVariance(n, Cnn)z
+	k = 0 # Initialize
+	D = 0 # Initialize
 	
 	# Get compressibility and charge stiffnesss
 	@sync begin
@@ -86,37 +86,40 @@ function GetStateProperties(
 		)
 
 		# Wait for all tasks to complete and collect results
-		EShift, _ = fetch(task1)
+		EShift, psiShift = fetch(task1)
 		EClock, _ = fetch(task2)
 		ECounterClock, _ = fetch(task3)
 		
+        ρShift = sum(expect(psiShift, "n"))/L
+        Δρ = ρShift - ρ
+    
 		D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
-		k = (EShift-E) / Δμ
+		k = Δρ/Δμ
 	end
 
 	# --------------------------------- Write ----------------------------------
 
 	DataFile = open(FilePathOut, "a")
-		write(DataFile, "$ConservedN; $ConservedParity; $L; $N; $V; $μ; $E; $e; $n; $(δn2M); $S; $k; $D\n")
+		write(DataFile, "$ConserveNumber; $ConserveParity; $L; $N; $V; $μ; $E; $lE; $n; $(δn2M); $S; $k; $D\n")
 	close(DataFile)
 	
-	return E, e, n, δn2M, S, k, D
+	return E, psi, ρ, δn2M, S, k, D
 end
 
 # ----------------------------------- Main -------------------------------------
 	
 function main()
 
-	global Counter = 0
-	L = 70
-	N = Int64(L/2)
+	L = global StatePropertiesL
 	η = 0.0
 	
 	print("Should I run the simulations? (y/n) ")
 	Compute = readline()
 	
-	for Phase in ["XY", "IAF", "IF"]
-		
+	for Phase in ["XY", "IAF", "IF"]		
+	
+		printstyled("Simulating phase: $(Phase)", color=:yellow)
+
 		DirPathOut = PROJECT_ROOT * "/simulations/states-properties/"
 		mkpath(DirPathOut)
 		
@@ -134,31 +137,43 @@ function main()
 			FilePathOut = DirPathOut * "IF_V=$(V)_μ=$(μ).txt"
 		end
 
-		for ConserveNumber in [true, false], ConserveParity in [true, false]
-			
-			@info "State parameters" ConserveNumber ConserveParity L N V μ
-			ModelParameters = [L, N, 1.0, V, μ, 0.0]
-			
-			if Compute=="y"
-				DataFile = open(FilePathOut, "w")
-					write(DataFile, "# FixedN; FixedParity; "
-						* "L; N; V; μ; "
-						* "E; LocalE; Density; DensityBlockVariance; Entropy; "
-						* "Charge compressibility; Charge stiffness\n")
-				close(DataFile)
+	        if Compute=="y"
+			DataFile = open(FilePathOut, "w")
+				write(DataFile, "# FixedN; FixedParity; L; N; V; μ; E; e; n;"
+					* " δn_M^2; S; k; D [calculated at $(now())]\n")
+			close(DataFile)
+		end
+
+		for ConserveNumber in [true, false]
+
+			if ConserveNumber
+				# If particles number is conserved also parity is.
+				BoolArray = [true]
+			elseif !ConserveNumber
+				BoolArray = [true, false]
 			end
-			
-			DirPathOut = PROJECT_ROOT * "/analysis/states-properties/"
-			mkpath(DirPathOut)
-			
-			Observables = GetStateProperties(
-				FilePathOut,
-				ModelParameters,
-				ConserveNumber,
-				ConserveParity
-			)
-			E, e, n, δn2M, S, k, D = Observables
-			
+
+			for ConserveParity in BoolArray
+				
+				println()
+				@info "State parameters" ConserveNumber ConserveParity L N V μ
+				ModelParameters = [L, N, 1.0, V, μ, 0.0]
+				
+				DirPathOut = PROJECT_ROOT * "/analysis/states-properties/"
+				mkpath(DirPathOut)
+				
+				Observables = GetStateProperties(
+					FilePathOut,
+					ModelParameters,
+					ConserveNumber,
+					ConserveParity
+				)
+				E, lE, ρ, δn2M, S, k, D = Observables
+				
+				@info Phase ConserveNumber ConserveParity ρ k D
+				println()
+			end
+
 		end
 	end
 end

@@ -24,9 +24,9 @@ function PlotHeatmap(
         FilePathIn::String;
         PhaseBoundariesFilePath="",
         EFilePathOut="",		    # Energy heatmap
+        ρFilePathOut="",			# Density heatmap
         kFilePathOut="",			# Charge stiffness
         DFilePathOut="",            # Compressibility heatmap
-        ρFilePathOut="",			# Density heatmap
         verbose=false
     )
     
@@ -36,26 +36,40 @@ function PlotHeatmap(
 		@info "Data" Data
 	end
 
+    Full=false
+    if kFilePathOut!=="" || DFilePathOut!==""
+        Full=true
+    end
+
     VV = Data[:,1]
     μμ = Data[:,2]
     EE = Data[:,3]
-    kk = Data[:,4]
-    DD = Data[:,5]
-    ρρ = Data[:,6]
+    ρρ = Data[:,4]
+    
+    if Full
+        kk = Data[:,5]
+        DD = Data[:,6]
+    end
 
     NumV = length(unique(VV))
     Numμ = length(unique(μμ))
     
     Energies = zeros(Numμ, NumV)
-    Compressibilities = zeros(Numμ, NumV)
-    Stiffnesses = zeros(Numμ, NumV)
     Densities = zeros(Numμ, NumV)
+
+    if Full
+        Compressibilities = zeros(Numμ, NumV)
+        Stiffnesses = zeros(Numμ, NumV)
+    end
 
     for jj in 1:NumV
         Energies[:,jj] = EE[ Numμ*(jj-1)+1 : Numμ*jj ]
-        Compressibilities[:,jj] = kk[ Numμ*(jj-1)+1 : Numμ*jj ]
-        Stiffnesses[:,jj] = DD[ Numμ*(jj-1)+1 : Numμ*jj ]
         Densities[:,jj] = ρρ[ Numμ*(jj-1)+1 : Numμ*jj ]
+        
+        if Full
+            Compressibilities[:,jj] = kk[ Numμ*(jj-1)+1 : Numμ*jj ]
+            Stiffnesses[:,jj] = DD[ Numμ*(jj-1)+1 : Numμ*jj ]
+        end
     end
 
     if EFilePathOut != ""
@@ -273,9 +287,9 @@ function PlotPhaseBoundaries(
 		hΔp2 = BoundariesData[jj,6]
 		
 		if double
-			uμm = uΔm2
-			hμp = hΔp2
-			hμm = hΔm2
+			uμm = uΔm2/2
+			hμp = hΔp2/2
+			hμm = hΔm2/2
 		elseif !double
 			uμm = uΔm1
 			hμp = hΔp1
@@ -287,35 +301,46 @@ function PlotPhaseBoundaries(
                 VV, hμp - hμm, 
                 xlabel=L"$V/t$", ylabel=L"$\Delta E_{\mathrm{gap}}$", 
                 title=L"Charge gap as a function of $V/t$ ($\mu_0=%$μ0$)",
-                #seriestype=:scatter,
+                seriestype=:scatter,
                 markersize=1.5,
                 label=L"$L=%$L$",
                 color=MyColors[l % length(MyColors)]
             )
-	    else
-	        plot!(
-                VV, -hμm .+ 2 * μ0, 
+   	    else
+
+            plot!(
                 xlabel=L"$V/t$", ylabel=L"$\mu$",
-                label=L"$L=%$L$",
+                label=L"$L=%$(Int64(L))$",
                 title=L"Extrapolation of $\mu_c^\pm$ ($\mu_0=%$μ0$)",
+                xlims=[-2.0,4.0],
+                ylims=[0.0,4.0],
+                legend=:topleft,
+                VV, -hμm .+ μ0, 
                 #seriestype=:scatter,
+                markershape=:circle,
                 markersize=1.5,
+                linewidth=0.5,
                 color=MyColors[l % length(MyColors)]
             )
 
 	        plot!(
-                VV, hμp, 
+                VV, hμp .+ μ0, 
                 #seriestype=:scatter,
+                markershape=:circle,
                 label="",
                 markersize=1.5,
+                linewidth=0.5,
                 color=MyColors[l % length(MyColors)]
             )
             
             plot!(
-                VV, -uμm .+ 2 * μ0, 
+                VV, -uμm .+ μ0, 
                 #seriestype=:scatter,
+                markershape=:circle,
+                linestyle=:dash,
                 label="",
                 markersize=1.5,
+                linewidth=0.5,
                 color=MyColors[l % length(MyColors)]
             )
 	    end
@@ -324,52 +349,10 @@ function PlotPhaseBoundaries(
     
     if !=(FilePathOut,"")
         savefig(FilePathOut)
-        if gap
-            println("Gap for L=$(Int.(LL)) plotted to ", FilePathOut)
-        else
-            println("Phase boundaries for L=$(Int.(LL)) plotted to ", FilePathOut)
-        end
+        printstyled("Done!\n", color=:green)
     else
     	gui()
     end
-end			 
-
-"""
-Plot the phase boundaries and a specific point.
-"""
-function PlotPointAndPhaseBoundaries(MottLobeFilePath::String)
-
-    @warn "Mode under construction."
-
-#    MottLobeData = readdlm(MottLobeFilePath, ',', '\n'; comments=true)
-#    JJ = MottLobeData[:,1]
-#    ΔEp = MottLobeData[:,2]
-#    ΔEm = MottLobeData[:,3]
-#
-#    plot(size=(352, 256))
-#
-#    # Phase boundaries
-#    plot!(JJ, [ΔEp, -ΔEm],
-#            #label=[L"\mu_c^+ \, (L \rightarrow \infty)" L"\mu_c^- \, (L \rightarrow \infty)"],
-#            label=nothing,
-#            color=["black" "black"],
-#            xlabel=L"$J$",
-#            ylabel=L"$\mu$",
-#            background_color = :transparent,
-#            minorticks=false)
-#            #linestyle=[:dash :dashdot])
-#
-#    scatter!([0.06], [0.4], markersize=4, marker=:diamond,
-#        label=nothing, color=MyColors[4])
-#
-#    scatter!([0.33], [0.8], markersize=4, marker=:diamond,
-#       label=nothing, color=MyColors[4])
-#    
-#    # MI / SF text
-#    annotate!(0.06, 0.48, text("MI", 9))
-#    annotate!(0.31, 0.8, text("SF", 9))
-#
-#    gui()
 end
 
 # ------------------------------------------------------------------------------
@@ -657,38 +640,7 @@ function PlotIllustrativeResultK(FilePathIn::String,
 #    end
 end
 
-# ------------------------ Selection plot for check ----------------------------
-
-function PlotSelection(FilePathIn::String,
-					   Selections::Matrix{Float64})
-	
-    @warn "Mode under construction."
-
-#	BoundariesData = readdlm(FilePathIn, ',', '\n'; comments=true)
-#	JJ = BoundariesData[:,1]
-#	ΔEp = BoundariesData[:,2]
-#	ΔEm = BoundariesData[:,3]
-#	
-#	plot()
-#    plot!(JJ,
-#          [ΔEp, -ΔEm],
-#          label=[L"\mu_c^+ \, (L \rightarrow \infty)" L"\mu_c^- \, (L \rightarrow \infty)"], 
-#          xlabel=L"J", ylabel=L"$\mu$", 
-#          title=L"Fitted phase boundaries",
-#          alpha=1.0)
-#     
-#    rectangle(l, r, u, d) = Shape(l .+ [0,r-l,r-l,0], d .+ [0,0,u-d,u-d])
-#    for i in 1:size(Selections,1)
-#    	Left, Right, Up, Down = Selections[i,:] 
-#    	plot!(rectangle(Left,Right,Up,Down),
-#    		  label="Selection",
-#    		  linewidth=0,
-#    		  opacity=0.2)
-#	end
-#	gui()		# .pdf file saved on /tmp, erased on boot
-end
-
-# --------------------------- State properties plot ----------------------------
+# -------------------------- State populations plot ----------------------------
 
 @doc raw"""
 function PlotPopulations(
@@ -757,129 +709,124 @@ function PlotPopulations(
 
 end
 
-@doc raw"""
-function PlotBipartiteEntropy(
-		DirPathOut::String,
-		S::Vector{Float64},
-		ModelParameters::Vector{Float64},
-		XY::Bool,
-		ConserveNumber::Bool
-	)
-	
-Returns: none (plots saved).
+# -------------------------------- Entropy plot --------------------------------
 
-This function plots, for a given parametrization `ModelParameters`, the state
-entropy stored in `S`.
-"""
-function PlotBipartiteEntropy(
-		DirPathOut::String,
-		S::Vector{Float64},
-		ModelParameters::Vector{Float64},
-		XY::Bool,
-		ConserveNumber::Bool
-	)
-
-	L, N = Int64.(ModelParameters[1:2])
-	t, V, μ, η = ModelParameters[3:6]
-				  
-	scatter(
-		[l for l in 1:length(S)], S,
-		xlabel=L"$\ell$ (link index)",
-		ylabel=L"$S$ (bipartite entropy)",
-		legend=false
-	)
-
-	if XY
-		if ConserveNumber
-			title!(L"XY bipartite entropy (fixed $N=%$N$, $V=%$V$, $\mu=%$μ$)")
-			savefig(DirPathOut * "/XY_V=$(V)_μ=$(μ)_fixedN-entropy.pdf")
-		elseif !ConserveNumber
-			title!(L"SF bipartite entropy (optimal $N$, $V=%$V$, $\mu=%$μ$)")
-			savefig(DirPathOut * "/XY_V=$(V)_μ=$(μ)_free-entropy.pdf")
-		end
-	elseif !XY
-		if ConserveNumber
-			title!(L"IF bipartite entropy (fixed $N=%$N$, $V=%$V$, $\mu=%$μ$)")
-			savefig(DirPathOut * "/IF_V=$(V)_μ=$(μ)_fixedN-entropy.pdf")
-		elseif !ConserveNumber
-			title!(L"IF bipartite entropy (optimal $N$, $V=%$V$, $\mu=%$μ$)")
-			savefig(DirPathOut * "/IF_V=$(V)_μ=$(μ)_free-entropy.pdf")
-		end
-	end
-
+function ParseRawString(
+            RawString::SubString{String}
+        )
+    return parse.(Float64, split(strip(RawString, ['[', ']', ' ']), ','))
 end
 
 @doc raw"""
-function PlotBipartiteEntropyCompared(
+function ChainPlots(
 		DirPathIn::String,
 		DirPathOut::String,
 		L::Int64,
-		N::Int64,
 		XYPoint::Vector{Float64},
-		IFPoint::Vector{Float64}
+		IFPoint::Vector{Float64},
+        IAFPoint::Vector{Float64}
 	)
 
 Returns: none (plots saved).
 
-This function plots, for given parametrizations (points ,`XYPoint` and `IFPoint`
-on the `(V,μ)` plane, the state entropy recovering it from the appropriate
-FilePathIn. `PlotBipartiteEntropyCompared` is a support function outside the 
-workflow to produce superimposed compared plots.
+This function plots, for given parametrizations (points ,`XYPoint`, `IFPoint` 
+and `IAFPoint` on the `(V,μ)` plane, the state entropy recovering it from the
+appropriate `FilePathIn` built thanks to the function variables.
 """
-function PlotBipartiteEntropyCompared(
+function ChainPlots(
 		DirPathIn::String,
 		DirPathOut::String,
 		L::Int64,
-		N::Int64,
 		XYPoint::Vector{Float64},
-		IFPoint::Vector{Float64}
+		IFPoint::Vector{Float64},
+        IAFPoint::Vector{Float64}
 	)
 
-	XYFilePathIn = DirPathIn * "XY_V=$(XYPoint[1])_μ=$(XYPoint[2]).txt"
-	IFFilePathIn = DirPathIn * "IF_V=$(IFPoint[1])_μ=$(IFPoint[2]).txt"
+    PointDict = Dict([
+        ("XY", XYPoint),
+        ("IF", IFPoint),
+        ("IAF", IAFPoint)
+    ])
+
+    LocalEnergy = Dict([])
+    Density = Dict([])
+    BlockDensityVariance = Dict([])
+    Entropy = Dict([])
 	
-	XYData = readdlm(SFFilePathIn, ';', '\n'; comments=true)
-	XYBool = SFData[:,1]
-	
-	# Mastruzzo to extract array of Γ
-    function ParseArray(str)
-        return parse.(Float64, split(strip(str, ['[', ']', ' ']), ','))
+    for Phase in ["XY", "IF", "IAF"]
+
+        Point = PointDict[Phase]
+        FilePathIn = DirPathIn * Phase * "_V=$(Point[1])_μ=$(Point[2]).txt"
+    	Data = readdlm(FilePathIn, ';', '\n'; comments=true)
+        ConserveNumber = Data[:,1]
+        ConserveParity = Data[:,2]
+        
+        Index = findall(.!ConserveNumber .&& .!ConserveParity)  # Both false
+        
+        # [1] is necessary to read the SubString
+        LocalEnergy[Phase] = ParseRawString(Data[Index,8][1])
+        Density[Phase] = ParseRawString(Data[Index,9][1])        
+        BlockDensityVariance[Phase] = ParseRawString(Data[Index,10][1])
+        Entropy[Phase] = ParseRawString(Data[Index,11][1])
     end
-	XYEntropy = [ParseArray(row[end]) for row in eachrow(XYData)]
-	
-	IFData = readdlm(IFFilePathIn, ';', '\n'; comments=true)
-	IFBool = IFData[:,1]
-	IFEntropy = [ParseArray(row[end]) for row in eachrow(IFData)]
-	
-	for (j,ConserveNumber) in enumerate(XYBool)
-		
-		scatter(legend=:right)
-		if ConserveNumber
-			scatter!([l for l in 1:length(XYEntropy[j])], XYEntropy[j],
-					 xlabel=L"$\ell$ (left partition length)",
-					 ylabel=L"$S$ (bipartite entropy)",
-					 markersize=2,
-					 label=L"$V=%$(XYPoint[1])$, $\mu=%$(XYPoint[2])$ (XY)")
-					
-			scatter!([l for l in 1:length(MIEntropy[j])], MIEntropy[j],
-			         markersize=2,
-					 label=L"$V=%$(IFPoint[1])$, $\mu=%$(IFPoint[2])$ (IF)")
-		
-			title!(L"XY bipartite entropy (fixed $N=%$N$, %$L sites)")
-			savefig(DirPathOut * "/fixedN-compared-entropy.pdf")
-		elseif !ConserveNumber
-			scatter!([l for l in 1:length(XYEntropy[2])], XYEntropy[2],
-					 xlabel=L"$\ell$ (left partition length)",
-					 ylabel=L"$S$ (bipartite entropy)",
-					 markersize=2,
-					 label=L"$V=%$(XYPoint[1])$, $\mu=%$(XYPoint[2])$ (XY)")
-					
-			scatter!([l for l in 1:length(IFEntropy[j])], IFEntropy[j],
-					 markersize=2,
-					 label=L"$V=%$(IFPoint[1])$, $\mu=%$(IFPoint[2])$ (IF)")
-		
-			title!(L"XY bipartite entropy (optimal $N$, %$L sites)")
-			savefig(DirPathOut * "/free-compared-entropy.pdf")
-		end
-	end
+
+    MainDict = Dict([
+        ("Local energy", LocalEnergy),
+        ("Density", Density),
+        ("Block density variance", BlockDensityVariance),
+        ("Bipartite entropy", Entropy)
+    ])
+    MarkerStyleDict = Dict([
+        ("XY", [MyColors[1], 1.5, :transparent, 0]),
+        ("IF", [MyColors[4], 1.5, :transparent, 0]),
+        ("IAF", [MyColors[3], 1.5, :transparent, 0])
+#        ("XY", [MyColors[1], 2, :transparent, 0]),
+#        ("IF", [:transparent, 2.5, MyColors[4], 0.5]),
+#        ("IAF", [MyColors[3], 1.5, :transparent, 0])
+    ])
+    xLabelsDict = Dict([
+        ("Local energy", L"$j$"),
+        ("Density", L"$j$"),
+        ("Block density variance", L"$M$"),
+        ("Bipartite entropy", L"$\ell$")
+    ])
+    yLabelsDict = Dict([
+        ("Local energy", L"$e_j$"),
+        ("Density", L"$n_j$"),
+        ("Block density variance", L"$\delta n_M^2$"),
+        ("Bipartite entropy", L"$S_\ell$")
+    ])
+
+    for Observable in [k for k in keys(MainDict)] # Needed to get Vector{String}
+        plot(
+            title = Observable * " ($L sites)",
+            legend=:best
+        )
+    
+        for Phase in ["XY", "IF", "IAF"]
+
+            Point = PointDict[Phase]
+
+            yy = MainDict[Observable][Phase]
+            xx = [l for l in 1:length(yy)]
+		    plot!(
+                xx, yy,
+                xlabel = xLabelsDict[Observable],
+                ylabel = yLabelsDict[Observable],
+                markershape = :circle,                
+                markercolor = MarkerStyleDict[Phase][1],
+                markersize = MarkerStyleDict[Phase][2],
+                markerstrokecolor = MarkerStyleDict[Phase][3],
+                markerstrokewidth = MarkerStyleDict[Phase][4],
+                linewidth = 0.5,
+                label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(Phase))",
+            )
+
+        end
+    
+		savefig(DirPathOut * "/" * lowercase(replace(Observable, ' '=>'-')) * ".pdf")
+        printstyled("$(Observable) plot done!\n", color=:green)
+
+    end
+
 end
