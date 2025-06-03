@@ -184,7 +184,7 @@ function main()
 				    FilePathOut = FullDirPathOut * "/L=$L.txt"
 				    DataFile = open(FilePathOut, "w")
 					    write(DataFile,"# Fermi-Hubbard model DMRG. L=$L, N=$N\n")
-					    write(DataFile,"# V; μ; E; ρ; k; D [calculated $(now())]\n")
+					    write(DataFile,"# V; μ; E; ρ; uP; hP; k; D [calculated $(now())]\n")
 				    close(DataFile)
                 end
 				

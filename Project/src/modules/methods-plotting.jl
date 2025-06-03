@@ -8,9 +8,11 @@ function PlotHeatmap(
         FilePathIn::String;
         PhaseBoundariesFilePath="",
         EFilePathOut="",
+        ρFilePathOut="",
         kFilePathOut="",
         DFilePathOut="",
-        nFilePathOut="",
+        uPFilePathOut="",
+    	hPFilePathOut="",
         verbose=false
     )
     
@@ -27,6 +29,8 @@ function PlotHeatmap(
         ρFilePathOut="",			# Density heatmap
         kFilePathOut="",			# Charge stiffness
         DFilePathOut="",            # Compressibility heatmap
+        uPFilePathOut="",			# Unitary filling MI projection heatmap
+    	hPFilePathOut="",			# Half filling MI projection heatmap
         verbose=false
     )
     
@@ -44,11 +48,13 @@ function PlotHeatmap(
     VV = Data[:,1]
     μμ = Data[:,2]
     EE = Data[:,3]
-    ρρ = Data[:,4]
+    ρρ = Data[:,6]
     
     if Full
-        kk = Data[:,5]
-        DD = Data[:,6]
+    	uPuP = Data[:,4]
+    	hPhP = Data[:,5]
+        kk = Data[:,7]
+        DD = Data[:,8]
     end
 
     NumV = length(unique(VV))
@@ -60,6 +66,8 @@ function PlotHeatmap(
     if Full
         Compressibilities = zeros(Numμ, NumV)
         Stiffnesses = zeros(Numμ, NumV)
+        UnitaryProjections = zeros(Numμ, NumV)
+        HalfProjections = zeros(Numμ, NumV)
     end
 
     for jj in 1:NumV
@@ -69,6 +77,8 @@ function PlotHeatmap(
         if Full
             Compressibilities[:,jj] = kk[ Numμ*(jj-1)+1 : Numμ*jj ]
             Stiffnesses[:,jj] = DD[ Numμ*(jj-1)+1 : Numμ*jj ]
+            UnitaryProjections[:,jj] = uPuP[ Numμ*(jj-1)+1 : Numμ*jj ]
+            HalfProjections[:,jj] = hPhP[ Numμ*(jj-1)+1 : Numμ*jj ]
         end
     end
 
@@ -111,7 +121,7 @@ function PlotHeatmap(
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
 			title=L"Charge stiffness ($L=%$L$)",
-			clim=(-50,50)
+			clim=(-100,100)
 		)
 
 #        if PhaseBoundariesFilePath != ""
@@ -136,6 +146,38 @@ function PlotHeatmap(
 
         savefig(hρ, ρFilePathOut)
         println("Charge density plot for L=$L saved on file!")
+    end
+    
+    if uPFilePathOut != ""
+        huP = heatmap(
+        	unique(VV), unique(μμ), UnitaryProjections, 
+			xlabel=L"V/t",
+			ylabel=L"$\mu/t$",
+			title=L"$\langle \Psi | \hat P_{\mathrm{MI}_1} | \Psi \rangle$ ($L=%$L$)"
+		)
+
+#        if PhaseBoundariesFilePath != ""
+#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
+#        end
+
+        savefig(huP, uPFilePathOut)
+        println("Unitary-filling projection plot for L=$L saved on file!")
+    end
+    
+    if hPFilePathOut != ""
+        hhP = heatmap(
+        	unique(VV), unique(μμ), HalfProjections, 
+			xlabel=L"V/t",
+			ylabel=L"$\mu/t$",
+			title=L"$\langle \Psi | \hat P_{\mathrm{MI}_{1/2}} | \Psi \rangle$ ($L=%$L$)"
+		)
+
+#        if PhaseBoundariesFilePath != ""
+#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
+#        end
+
+        savefig(hhP, hPFilePathOut)
+        println("Unitary-filling projection plot for L=$L saved on file!")
     end
 end
 

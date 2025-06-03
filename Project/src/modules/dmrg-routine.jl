@@ -62,10 +62,21 @@ function SetStartingState(
 	end 
 	
     if N==L/2 && !ForceCenter
-        states = ["0" for _ in 1:L]
-        for j in 1:N
-            states[2*j-1] = "1"
-        end
+    	states = [isodd(j) ? "0" : "1" for j in 1:L]	# 0101..
+		e = MPS(sites, states)
+		
+		states = [isodd(j) ? "1" : "0" for j in 1:L]	# 1010..
+		o = MPS(sites, states)
+		
+		InitializeRandom = false # Change here if needed
+		if InitializeRandom
+			# Computationally expensive!
+			a = rand(ComplexF64)
+			psi0 = normalize!(e + a*o)
+		elseif !InitializeRandom
+			# Aritrary, density-preserving
+			psi0 = (e+o) / sqrt(2)	# Avoid computing (e+o)' * (e+o)
+		end
     else
         states = vcat(["1" for _ in 1:N], ["0" for _ in N+1:L])
 	    circshift!(states, floor(Int64,(L-N)/2))
@@ -97,7 +108,7 @@ Input:
 
     - ModelParameters: array of [L::Int64, N::Int64, t::Float64, V::Float64, μ::Float64, η::Float64]
     - DMRGParameters: array of [nsweeps::Int64, maxdim::Int64, cutoff::Vector{Float64}]
-    - UserMode: string from the set [\"Debug\", \"Fast\", ...]
+    - UserMode: string from the set [\"Correlators\", \"Fast\", \"StateAnalyzer\", ...]
     							
 Parametric input:
 
@@ -217,6 +228,9 @@ function RunDMRGAlgorithm(
     if OrderParameters
 
 		@warn "Mode OrderParameters under construction."
+		
+		# TODO Projectors, Block density variance ...
+		
 #    	Index = ceil(Int64, L/2)
 #    	
 #		if !verbose

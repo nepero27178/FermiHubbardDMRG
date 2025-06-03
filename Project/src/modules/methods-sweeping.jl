@@ -334,7 +334,15 @@ function RectangularSweep(
             	k = NaN								# Avoid segmentation fault
             end
             
-            write(DataFile,"$V; $μ; $E; $ρ; $k; $D\n")
+            # Unitary and half projection
+            sites = siteinds(psi)
+            UP = GetUnitaryMIProjector(sites)
+            HP = GetHalfMIProjector(sites)
+            
+			uP = inner(psi', UP, psi)
+			hP = inner(psi', HP, psi)            
+            
+            write(DataFile,"$V; $μ; $E; $(uP); $(hP); $ρ; $k; $D\n")
             print("\e[2K")
         end
 	end

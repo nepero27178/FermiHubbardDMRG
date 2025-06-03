@@ -391,3 +391,34 @@ function GetLocalPopulation(
 	
 	return Populations
 end
+
+# Projectors
+
+function GetHalfMIProjector(
+		sites::Any
+	)
+	
+	states = [isodd(j) ? "0" : "1" for j in 1:L]	# 0101..
+	e = MPS(sites, states)
+	
+	states = [isodd(j) ? "1" : "0" for j in 1:L]	# 1010..
+	o = MPS(sites, states)
+	
+	E = projector(e) # Normalized projector
+	O = projector(o) # Normalized projector
+	HP = E+O
+	return HP
+	
+end
+
+function GetUnitaryMIProjector(
+		sites::Any
+	)
+	
+	states = ["1" for j in 1:L]						# 1111..
+	u = MPS(sites, states)
+	
+	UP = projector(u)
+	return UP
+	
+end

@@ -75,10 +75,22 @@ function main()
                 
                 if !Full
     	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, EFilePathOut, ρFilePathOut)
-                elseif Full	            
+                elseif Full
                     kFilePathOut = HeatmapDir * "Compressibility_L=$(L).pdf" 	# Compressibility plot
         	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L).pdf"       	# Charge stiffness plot
-    	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, EFilePathOut, kFilePathOut, DFilePathOut, ρFilePathOut)
+        	        uPFilePathOut = HeatmapDir * "uMI_Projection_L=$(L).pdf"	# Unitary filling plot
+                	hPFilePathOut = HeatmapDir * "hMI_Projection_L=$(L).pdf"	# Unitary filling plot
+    	            PlotHeatmap(
+    	            	L,
+    	            	FilePathIn;
+    	            	PhaseBoundariesFilePath,
+    	            	EFilePathOut, 
+    	            	kFilePathOut,
+    	            	DFilePathOut,
+    	            	ρFilePathOut,
+    	            	uPFilePathOut,
+    	            	hPFilePathOut
+    	            )
                 end
 
    			end
