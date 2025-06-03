@@ -1,0 +1,2 @@
+# SFH Charge gaps. μ0=0.0, nsweeps=20, cutoff=[1.0e-8]
+# L; V; hΔ-1; hΔ+1; hΔ-2; hΔ+2; uΔ-1; uΔ-2 [calculated 2025-06-03T22:06:08.093]

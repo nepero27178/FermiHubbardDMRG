@@ -81,7 +81,7 @@ function main()
 		    		
 					# Prepare file headers
 					BoundariesFile = open(BoundariesFilePathOut,"w")
-						write(BoundariesFile,"# SFH Charge gaps. μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")
+						write(BoundariesFile,"# SFH Charge gaps. μ0=$μ0, nsweeps=$XYnSweeps, cutoff=$XYCutoff\n")
 						write(BoundariesFile,"# L; V; hΔ-1; hΔ+1; hΔ-2; hΔ+2; uΔ-1; uΔ-2 [calculated $(now())]\n")
 					close(BoundariesFile)
 		    	
@@ -92,7 +92,7 @@ function main()
 	    			
 	    			# Prepare file headers
 					StateAnalysisFile = open(StateAnalysisFilePathOut,"w")
-						write(StateAnalysisFile,"# SFH state properties. μ0=$μ0, nsweeps=$nsweeps, cutoff=$cutoff\n")
+						write(StateAnalysisFile,"# SFH state properties. μ0=$μ0, nsweeps=$XYnSweeps, cutoff=$XYCutoff\n")
 						write(StateAnalysisFile,"# L; V; E; δn_M^2; S [calculated $(now())]\n")
 					close(StateAnalysisFile)
 				end
