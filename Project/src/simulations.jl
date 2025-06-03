@@ -188,6 +188,19 @@ function main()
 				    close(DataFile)
                 end
 				
+				# Look for phase boundaries
+				PhaseBoundariesDirPath = PROJECT_ROOT * "/simulations/horizontal-sweep/boundaries/"
+				PhaseBoundariesFilePathIn = PhaseBoundariesDirPath * filter(
+					x -> occursin("$L",x), 
+					readdir(PhaseBoundariesDirPath)
+				)[1]
+				
+				if PhaseBoundariesFilePathIn!==PhaseBoundariesDirPath
+					DMRGParameters = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
+				elseif PhaseBoundariesFilePathIn==PhaseBoundariesDirPath
+					DMRGParameters = [DMRGParametersXY] # Use only the most generous
+				end
+				
 				println("Starting calculation of observables for L=$L...")
 				RectangularSweep(
                     UserSubMode,
@@ -195,8 +208,9 @@ function main()
 					N,
 					VV,
 					μμ,
-					DMRGParametersXY,
-					FilePathOut
+					DMRGParameters,
+					FilePathOut;
+					FilePathIn=PhaseBoundariesFilePathIn
 				)
 				
 				DataFile = open(FilePathOut,"a")

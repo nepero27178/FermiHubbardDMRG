@@ -3,6 +3,7 @@
 using Base.Threads
 using LinearAlgebra
 using DelimitedFiles  # For writedlm
+using GeometricalPredicates
 
 # ------------------------------ Horizontal sweep ------------------------------
 
@@ -131,101 +132,6 @@ end
 # ----------------------------- Rectangular sweep ------------------------------
 
 @doc raw"""
-
-"""
-function RectangularSweepBoundaries(
-		L::Int64,
-		N::Int64,
-		VV::Vector{Float64},
-		μμ::Vector{Float64},
-		DMRGParametersXY::Vector{Any},
-		DMRGParametersIF::Vector{Any},
-		FilePathIn::String,
-		FilePathOut::String
-	)
-    
-    @warn "Function under construction."
-#    
-#    DataFile = open(FilePathOut,"a")
-
-#	# Take data from fitting data of horizontal sweeps to separate MI from SF 
-#	# ( use ΔE^+(∞) and ΔE^-(∞) )
-#	BoundariesData = readdlm(FilePathIn, ',', Float64, '\n'; comments=true)
-#    VVFitted = BoundariesData[:,1]
-
-#    for (j,V) in enumerate(VV)
-#		# We take the best approximating V ∈ VV, to assess whether we are in 
-#		# the XY or IF phase.
-
-#		Index = argmin(abs.(VVFitted .- V)) # this always works, gives the best approximation
-#		μUp = BoundariesData[Index,2][1]
-#		μDown = -BoundariesData[Index,3][1]
-#    	
-#		println("\nV=$V, phase boundaries: μ^+=$(μUp), μ^-=$(μDown)")
-
-#		CachedRho = 1
-#		
-#        for (m,μ) in enumerate(μμ)
-#        
-#            ModelParameters = [L, N, 1.0, V, μ, 0.0]
-#			inIsingRegion = false
-#			
-#			if (μ>=(μDown) && μ<=(μUp))
-#				inIsingRegion = true
-#			end
-
-#			println("Running DMRG for L=$L, V=$(round(V, digits=3)), ",
-#				"μ=$(round(μ, digits=3)) (simulation $m/$(length(μμ)) in μ, ",
-#				"$j/$(length(VV)) in V, IF=$inIsingRegion)")
-
-#			# Go on from here...
-
-#			if inIsingRegion
-#		        Results = RunDMRGAlgorithm(
-#                    ModelParameters,
-#                    DMRGParametersIF,
-#                    "OrderParameters";
-#                    FixedN=false,
-#                    RandomPsi0=false
-#                )
-#				E, NTotAvg, nVariance, aAvg = Results
-#				
-#				if m>1
-#					Rho = NTotAvg/L
-#					K = (Rho - CachedRho) / (μ - μμ[m-1])	# Compressibility
-#					K /= (Rho^2)
-#					CachedRho = Rho							# Next step
-#		        elseif m==1
-#		        	K = NaN									# Avoid segmentation fault
-#		        end
-#		        
-#		        write(DataFile,"$J; $μ; $E; $nVariance; $aAvg; $K # MI\n")
-#		    else
-#		    	Results = RunDMRGAlgorithm(ModelParameters,
-#				                           DMRGParametersSF,
-#				                           "OrderParameters";
-#	  		                               FixedN=false,
-#										   RandomPsi0=true)
-#				E, NTotAvg, nVariance, aAvg = Results
-#				
-#				if m>1
-#					Rho = NTotAvg/L
-#					K = (Rho - CachedRho) / (μ - μμ[m-1])	# Compressibility
-#					K /= (Rho^2)
-#					CachedRho = Rho							# Next step
-#		        elseif m==1
-#		        	K = NaN									# Avoid segmentation fault
-#		        end
-#				
-#		        write(DataFile,"$J; $μ; $E; $nVariance; $aAvg; $K # SF\n")
-#		    end
-#        end
-#    end
-
-#    close(DataFile)
-end
-
-@doc raw"""
 function RectangularSweep(
         UserSubMode::String,
 		L::Int64,
@@ -233,7 +139,8 @@ function RectangularSweep(
 		VV::Vector{Float64},
 		μμ::Vector{Float64},
 		DMRGParameters::Vector{Any},
-		FilePathOut::String
+		FilePathOut::String;
+		FilePathIn=""
 	)
 	
 Returns: none (data saved on file).
@@ -244,6 +151,8 @@ stiffness are). `Full` mode requires (much) more computational resources. The
 function performs a rectangular sweep in the `[V/t,μ/t]` space for a closed 
 chain with `L` site and initialized to `N` particles states. Data are saved at
 `FilePathOut` after DMRG simulations with parameters `DMRGParameters`.
+
+TODO: Edit documentation for this function.
 """
 function RectangularSweep(
         UserSubMode::String,	# Density/Full
@@ -251,18 +160,96 @@ function RectangularSweep(
 		N::Int64,
 		VV::Vector{Float64},
 		μμ::Vector{Float64},
-		DMRGParameters::Vector{Any},
-		FilePathOut::String
+		DMRGParameters::Vector{Vector{Any}},
+		FilePathOut::String;
+		FilePathIn="",			# Boundaries filepath (if absent, ignore)
+		double=false			# Read +/- 1 particle boundaries
 	)
     
     global ε
     DataFile = open(FilePathOut,"a")
     ρCache = 1/2	# Cache half-filling
     NTotAvg = 0
+    UseBoundaries = false
+    if FilePathIn!==""
+    	UseBoundaries = true
+    	# DMRGParameters::Vector{Vector{Any}} // Vector{Any}
+    	DMRGParametersXY = DMRGParameters[1]
+    	DMRGParametersIF = DMRGParameters[2]
+    	DMRGParametersIAF = DMRGParameters[3]
+    end
+
+	
+	BoundariesData = readdlm(FilePathIn, ';', '\n'; comments=true)
+	uμm = 0	# Initialize
+	hμp = 0 # Initialize
+	hμm = 0 # Initialize
+	
+    jj =  (BoundariesData[:, 1] .== L)
+    VV =  BoundariesData[jj,2]
+    uΔm1 = BoundariesData[jj,7]
+	uΔm2 = BoundariesData[jj,8]
+	
+	# Half-Δ boundary
+	hΔm2 = BoundariesData[jj,5]
+	hΔm1 = BoundariesData[jj,3]
+	hΔp1 = BoundariesData[jj,4]
+	hΔp2 = BoundariesData[jj,6]
+	
+	if double
+		Up = -uΔm2/2
+		Intermediate = hΔp2/2
+		Down = -hΔm2/2
+	elseif !double
+		Up = -uΔm1
+		Intermediate = hΔp1
+		Down = -hΔm1
+	end
+	
+	# Correct by +/- 0.1 to include borders (arbitrary)
+	DownLeft = Point( RectangularVV[1]-0.1, Rectangularμμ[1]-0.1 )
+	UpLeft = Point( RectangularVV[1]-0.1, Rectangularμμ[end]+0.1 )
+	DownRight = Point( RectangularVV[end]+0.1, Rectangularμμ[1]-0.1 )
+	UpRight = Point( RectangularVV[end]+0.1, Rectangularμμ[end]+0.1 )
+	
+	IFPoints = vcat(
+		[UpLeft, DownLeft], 
+		[Point( VV[jj], Up[jj] ) for jj in 1:length(Up)])
+	IFPolygon = Polygon(IFPoints...)
+
+
+	# Note: from Beta testing it appears the IAF polygon creates some difficulty
+	# in binary recognition of points. This is not so important however since
+	# the phase is complicated and relatively small.
+	IAFPoints = vcat(
+		[Point( VV[jj], Intermediate[jj] ) for jj in 1:length(Intermediate)],
+		[Point( VV[end-jj+1], Down[end-jj+1] ) for jj in 1:length(Down)]
+	)
+	IAFPolygon = Polygon(IAFPoints...)
 
     for (j,V) in enumerate(VV), (m,μ) in enumerate(μμ)
-        
+    
+    	P = Point(V,μ)
+    	# Evaluate expected phase
+    	isIF = inpolygon(IFPolygon, P)
+    	isIAF = inpolygon(IAFPolygon, P)
+    	if isIF && isIAF
+    		error("Your point is both IF and IAF..?")
+    	end
+    	
+    	if isIF && !isIAF
+    		DMRGParameters = DMRGParametersIF
+    		@info "Phase: IF"
+    	elseif isIAF && !isIF
+    		DMRGParameters = DMRGParametersIAF
+    		@info "Phase: IAF"
+    	elseif !isIF && !isIAF
+    		DMRGParameters = DMRGParametersXY
+    		@info "Phase: XY"
+    	end
+            
         ModelParameters = [L, N, 1.0, V, μ, 0.0]
+        print("\e[2K")
 		printstyled("\rRunning DMRG for L=$L, V=$(round(V, digits=3)), ", 
 			"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
 			"$j/$(length(VV)) in V)",
@@ -270,6 +257,8 @@ function RectangularSweep(
 
 		E = 0 # Initalize energy to save variable
 
+		@info P
+		UserSubMode = "Stop"
         if UserSubMode=="Density"
 
             E, psi = RunDMRGAlgorithm(

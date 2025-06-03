@@ -3,7 +3,7 @@
 Resolution = Dict([
 	("Test", 3),			# 3*3 steps
 	("Low", 10),			# 10*10 steps
-	("Medium", 30),			# 30*30 steps
+	("Medium", 25),			# 25*25 steps
 	("High", 50)			# 50*50 steps
 ])
 ε = 0.01
@@ -38,7 +38,7 @@ DMRGParametersXY = [XYnSweeps, XYMaxLinkDim, XYCutoff]
 			 
 # ----------------------------- Horizontal sweeps ------------------------------
 
-HorizontalLL = [x for x in 6:4:22] #26:8:42]
+HorizontalLL = [x for x in 14:8:38]
 HorizontalVV = collect(range(start=-2.0, stop=4.0, length=Resolution["Medium"]))
 Horizontalμμ = [0.0]
 

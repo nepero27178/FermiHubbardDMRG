@@ -39,22 +39,26 @@ function SetStartingState(
         ForceCenter=false
 	)::MPS
 	
-Returns: starting fermionic state, filled only at center.	
+Returns: starting fermionic state, initialized considering the ratio `N/L`.	
 	
 Create an initial MPS with `N` particles on the fermionic chain, with `N≤L`. Two
 modes are implemented:
-- If `N≠L/2`, all the fermions are created at the center of the chain. 
+- If `N≠L/2`, all the fermions are created at the center of the chain.
 For periodic and twisted boundary conditions this is irrelevant, but can become 
 useful for open boundary conditions.
-- If `N=L/2`, the fermions are alternated (`1`/`0`/`1`/`0`/...), except the 
-parameter `ForceCenter` is set to `true`, in which case the above condition
-applies.
+- If `N=L/2`, the fermions are alternated (`1`/`0`/`1`/`0`/...) and the state is
+created as a superposition of the two alternating states (even sites filled and 
+odd sites filled); all of this except the parameter `ForceCenter` is set to 
+`true`, in which case the above condition applies.
 """
 function SetStartingState(
 		sites::Any,
 		N::Int64;
         ForceCenter=false
 	)::MPS
+
+	# This function could be improved in grancanonical situation by implementing
+	# conditional state initalization.
 
 	L = length(sites)
 	if N>L || N<1

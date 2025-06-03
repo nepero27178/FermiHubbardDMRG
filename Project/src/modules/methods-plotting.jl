@@ -315,6 +315,8 @@ function PlotPhaseBoundaries(
         LL = CustomLL
     end
 
+	P = plot()
+
 	VV = 0	# Initialize VV to use it outside the for loop
 	for (l, L) in enumerate(LL)
 	    jj =  (BoundariesData[:, 1] .== L)
@@ -395,6 +397,8 @@ function PlotPhaseBoundaries(
     else
     	gui()
     end
+    
+    return P
 end
 
 # ------------------------------------------------------------------------------

@@ -164,15 +164,18 @@ end
 @doc raw"""
 function GetBlockVariance(
 		n::Vector{Float64},
-		Cnn::Matrix{Float64}
+		Cnn::Matrix{Float64};
+		k=0
 	)::Vector{Float64}
 	
 Returns: `δn2M::Vector{Float64}`, the mean density variance over blocks. 
 """
 function GetBlockVariance(
-		n::Vector{Float64},
-		Cnn::Matrix{Float64}
+		n::Vector{Float64},		# Density vector
+		Cnn::Matrix{Float64};	# Density-density correlation matrix
+		kVector=[]				# Chosen block lengths
 	)::Vector{Float64}
+	
 	# Connected density correlation matrix
 	cCnn = Cnn .- n*n'
 	
@@ -183,18 +186,48 @@ function GetBlockVariance(
 	]
 
 	L = size(Cnn,1)
-	δn2M = zeros(Int64(L/2)+1)
-	Matrixδn2M = zeros(Int64(L/2)+1,L)
-	for (m,M) in enumerate(0:1:Int64(L/2)), s in 1:L
-		Matrixδn2M[m,s] = sum(
-			Ghost[
-				s:s+M,
-				s:s+M
-			]
-		)
-	end
+	δn2M = []
 	
-	δn2M = mean(Matrixδn2M,dims=2)[:,1] # Indexing needed to format to Vector
+	if kVector!==[]
+	
+		#TODO Add kVector checkup
+		
+		for k in kVector
+
+			if k>0 && k<=Int64(L/2)
+			
+				Vectorδn2M = zeros(L)
+				for s in 1:L
+					Vectorδn2M[s] = sum(
+						Ghost[
+							s:s+M,
+							s:s+M
+						]
+					)
+				end
+				
+				δn2M = mean(Vectorδn2M)
+			
+			return δn2M
+		
+		end
+		
+	elseif kVector==[]
+		
+		δn2M = zeros(Int64(L/2)+1)
+		Matrixδn2M = zeros(Int64(L/2)+1,L)
+		for (m,M) in enumerate(0:1:Int64(L/2)), s in 1:L
+			Matrixδn2M[m,s] = sum(
+				Ghost[
+					s:s+M,
+					s:s+M
+				]
+			)
+		end
+		
+		δn2M = mean(Matrixδn2M,dims=2)[:,1] # Indexing needed to format to Vector
+	
+	end
 	
 	return δn2M
 end
@@ -393,10 +426,19 @@ function GetLocalPopulation(
 end
 
 # Projectors
-
+@doc raw"""
 function GetHalfMIProjector(
 		sites::Any
-	)
+	)::MPO
+	
+Returns: Projector on the half-filled MI subspace.
+
+This function computes the MPO projector onto the half-filled Mott-Insulating
+Hilbert subspace.
+"""
+function GetHalfMIProjector(
+		sites::Any
+	)::MPO
 	
 	states = [isodd(j) ? "0" : "1" for j in 1:L]	# 0101..
 	e = MPS(sites, states)
@@ -411,9 +453,19 @@ function GetHalfMIProjector(
 	
 end
 
+@doc raw"""
 function GetUnitaryMIProjector(
 		sites::Any
-	)
+	)::MPO
+	
+Returns: Projector on the unitary-filled MI subspace.
+
+This function computes the MPO projector onto the unitary-filled Mott-Insulating
+Hilbert subspace.
+"""
+function GetUnitaryMIProjector(
+		sites::Any
+	)::MPO
 	
 	states = ["1" for j in 1:L]						# 1111..
 	u = MPS(sites, states)
