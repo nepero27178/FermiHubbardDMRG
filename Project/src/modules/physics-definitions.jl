@@ -209,6 +209,8 @@ function GetBlockVariance(
 				δn2M = mean(Vectorδn2M)
 			
 			return δn2M
+			
+			end
 		
 		end
 		
