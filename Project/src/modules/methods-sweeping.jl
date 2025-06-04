@@ -269,7 +269,7 @@ function RectangularSweep(
 				"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
 				"$j/$(length(VV)) in V)\e[1F",
 		        color=:yellow)
-		elseif j = length(VV) && m = length(μμ)	# Remove final escape code
+		elseif j == length(VV) && m == length(μμ)	# Remove final escape code
 			printstyled("\e[2KRunning DMRG for L=$L, V=$(round(V, digits=3)), ", 
 				"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
 				"$j/$(length(VV)) in V)",
