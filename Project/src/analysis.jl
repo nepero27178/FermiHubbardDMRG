@@ -28,9 +28,12 @@ function main()
 
         if UserMode=="--heatmap"
 
+			Density=false
+			Complementary=false
             Full=false
+            
             Waiting=true
-			print("Choose your method: (Density/Full) ")
+			print("Choose your method: (Density/Complementary/Full) ")
 			UserSubMode = readline()
     
             while Waiting
@@ -38,6 +41,12 @@ function main()
 				if UserSubMode=="Density"
 					
 					Waiting=false
+					Density=true
+
+                elseif UserSubMode=="Complementary"
+
+                    Waiting=false
+                    Complementary=true
 					
                 elseif UserSubMode=="Full"
 
@@ -45,7 +54,7 @@ function main()
                     Full=true
 
 				else
-					print("Invalid input. Choose your method: (Density/Full) ")
+					print("Invalid input. Choose your method: (Density/Complementary/Full) ")
 					UserSubMode = readline()
 				end
 			
@@ -58,39 +67,66 @@ function main()
             μ0 = 0.0
             Cutoff = 0.05
 
-            PhaseBoundariesFilePath = "" # PROJECT_ROOT * "/../simulations/horizontal_sweep/μ0=$(μ0)_L=$PhaseBoundariesLL.txt"
+            PhaseBoundariesFilePath = "" # Add if needed
             HeatmapDir = PROJECT_ROOT * "/../analysis/heatmap/"
             mkpath(HeatmapDir)
 
 
 			for L in LL
-                if !Full
+                if Density
                     FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/density/L=$(L).txt"#_High.txt"
+                elseif Complementary
+                    FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/complementary/L=$(L).txt"#_High.txt"
                 elseif Full
                     FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/full/L=$(L).txt"#_High.txt"
                 end
 
-				EFilePathOut = HeatmapDir * "Energy_L=$(L).pdf" 			# Ground-state energy plot
-                ρFilePathOut = HeatmapDir * "Density_L=$(L).pdf"       	    # Charge density plot
+				EFilePathOut = HeatmapDir * "Energy_L=$(L).pdf" 				# Ground-state energy plot
+                ρFilePathOut = HeatmapDir * "Density_L=$(L).pdf"       	    	# Charge density plot
+                δFilePathOut = HeatmapDir * "Block-Density-Variance_L=$(L).pdf" # Block density variance plot
+    	        uPFilePathOut = HeatmapDir * "uMI_Projection_L=$(L).pdf"		# Unitary filling plot
+            	hPFilePathOut = HeatmapDir * "hMI_Projection_L=$(L).pdf"		# Unitary filling plot
+            	kFilePathOut = HeatmapDir * "Compressibility_L=$(L).pdf" 		# Compressibility plot
+    	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L).pdf"       		# Charge stiffness plot
                 
-                if !Full
-    	            PlotHeatmap(L, FilePathIn; PhaseBoundariesFilePath, EFilePathOut, ρFilePathOut)
-                elseif Full
-                    kFilePathOut = HeatmapDir * "Compressibility_L=$(L).pdf" 	# Compressibility plot
-        	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L).pdf"       	# Charge stiffness plot
-        	        uPFilePathOut = HeatmapDir * "uMI_Projection_L=$(L).pdf"	# Unitary filling plot
-                	hPFilePathOut = HeatmapDir * "hMI_Projection_L=$(L).pdf"	# Unitary filling plot
+                if Density
+    	            PlotHeatmap(
+    	            	L,
+    	            	FilePathIn;
+    	            	PhaseBoundariesFilePath,
+    	            	EFilePathOut,
+    	            	ρFilePathOut,
+    	            	δFilePathOut
+    	            )
+    	            
+    	        elseif Complementary
+
     	            PlotHeatmap(
     	            	L,
     	            	FilePathIn;
     	            	PhaseBoundariesFilePath,
     	            	EFilePathOut, 
-    	            	kFilePathOut,
-    	            	DFilePathOut,
-    	            	ρFilePathOut,
     	            	uPFilePathOut,
-    	            	hPFilePathOut
+    	            	hPFilePathOut,
+    	            	kFilePathOut,
+    	            	DFilePathOut
     	            )
+    	            
+                elseif Full
+
+    	            PlotHeatmap(
+    	            	L,
+    	            	FilePathIn;
+    	            	PhaseBoundariesFilePath,
+    	            	EFilePathOut,
+    	            	ρFilePathOut,
+    	            	δFilePathOut,
+    	            	uPFilePathOut,
+    	            	hPFilePathOut,
+    	            	kFilePathOut,
+    	            	DFilePathOut
+    	            )
+    	            
                 end
 
    			end
@@ -102,7 +138,7 @@ function main()
 			μ0 = Horizontalμμ[1] # Change!
 
             FilePathIn = PROJECT_ROOT * "/../simulations/horizontal-sweep/boundaries/μ0=$(μ0)_L=$HorizontalLL.txt"
-            PhaseBoundariesDir = PROJECT_ROOT * "/../analysis/phase-boundaries/μ0=$(μ0)/"
+            PhaseBoundariesDir = PROJECT_ROOT * "/../analysis/phase-boundaries/"
             mkpath(PhaseBoundariesDir)
 
             PlotPhaseBoundaries(

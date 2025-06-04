@@ -92,7 +92,7 @@ function GetLocalHamiltonianMPO(
     
     L = length(sites)
     if j<1 || j>L
-    	error("Invalid site! Enter 1≤j≤L.")
+    	error("Invalid site! Enter 1 ≤ j ≤ L.")
     end
     
     os = OpSum()
@@ -165,7 +165,7 @@ end
 function GetBlockVariance(
 		n::Vector{Float64},
 		Cnn::Matrix{Float64};
-		k=0
+		kVector=[]
 	)::Vector{Float64}
 	
 Returns: `δn2M::Vector{Float64}`, the mean density variance over blocks. 
@@ -190,7 +190,9 @@ function GetBlockVariance(
 	
 	if kVector!==[]
 	
-		#TODO Add kVector checkup
+		if any(kVector .< 0 .|| kVector .> Int64(L/2))
+			error("Invalid kVector! Enter 1 .≤ kVector .≤ L.")
+		end
 		
 		for k in kVector
 
@@ -259,7 +261,7 @@ function GetSuperconductingPairingMPO(
 
 	L = length(sites)
 	if j<1 || j>L
-    	error("Invalid site! Enter 1≤j≤L.")
+    	error("Invalid site! Enter 1 ≤ j ≤ L.")
     end								   
 
 	os = OpSum()

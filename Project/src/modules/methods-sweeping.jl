@@ -171,82 +171,89 @@ function RectangularSweep(
     ρCache = 1/2	# Cache half-filling
     NTotAvg = 0
     UseBoundaries = false
+    
     if FilePathIn!==""
+    
     	UseBoundaries = true
-    	# DMRGParameters::Vector{Vector{Any}} // Vector{Any}
+    
+    	# DMRGParameters::Vector{Vector{Any}}
     	DMRGParametersXY = DMRGParameters[1]
     	DMRGParametersIF = DMRGParameters[2]
     	DMRGParametersIAF = DMRGParameters[3]
-    end
+    	
+		BoundariesData = readdlm(FilePathIn, ';', '\n'; comments=true)
+		uμm = 0	# Initialize
+		hμp = 0 # Initialize
+		hμm = 0 # Initialize
+		
+		jj =  (BoundariesData[:, 1] .== L)
+		VV =  BoundariesData[jj,2]
+		uΔm1 = BoundariesData[jj,7]
+		uΔm2 = BoundariesData[jj,8]
+		
+		# Half-Δ boundary
+		hΔm2 = BoundariesData[jj,5]
+		hΔm1 = BoundariesData[jj,3]
+		hΔp1 = BoundariesData[jj,4]
+		hΔp2 = BoundariesData[jj,6]
+		
+		if double
+			Up = -uΔm2/2
+			Intermediate = hΔp2/2
+			Down = -hΔm2/2
+		elseif !double
+			Up = -uΔm1
+			Intermediate = hΔp1
+			Down = -hΔm1
+		end
+		
+		# Correct by +/- 0.1 to include borders (arbitrary)
+		DownLeft = Point( RectangularVV[1]-0.1, Rectangularμμ[1]-0.1 )
+		UpLeft = Point( RectangularVV[1]-0.1, Rectangularμμ[end]+0.1 )
+		DownRight = Point( RectangularVV[end]+0.1, Rectangularμμ[1]-0.1 )
+		UpRight = Point( RectangularVV[end]+0.1, Rectangularμμ[end]+0.1 )
+		
+		IFPoints = vcat(
+			[UpLeft, DownLeft], 
+			[Point( VV[jj], Up[jj] ) for jj in 1:length(Up)])
+		IFPolygon = Polygon(IFPoints...)
 
+
+		# Note: from Beta testing it appears the IAF polygon creates some 
+		# difficulty in binary recognition of points. This is not so important 
+		# however since the phase is complicated and relatively small.
+		IAFPoints = vcat(
+			[Point( VV[jj], Intermediate[jj] ) for jj in 1:length(Intermediate)],
+			[Point( VV[end-jj+1], Down[end-jj+1] ) for jj in 1:length(Down)]
+		)
+		IAFPolygon = Polygon(IAFPoints...)
 	
-	BoundariesData = readdlm(FilePathIn, ';', '\n'; comments=true)
-	uμm = 0	# Initialize
-	hμp = 0 # Initialize
-	hμm = 0 # Initialize
-	
-    jj =  (BoundariesData[:, 1] .== L)
-    VV =  BoundariesData[jj,2]
-    uΔm1 = BoundariesData[jj,7]
-	uΔm2 = BoundariesData[jj,8]
-	
-	# Half-Δ boundary
-	hΔm2 = BoundariesData[jj,5]
-	hΔm1 = BoundariesData[jj,3]
-	hΔp1 = BoundariesData[jj,4]
-	hΔp2 = BoundariesData[jj,6]
-	
-	if double
-		Up = -uΔm2/2
-		Intermediate = hΔp2/2
-		Down = -hΔm2/2
-	elseif !double
-		Up = -uΔm1
-		Intermediate = hΔp1
-		Down = -hΔm1
 	end
-	
-	# Correct by +/- 0.1 to include borders (arbitrary)
-	DownLeft = Point( RectangularVV[1]-0.1, Rectangularμμ[1]-0.1 )
-	UpLeft = Point( RectangularVV[1]-0.1, Rectangularμμ[end]+0.1 )
-	DownRight = Point( RectangularVV[end]+0.1, Rectangularμμ[1]-0.1 )
-	UpRight = Point( RectangularVV[end]+0.1, Rectangularμμ[end]+0.1 )
-	
-	IFPoints = vcat(
-		[UpLeft, DownLeft], 
-		[Point( VV[jj], Up[jj] ) for jj in 1:length(Up)])
-	IFPolygon = Polygon(IFPoints...)
-
-
-	# Note: from Beta testing it appears the IAF polygon creates some difficulty
-	# in binary recognition of points. This is not so important however since
-	# the phase is complicated and relatively small.
-	IAFPoints = vcat(
-		[Point( VV[jj], Intermediate[jj] ) for jj in 1:length(Intermediate)],
-		[Point( VV[end-jj+1], Down[end-jj+1] ) for jj in 1:length(Down)]
-	)
-	IAFPolygon = Polygon(IAFPoints...)
 
     for (j,V) in enumerate(VV), (m,μ) in enumerate(μμ)
     
-    	P = Point(V,μ)
-    	# Evaluate expected phase
-    	isIF = inpolygon(IFPolygon, P)
-    	isIAF = inpolygon(IAFPolygon, P)
-    	if isIF && isIAF
-    		error("Your point is both IF and IAF..?")
-    	end
+    	if UseBoundaries
     	
-    	if isIF && !isIAF
-    		DMRGParameters = DMRGParametersIF
-    		@info "Phase: IF"
-    	elseif isIAF && !isIF
-    		DMRGParameters = DMRGParametersIAF
-    		@info "Phase: IAF"
-    	elseif !isIF && !isIAF
-    		DMRGParameters = DMRGParametersXY
-    		@info "Phase: XY"
-    	end
+			P = Point(V,μ)
+			# Evaluate expected phase
+			isIF = inpolygon(IFPolygon, P)
+			isIAF = inpolygon(IAFPolygon, P)
+			if isIF && isIAF
+				error("Your point is both IF and IAF..?")
+			end
+			
+			if isIF && !isIAF
+				DMRGParameters = DMRGParametersIF
+				@info "Phase: IF"
+			elseif isIAF && !isIF
+				DMRGParameters = DMRGParametersIAF
+				@info "Phase: IAF"
+			elseif !isIF && !isIAF
+				DMRGParameters = DMRGParametersXY
+				@info "Phase: XY"
+			end
+			
+		end
             
         ModelParameters = [L, N, 1.0, V, μ, 0.0]
         print("\e[2K")
@@ -257,8 +264,6 @@ function RectangularSweep(
 
 		E = 0 # Initalize energy to save variable
 
-		@info P
-		UserSubMode = "Stop"
         if UserSubMode=="Density"
 
             E, psi = RunDMRGAlgorithm(
@@ -270,12 +275,20 @@ function RectangularSweep(
 			    FixedParity=false
 		    )
             
-            NTotAvg = GetTotalFermionNumber(psi)
-            ρ = NTotAvg/L
-            write(DataFile,"$V; $μ; $E; $ρ;\n")
+            n = expect(psi, "n")
+            ρ = sum(n)/L
+            
+            Cnn = GetDensityCorrelator(psi)
+            δ = GetBlockVariance(
+            	n,
+            	Cnn;
+            	kVector=[Int64(L/4)]
+            )
+            
+            write(DataFile,"$V; $μ; $E; $ρ; $δ\n")
             print("\e[2K")
 
-        elseif UserSubMode=="Full"
+        elseif UserSubMode=="Complementary"
 
 		    k = 0 # Initalize compressibility to save variable
 		    D = 0 # Initalize stiffness to save variable
@@ -315,7 +328,7 @@ function RectangularSweep(
                 NTotAvg = GetTotalFermionNumber(psi)
             end
             
-            ρ = NTotAvg/L
+            ρ = sum(n)/L
             if m>1
 			    k = (ρ - ρCache) / (μ - μμ[m-1])	# Compressibility
 			    ρCache = ρ							# Next step
@@ -331,9 +344,77 @@ function RectangularSweep(
 			uP = inner(psi', UP, psi)
 			hP = inner(psi', HP, psi)            
             
-            write(DataFile,"$V; $μ; $E; $(uP); $(hP); $ρ; $k; $D\n")
+            write(DataFile,"$V; $μ; $E; $(uP); $(hP); $k; $D\n")
             print("\e[2K")
+        
+		elseif UserSubMode=="Full"
+
+		    k = 0 # Initalize compressibility to save variable
+		    D = 0 # Initalize stiffness to save variable
+            @sync begin
+                # Create tasks for each DMRG call
+                task1 = @spawn RunDMRGAlgorithm(
+                	[L, L/2, 1.0, V, μ, 0.0],		# Central
+				    DMRGParameters,
+				    "Fast"; # UserMode
+				    verbose=false,
+				    FixedN=false,
+				    FixedParity=false
+			    )
+			    task2 = @spawn RunDMRGAlgorithm(
+                	[L, L/2, 1.0, V, μ, ε], 		# Rotate clockwise
+				    DMRGParameters,
+				    "Fast"; # UserMode
+				    verbose=false,
+				    FixedN=false,
+				    FixedParity=false
+			    )
+			    task3 = @spawn RunDMRGAlgorithm(
+                	[L, L/2, 1.0, V, μ, -ε], 		# Rotate counter-clockwise
+				    DMRGParameters,
+				    "Fast"; # UserMode
+				    verbose=false,
+				    FixedN=false,
+				    FixedParity=false
+			    )
+
+                # Wait for all tasks to complete and collect results
+                E, psi = fetch(task1)
+                EClock, _ = fetch(task2)
+                ECounterClock, _ = fetch(task3)
+                
+                D = pi * L * (EClock+ECounterClock-2*E)/(4ε^2)
+                n = expect(psi, "n")
+            end
+            
+            ρ = sum(n)/L
+            if m>1
+			    k = (ρ - ρCache) / (μ - μμ[m-1])	# Compressibility
+			    ρCache = ρ							# Next step
+            elseif m==1
+            	k = NaN								# Avoid segmentation fault
+            end
+            
+            Cnn = GetDensityCorrelator(psi)
+            δ = GetBlockVariance(
+            	n,
+            	Cnn;
+            	kVector=[Int64(L/4)]
+            )
+            
+            # Unitary and half projection
+            sites = siteinds(psi)
+            UP = GetUnitaryMIProjector(sites)
+            HP = GetHalfMIProjector(sites)
+            
+			uP = inner(psi', UP, psi)
+			hP = inner(psi', HP, psi)            
+            
+            write(DataFile,"$V; $μ; $E; $ρ; $δ; $(uP); $(hP); $k; $D\n")
+            print("\e[2K")
+        
         end
+
 	end
 
     close(DataFile)

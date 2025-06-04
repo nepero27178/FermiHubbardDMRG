@@ -147,7 +147,7 @@ function main()
             FullDirPathOut = ""
 
             Waiting=true
-			print("Choose your method: (Density/Full) ")
+			print("Choose your method: (Density/Complementary/Full) ")
 			UserSubMode = readline()
 
             while Waiting
@@ -158,6 +158,12 @@ function main()
 					DensityDirPathOut = PROJECT_ROOT * "/simulations/rectangular-sweep/density"
 					mkpath(DensityDirPathOut)
 					
+                elseif UserSubMode=="Complementary"
+
+                    Waiting=false
+					ComplementaryDirPathOut = PROJECT_ROOT * "/simulations/rectangular-sweep/complementary"
+					mkpath(ComplementaryDirPathOut)
+                
                 elseif UserSubMode=="Full"
 
                     Waiting=false
@@ -165,7 +171,7 @@ function main()
 					mkpath(FullDirPathOut)
 
 				else
-					print("Invalid input. Choose your method: (Density/Full) ")
+					print("Invalid input. Choose your method: (Density/Complementary/Full) ")
 					UserSubMode = readline()
 				end
 			
@@ -175,17 +181,29 @@ function main()
 				N = NN[j]
 				
                 if UserSubMode=="Density"
+				    
 				    FilePathOut = DensityDirPathOut * "/L=$L.txt"
 				    DataFile = open(FilePathOut, "w")
 					    write(DataFile,"# Fermi-Hubbard model DMRG. L=$L, N=$N\n")
-					    write(DataFile,"# V; μ; E; ρ [calculated $(now())]\n")
+					    write(DataFile,"# V; μ; E; ρ; δ [calculated $(now())]\n")
 				    close(DataFile)
+				    
+				elseif UserSubMode=="Complementary"
+				
+				    FilePathOut = ComplementaryDirPathOut * "/L=$L.txt"
+				    DataFile = open(FilePathOut, "w")
+					    write(DataFile,"# Fermi-Hubbard model DMRG. L=$L, N=$N\n")
+					    write(DataFile,"# V; μ; E; uP; hP; k; D; [calculated $(now())]\n")
+				    close(DataFile)
+                
                 elseif UserSubMode=="Full"
+				
 				    FilePathOut = FullDirPathOut * "/L=$L.txt"
 				    DataFile = open(FilePathOut, "w")
 					    write(DataFile,"# Fermi-Hubbard model DMRG. L=$L, N=$N\n")
-					    write(DataFile,"# V; μ; E; ρ; uP; hP; k; D [calculated $(now())]\n")
+					    write(DataFile,"# V; μ; E; ρ; δ; uP; hP; k; D; [calculated $(now())]\n")
 				    close(DataFile)
+                
                 end
 				
 				# Look for phase boundaries
@@ -198,6 +216,7 @@ function main()
 				if PhaseBoundariesFilePathIn!==PhaseBoundariesDirPath
 					DMRGParameters = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
 				elseif PhaseBoundariesFilePathIn==PhaseBoundariesDirPath
+					PhaseBoundariesFilePathIn=""
 					DMRGParameters = [DMRGParametersXY] # Use only the most generous
 				end
 				
