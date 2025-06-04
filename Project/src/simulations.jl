@@ -211,19 +211,19 @@ function main()
 				
 				F = filter(x -> occursin("$L",x), readdir(PhaseBoundariesDirPath))
 				
-				if length(F)==1
+				if length(F)==0
 					@info "No boundaries data found, skipping phase-prediction."
 					PhaseBoundariesFilePathIn=""
-					DMRGParameters = [DMRGParametersXY] # Use only the most generous
+					DMRGParametersArray = [DMRGParametersXY] # Use only the most generous
 				elseif length(F)==1
 					@info "Boundaries data found, applying phase-prediction."
 					PhaseBoundariesFilePathIn = PhaseBoundariesDirPath * F[1]
-					DMRGParameters = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
+					DMRGParametersArray = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
 				elseif length(F)>1
 					@warn "Multiple boundaries data found, using the first one. Check the code simulations.jl:223 to change this setting."
 					jj = 1 # Change
 					PhaseBoundariesFilePathIn = PhaseBoundariesDirPath * F[jj]
-					DMRGParameters = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
+					DMRGParametersArray = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
 				end
 								
 				println("Starting calculation of observables for L=$L...")
@@ -233,7 +233,7 @@ function main()
 					N,
 					VV,
 					μμ,
-					DMRGParameters,
+					DMRGParametersArray,
 					FilePathOut;
 					FilePathIn=PhaseBoundariesFilePathIn
 				)

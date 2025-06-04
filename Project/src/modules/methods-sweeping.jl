@@ -160,7 +160,7 @@ function RectangularSweep(
 		N::Int64,
 		VV::Vector{Float64},
 		μμ::Vector{Float64},
-		DMRGParameters::Vector{Vector{Any}},
+		DMRGParametersArray::Vector{Vector{Any}},
 		FilePathOut::String;
 		FilePathIn="",			# Boundaries filepath (if absent, ignore)
 		double=false			# Read +/- 1 particle boundaries
@@ -177,9 +177,9 @@ function RectangularSweep(
     	UseBoundaries = true
     
     	# DMRGParameters::Vector{Vector{Any}}
-    	DMRGParametersXY = DMRGParameters[1]
-    	DMRGParametersIF = DMRGParameters[2]
-    	DMRGParametersIAF = DMRGParameters[3]
+    	DMRGParametersXY = DMRGParametersArray[1]
+    	DMRGParametersIF = DMRGParametersArray[2]
+    	DMRGParametersIAF = DMRGParametersArray[3]
     	
 		BoundariesData = readdlm(FilePathIn, ';', '\n'; comments=true)
 		uμm = 0	# Initialize
@@ -187,7 +187,7 @@ function RectangularSweep(
 		hμm = 0 # Initialize
 		
 		jj =  (BoundariesData[:, 1] .== L)
-		VV =  BoundariesData[jj,2]
+		HotizontalVV =  BoundariesData[jj,2]
 		uΔm1 = BoundariesData[jj,7]
 		uΔm2 = BoundariesData[jj,8]
 		
@@ -208,14 +208,14 @@ function RectangularSweep(
 		end
 		
 		# Correct by +/- 0.1 to include borders (arbitrary)
-		DownLeft = Point( RectangularVV[1]-0.1, Rectangularμμ[1]-0.1 )
-		UpLeft = Point( RectangularVV[1]-0.1, Rectangularμμ[end]+0.1 )
-		DownRight = Point( RectangularVV[end]+0.1, Rectangularμμ[1]-0.1 )
-		UpRight = Point( RectangularVV[end]+0.1, Rectangularμμ[end]+0.1 )
+		DownLeft = Point( HotizontalVV[1]-0.1, Rectangularμμ[1]-0.1 )
+		UpLeft = Point( HotizontalVV[1]-0.1, Rectangularμμ[end]+0.1 )
+		DownRight = Point( HotizontalVV[end]+0.1, Rectangularμμ[1]-0.1 )
+		UpRight = Point( HotizontalVV[end]+0.1, Rectangularμμ[end]+0.1 )
 		
 		IFPoints = vcat(
 			[UpLeft, DownLeft], 
-			[Point( VV[jj], Up[jj] ) for jj in 1:length(Up)])
+			[Point( HotizontalVV[jj], Up[jj] ) for jj in 1:length(Up)])
 		IFPolygon = Polygon(IFPoints...)
 
 
@@ -253,6 +253,10 @@ function RectangularSweep(
 				@info "Phase: XY"
 			end
 			
+		elseif !UseBoundaries
+			
+			DMRGParameters = DMRGParametersArray[1]
+			
 		end
             
         ModelParameters = [L, N, 1.0, V, μ, 0.0]
@@ -282,10 +286,11 @@ function RectangularSweep(
             δ = GetBlockVariance(
             	n,
             	Cnn;
-            	kVector=[Int64(L/4)]
+            	kVector=[floor(Int64, L/4)]
             )
             
-            write(DataFile,"$V; $μ; $E; $ρ; $δ\n")
+            #TODO Eventually, print entire δ vector
+            write(DataFile,"$V; $μ; $E; $ρ; $(δ[1])\n")
             print("\e[2K")
 
         elseif UserSubMode=="Complementary"
@@ -399,7 +404,7 @@ function RectangularSweep(
             δ = GetBlockVariance(
             	n,
             	Cnn;
-            	kVector=[Int64(L/4)]
+            	kVector=[floor(Int64, L/4)]
             )
             
             # Unitary and half projection
@@ -410,7 +415,7 @@ function RectangularSweep(
 			uP = inner(psi', UP, psi)
 			hP = inner(psi', HP, psi)            
             
-            write(DataFile,"$V; $μ; $E; $ρ; $δ; $(uP); $(hP); $k; $D\n")
+            write(DataFile,"$V; $μ; $E; $ρ; $(δ[1]); $(uP); $(hP); $k; $D\n")
             print("\e[2K")
         
         end

@@ -186,7 +186,7 @@ function GetBlockVariance(
 	]
 
 	L = size(Cnn,1)
-	δn2M = []
+	δn2M = zeros(length(kVector))
 	
 	if kVector!==[]
 	
@@ -194,7 +194,7 @@ function GetBlockVariance(
 			error("Invalid kVector! Enter 1 .≤ kVector .≤ L.")
 		end
 		
-		for k in kVector
+		for (j,k) in enumerate(kVector)
 
 			if k>0 && k<=Int64(L/2)
 			
@@ -202,17 +202,17 @@ function GetBlockVariance(
 				for s in 1:L
 					Vectorδn2M[s] = sum(
 						Ghost[
-							s:s+M,
-							s:s+M
+							s:s+k,
+							s:s+k
 						]
 					)
 				end
 				
-				δn2M = mean(Vectorδn2M)
-			
-			return δn2M
+				δn2M[j] = mean(Vectorδn2M)
 			
 			end
+			
+			return δn2M
 		
 		end
 		
@@ -444,6 +444,8 @@ function GetHalfMIProjector(
 		sites::Any
 	)::MPO
 	
+	L = length(sites)
+	
 	states = [isodd(j) ? "0" : "1" for j in 1:L]	# 0101..
 	e = MPS(sites, states)
 	
@@ -470,6 +472,8 @@ Hilbert subspace.
 function GetUnitaryMIProjector(
 		sites::Any
 	)::MPO
+	
+	L = length(sites)
 	
 	states = ["1" for j in 1:L]						# 1111..
 	u = MPS(sites, states)

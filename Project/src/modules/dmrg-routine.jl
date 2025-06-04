@@ -110,8 +110,8 @@ interaction is absent in the fermionic polarized case.
 
 Input:
 
-    - ModelParameters: array of [L::Int64, N::Int64, t::Float64, V::Float64, μ::Float64, η::Float64]
-    - DMRGParameters: array of [nsweeps::Int64, maxdim::Int64, cutoff::Vector{Float64}]
+    - `ModelParameters`: array of [`L`::`Int64`, `N`::`Int64`, `t`::`Float64`, `V`::`Float64`, `μ`::`Float64`, `η`::`Float64`]
+    - DMRGParameters: array of [`nSweeps`::`Int64`, `MaxLinkDim`::`Int64`, `Cutoff`::`Vector{Float64}`]
     - UserMode: string from the set [\"Correlators\", \"Fast\", \"StateAnalyzer\", ...]
     							
 Parametric input:
@@ -138,28 +138,18 @@ function RunDMRGAlgorithm(
 	end 
 
 	# Evaluate UserMode
-	ModeErrorMsg = "Input error: use as argument \"OrderParameters\", \"Correlator\", \"Fast\", \"StateAnalyzer\"  or \"Debug\":
-- \"OrderParameters\": return E, nVariance, aAvg;
-- \"Correlator\": return E, Γ, eΓ;
+	ModeErrorMsg = "Input error: use as argument \"Correlators\", \"Fast\", \"StateAnalyzer\"  or \"Debug\":
+- \"Correlators\": return E, Γ, eΓ, O, eO;
 - \"Fast\": return E;
 - \"StateAnalyzer\": return [...]
 - \"Debug\": return E, LocalE, nMean, nVariance;"
 	
-	OrderParameters=false
 	Correlators=false
 	Fast=false
 	StateAnalyzer=false
 	Debug=false
 	
-	if UserMode=="OrderParameters"
-		
-		@warn "Mode OrderParameters under construction."
-	
-#		OrderParameters=true
-#		nVariance = 0		 					# Variance on central site
-#   	aAvg = 0		 						# <a> on central site
-	
-	elseif UserMode=="Correlators"
+	if UserMode=="Correlators"
 		Correlators=true
     
     elseif UserMode == "Fast"
@@ -169,7 +159,6 @@ function RunDMRGAlgorithm(
     	StateAnalyzer=true
     	SiteDensity = zeros(L)			# Mean number of particles per site
     	LocalE = zeros(L)				# Local contribution to the energy
-#    	Populations = zeros(L,2)	 	# Single site populations
     	Entropy = zeros(L-1)			# Bipartite entropy (extend to L sites)
     	
     elseif UserMode=="Debug"
@@ -229,24 +218,7 @@ function RunDMRGAlgorithm(
 		ShowDensityProfile(psi)
     end
 
-    if OrderParameters
-
-		@warn "Mode OrderParameters under construction."
-		
-		# TODO Projectors, Block density variance ...
-		
-#    	Index = ceil(Int64, L/2)
-#    	
-#		if !verbose
-#			NTotAvg = inner(psi', NTot, psi)
-#		end    	
-#		
-#		nVariance = GetNumberVariance(psi, sites, Index)
-#	    aAvg = expect(psi, "a"; sites=Index)
-#		
-#		return E, NTotAvg, nVariance, aAvg
-    
-    elseif Correlators
+    if Correlators
     
     	# TODO Extend to Green's function
 
