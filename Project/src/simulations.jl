@@ -208,18 +208,24 @@ function main()
 				
 				# Look for phase boundaries
 				PhaseBoundariesDirPath = PROJECT_ROOT * "/simulations/horizontal-sweep/boundaries/"
-				PhaseBoundariesFilePathIn = PhaseBoundariesDirPath * filter(
-					x -> occursin("$L",x), 
-					readdir(PhaseBoundariesDirPath)
-				)[1]
 				
-				if PhaseBoundariesFilePathIn!==PhaseBoundariesDirPath
-					DMRGParameters = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
-				elseif PhaseBoundariesFilePathIn==PhaseBoundariesDirPath
+				F = filter(x -> occursin("$L",x), readdir(PhaseBoundariesDirPath))
+				
+				if length(F)==1
+					@info "No boundaries data found, skipping phase-prediction."
 					PhaseBoundariesFilePathIn=""
 					DMRGParameters = [DMRGParametersXY] # Use only the most generous
+				elseif length(F)==1
+					@info "Boundaries data found, applying phase-prediction."
+					PhaseBoundariesFilePathIn = PhaseBoundariesDirPath * F[1]
+					DMRGParameters = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
+				elseif length(F)>1
+					@warn "Multiple boundaries data found, using the first one. Check the code simulations.jl:223 to change this setting."
+					jj = 1 # Change
+					PhaseBoundariesFilePathIn = PhaseBoundariesDirPath * F[jj]
+					DMRGParameters = [DMRGParametersXY, DMRGParametersIF, DMRGParametersIAF]
 				end
-				
+								
 				println("Starting calculation of observables for L=$L...")
 				RectangularSweep(
                     UserSubMode,
