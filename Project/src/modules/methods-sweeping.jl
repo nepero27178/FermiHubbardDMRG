@@ -235,13 +235,16 @@ function RectangularSweep(
     	if UseBoundaries
     	
 			P = Point(V,μ)
+			
 			# Evaluate expected phase
 			isIF = inpolygon(IFPolygon, P)
 			isIAF = inpolygon(IAFPolygon, P)
 			if isIF && isIAF
-				error("Your point is both IF and IAF..?")
+				@warn "This point appears to be both IF and IAF... using IAF parameters." P
+				isIF = false
 			end
 			
+			print("\e[2K")
 			if isIF && !isIAF
 				DMRGParameters = DMRGParametersIF
 				@info "Phase: IF"
@@ -260,13 +263,20 @@ function RectangularSweep(
 		end
             
         ModelParameters = [L, N, 1.0, V, μ, 0.0]
-        print("\e[2K")
-		printstyled("\rRunning DMRG for L=$L, V=$(round(V, digits=3)), ", 
-			"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
-			"$j/$(length(VV)) in V)",
-            color=:yellow)
+        
+        if j < length(VV) || m < length(μμ)
+			printstyled("\e[2KRunning DMRG for L=$L, V=$(round(V, digits=3)), ", 
+				"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
+				"$j/$(length(VV)) in V)\e[1F",
+		        color=:yellow)
+		elseif j = length(VV) && m = length(μμ)	# Remove final escape code
+			printstyled("\e[2KRunning DMRG for L=$L, V=$(round(V, digits=3)), ", 
+				"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
+				"$j/$(length(VV)) in V)",
+		        color=:yellow)
+		end
 
-		E = 0 # Initalize energy to save variable
+		E = 0 # Initalize energy to save variableJulia comes with
 
         if UserSubMode=="Density"
 
@@ -291,7 +301,6 @@ function RectangularSweep(
             
             #TODO Eventually, print entire δ vector
             write(DataFile,"$V; $μ; $E; $ρ; $(δ[1])\n")
-            print("\e[2K")
 
         elseif UserSubMode=="Complementary"
 
@@ -350,7 +359,6 @@ function RectangularSweep(
 			hP = inner(psi', HP, psi)            
             
             write(DataFile,"$V; $μ; $E; $(uP); $(hP); $k; $D\n")
-            print("\e[2K")
         
 		elseif UserSubMode=="Full"
 
@@ -416,7 +424,6 @@ function RectangularSweep(
 			hP = inner(psi', HP, psi)            
             
             write(DataFile,"$V; $μ; $E; $ρ; $(δ[1]); $(uP); $(hP); $k; $D\n")
-            print("\e[2K")
         
         end
 
