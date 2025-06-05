@@ -90,6 +90,7 @@ function main()
     	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L).pdf"       		# Charge stiffness plot
                 
                 if Density
+                
     	            PlotHeatmap(
     	            	L,
     	            	FilePathIn;
@@ -143,7 +144,7 @@ function main()
 
             PlotPhaseBoundaries(
             	FilePathIn;
-                FilePathOut = PhaseBoundariesDir * "phase-boundaries_μ0=$(μ0).pdf",
+                FilePathOut = PhaseBoundariesDir * "phase-boundaries_μ0=$(μ0)_L=$HorizontalLL.pdf",
                 double=true
             )
             

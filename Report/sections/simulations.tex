@@ -1,7 +1,40 @@
 \clearpage
 \section{Algorithms and simulations}
 
-This section is devoted to delineate the system properties we aim to simulate. The algorithm used is finite-size DMRG, implemented in the \href{https://docs.julialang.org/en/}{\texttt{Julia language}} via the well supported \href{https://itensor.github.io/ITensors.jl/stable/index.html}{\texttt{ITensors.jl}}, \href{https://itensor.github.io/ITensorMPS.jl/stable/}{\texttt{ITensorsMPS.jl}} packages.
+This section is devoted to delineate the system properties we aim to simulate. The algorithm used is finite-size DMRG, implemented in the \href{https://docs.julialang.org/en/}{\texttt{Julia language}} via the well supported \href{https://itensor.github.io/ITensors.jl/stable/index.html}{\texttt{ITensors.jl}}, \href{https://itensor.github.io/ITensorMPS.jl/stable/}{\texttt{ITensorsMPS.jl}} packages. The hamiltonian of Eq.~\eqref{eq:spinless-hamiltonian-pbc} was simply implemented,
+
+\begin{lstlisting}[language=julia]
+function GetHamiltonianMPO(
+		sites::Any,		# Sites
+		t::Float64,		# Hopping
+		V::Float64,		# Interaction
+		mu::Float64;	# Chemical pontential
+		Phi=0			# Flux
+	)::MPO
+
+	os = OpSum()
+	L = length(sites)
+	
+	for j=1:L
+		
+		# Separate: initialize Float64 or ComplexFloat64 
+		if Phi!==0
+			os += -t * (cos(Phi/L) - im*sin(Phi/L)),"Cdag",j,"C",mod1(j+1,L)
+			os += -t * (cos(Phi/L) + im*sin(Phi/L)),"Cdag",mod1(j+1,L),"C",j
+		elseif Phi==0
+			os += -t,"Cdag",j,"C",mod1(j+1,L)
+			os += -t,"Cdag",mod1(j+1,L),"C",j
+		end
+		
+		os += V,"N",j,"N",mod1(j+1,L)
+		os += -mu,"N",j
+		
+	end
+	
+	return MPO(os, sites)
+end
+\end{lstlisting}
+I inserted the above snippet to give a feel of the easiness of the packages in Julia language. Finite-size DMRG method is a built-in method in the packages. The entirety of the code, as said, is openly accessible \href{https://github.com/nepero27178/FermiHubbardDMRG}{at this repository}.
 
 \subsection{What I would have liked to do}
 
@@ -91,6 +124,45 @@ I reported both the expressions for $M=1$ and $M=2$: in our PBC-$\mathrm{XXZ}$ g
 	\mu_1^{-2} = -\frac{1}{2} \Delta_1^{-2}[0]
 \]
 To compute $\Delta_\rho^{\pm M}[\mu]$ is just a matter of computing ground-state energies. This procedure allows for a simple estimation of the phase boundaries and, most importantly, provides insight on the finite-size effects.
+
+\begin{figure}
+	\centering
+	\input{pictures/simulations/phase-boundaries}
+	\caption{Estimated position of finite-size chains phase boundaries at increasing lengths. The dashed line on the left delimits the $\mathrm{MI}_1$/$\mathrm{SU}$ phase transition and represents $\mu_1^{-2} |_{@L}$. The solid lines delimit the $\mathrm{MI}_{1/2}$ phase and represent $\mu_{1/2}^{\pm2} |_{@L}$.}
+	\label{fig:phase-boundaries}
+\end{figure}
+
+A numerical extraction of such phase boundaries was performed for increasing sizes. I used
+\[
+	L \in \lbrace 14, 22, 30, 38 \rbrace
+\]
+in order to maintain an odd particles number at half-filling and keep under control computational runtimes. Moreover, I performed the calculation setting $\texttt{double}=\mathrm{true}$ -- which is, adding or removing two particles -- to conserve parity. By direct confrontation of an analogous analysis performed with $\texttt{double}=\mathrm{false}$, no significant difference seems to arise. Results are shown in Fig.~\ref{fig:phase-boundaries}. The $\mathrm{MI}_1$ phase is perfectly coherent with the expectations of Fig.~\ref{fig:expected-sfh-phase-diagram}, while the same is not true for the $\mathrm{MI}_{1/2}$ phase. Increasing lattice length, however, coherence with expectations seems to improve\footnote{
+	A straightforward procedure one should carry out at this point should be one Finite-Size-Scaling to estimate the $L \to \infty$ converged phase-boundaries lines. A procedure of this kind I avoid here, but was analogously carried out by Marco Pompili and me on \href{https://github.com/mrc-pop/BoseHubbardDMRG}{our previous work}.
+}.
+
+Computationally, this analysis had two purposes. First, detect the finite-size phase transition lines positions without running heavy simulations along the entire parameters space. Secondly and most importantly, using these results, one is able to predict the phase where a given point $(V/t, \mu/t)$ is expected to lie. Now, to simulate Mott-insulating systems requires little computational resources given the simplicity of the ground-state: then, for states expected to be Mott-insulating I have run DMRG algorithms adjusting its simulation parameters to less-expensive configurations without sacrificing accuracy, making use of the rapid convergence times. In DMRG language, I have chosen the following configurations:
+
+\begin{lstlisting}[language=julia]
+	#  Ising Ferromagnet (analog) DMRG parameters
+	
+	IFnSweeps = 5
+	IFMaxLinkDim = [10,20,30,40,50]
+	IFCutoff = [1E-8]
+	
+	# Ising Anti-Ferromagnet (analog) DMRG parameters
+	
+	IAFnSweeps = 5
+	IAFMaxLinkDim = [10,20,30,40,50]
+	IAFCutoff = [1E-8]
+	
+	# XY (analog) DMRG paramters
+	
+	XYnSweeps = 20
+	XYMaxLinkDim = [10,50,75,200,500]
+	XYCutoff = [1E-8]
+\end{lstlisting}
+
+\noindent Notice that, when the length of the \texttt{MaxLinkDim} vector is bigger of the number of sweeps \texttt{nSweeps}, the last value of the \texttt{MaxLinkDim} vector is used \textit{ad libitum}. For the three phases, the \texttt{Cutoff} is set to a generous value and only for the $\mathrm{XY}$ phase there is a significant computational difference both in bond-link dimensions and in the number of DMRG sweeps.
 
 \subsubsection*{Single-point characterization}
 

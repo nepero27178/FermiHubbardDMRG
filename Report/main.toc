@@ -20,8 +20,6 @@
 \contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{20}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Algorithms and simulations}{22}{section.3}%
 \contentsline {subsection}{\numberline {3.1}What I would have liked to do}{22}{subsection.3.1}%
-\contentsline {paragraph}{Charge compressibility.}{22}{section*.22}%
-\contentsline {paragraph}{Charge stiffness.}{22}{section*.23}%
+\contentsline {paragraph}{Charge compressibility.}{23}{section*.22}%
+\contentsline {paragraph}{Charge stiffness.}{23}{section*.23}%
 \contentsline {subsection}{\numberline {3.2}What I actually did}{23}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Data analysis and results}{25}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Ground-state phase physical properties}{25}{subsection.4.1}%

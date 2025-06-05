@@ -41,6 +41,31 @@ function PlotHeatmap(
     if verbose
 		@info "Data" Data
 	end
+	
+	# Look for phase boundaries
+	PhaseBoundariesDirPath = PROJECT_ROOT * "/../simulations/horizontal-sweep/boundaries/"
+	F = filter(x -> occursin("$L",x), readdir(PhaseBoundariesDirPath))
+	
+	PlotBoundaries = false
+	if length(F)==0
+	
+		@warn "No boundaries data found, skipping phase boundaries plot."
+		PhaseBoundariesFilePathIn=""
+	
+	elseif length(F)==1
+	
+		PlotBoundaries = true
+		@info "Boundaries data found, plotting phase boundaries."
+		PhaseBoundariesFilePathIn = PhaseBoundariesDirPath * F[1]
+	
+	elseif length(F)>1
+		
+		PlotBoundaries = true
+		@warn "Multiple boundaries data found, using the first one. Check the code methods-plotting.jl:64 to change this setting."
+		jj = 1 # Change
+		PhaseBoundariesFilePathIn = PhaseBoundariesDirPath * F[jj]
+	
+	end
 
     Full=false
     if kFilePathOut!=="" || DFilePathOut!==""
@@ -88,6 +113,9 @@ function PlotHeatmap(
     end
 
     if EFilePathOut != ""
+    	
+    	printstyled("Plotting energy...", color=:yellow)
+    
         hE = heatmap(
         	unique(VV), unique(μμ), Energies, 
 			xlabel=L"V/t",
@@ -96,15 +124,26 @@ function PlotHeatmap(
 			title=L"Ground-state energy ($L=%$L$)"
 		)
 
-#        if PhaseBoundariesFilePath != ""
-#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
-#        end
+    	if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
 
         savefig(hE, EFilePathOut)
-        println("Energy plot for L=$L saved on file!")
+        printstyled("\e[2K\e[1GEnergy plot for L=$L saved on file!\n", color=:green)
     end
     
     if ρFilePathOut != ""
+    
+    	printstyled("Plotting density...", color=:yellow)
+    
         hρ = heatmap(
         	unique(VV), unique(μμ), Densities, 
 			xlabel=L"V/t",
@@ -113,33 +152,57 @@ function PlotHeatmap(
 			title=L"Charge density ($L=%$L$)"
 		)
 
-#        if PhaseBoundariesFilePath != ""
-#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
-#        end
+        if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
+
 
         savefig(hρ, ρFilePathOut)
-        println("Charge density plot for L=$L saved on file!")
+        printstyled("\e[2K\e[1GCharge density plot for L=$L saved on file!\n", color=:green)
     end
     
     if δFilePathOut != ""
+    
+    	printstyled("Plotting density block variance...", color=:yellow)
+    
         hδ = heatmap(
-        	unique(VV), unique(μμ), Densities, 
+        	unique(VV), unique(μμ), VarVar, 
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
 			label=L"\delta_{L/4}^2",
-			title=L"Charge density block variance ($L=%$L$)"
+			title=L"Charge density block variance ($L=%$L$, $M=\lfloor L/4 \rfloor$)"
 		)
 
-#        if PhaseBoundariesFilePath != ""
-#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
-#        end
+		if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
 
-        savefig(hδ, ρFilePathOut)
-        println("Charge density block variance plot for L=$L saved on file!")
+
+        savefig(hδ, δFilePathOut)
+        printstyled("\e[2K\e[1GCharge density block variance plot for L=$L saved on file!\n", color=:green)
     end
 
     
     if uPFilePathOut != ""
+    
+    	printstyled("Plotting unitary filling projection...", color=:yellow)
+    
         huP = heatmap(
         	unique(VV), unique(μμ), UnitaryProjections, 
 			xlabel=L"V/t",
@@ -148,15 +211,27 @@ function PlotHeatmap(
 			title=L"$\mathrm{MI}_1$ projection ($L=%$L$)"
 		)
 
-#        if PhaseBoundariesFilePath != ""
-#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
-#        end
+		if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
+
 
         savefig(huP, uPFilePathOut)
-        println("Unitary-filling projection plot for L=$L saved on file!")
+        printstyled("\e[2K\e[1GUnitary-filling projection plot for L=$L saved on file!\n", color=:green)
     end
     
     if hPFilePathOut != ""
+    
+    	printstyled("Plotting half filling projection...", color=:yellow)
+    
         hhP = heatmap(
         	unique(VV), unique(μμ), HalfProjections, 
 			xlabel=L"V/t",
@@ -165,15 +240,26 @@ function PlotHeatmap(
 			title=L"$\mathrm{MI}_{1/2}$ projection ($L=%$L$)"
 		)
 
-#        if PhaseBoundariesFilePath != ""
-#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
-#        end
+		if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
 
         savefig(hhP, hPFilePathOut)
-        println("Unitary-filling projection plot for L=$L saved on file!")
+        printstyled("\e[2K\e[1GHalf-filling projection plot for L=$L saved on file!\n", color=:green)
     end
 
     if kFilePathOut != ""
+    
+    	printstyled("Plotting charge compressibility...", color=:yellow)
+    	
         hk = heatmap(
         	unique(VV), unique(μμ)[3:end], Compressibilities[3:end,:], 
 			xlabel=L"V/t",
@@ -183,15 +269,27 @@ function PlotHeatmap(
 			#clim=(0,1)
 		)
 
-#        if PhaseBoundariesFilePath != ""
-#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
-#        end
+		if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
+
 
         savefig(hk, kFilePathOut)
-        println("Compressibility plot for L=$L saved on file!")
+        printstyled("\e[2K\e[1GCharge compressibility plot for L=$L saved on file!\n", color=:green)
     end
     
     if DFilePathOut != ""
+    
+    	printstyled("Plotting charge stiffness...", color=:yellow)
+    	
         hD = heatmap(
         	unique(VV), unique(μμ), Stiffnesses, 
 			xlabel=L"V/t",
@@ -201,125 +299,23 @@ function PlotHeatmap(
 			clim=(-100,100)
 		)
 
-#        if PhaseBoundariesFilePath != ""
-#            HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath, L, JJ, μμ)
-#        end
+		if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
+
 
         savefig(hD, DFilePathOut)
-        println("Charge stiffness plot for L=$L saved on file!")
+        printstyled("\e[2K\e[1GCharge stiffness plot for L=$L saved on file!\n", color=:green)
     end
 
-end
-
-function PlotZeroFieldSweep(
-        FilePathIn::String;
-        EFilePathOut="",		    # Energy heatmap
-        kFilePathOut="",			# Charge stiffness
-        DFilePathOut=""             # Compressibility heatmap
-    )
-    
-    # Extract data coming from rectangular-sweep
-    Data = readdlm(FilePathIn, ';', '\n'; comments=true)
-	@info "Data" Data
-
-    LL = Data[:,1]
-    VV = Data[:,2]
-    EE = Data[:,3]
-    kk = Data[:,4]
-    DD = Data[:,5]
-
-    NumL = length(unique(LL))
-    NumV = length(unique(VV))
-    
-    Energies = zeros(NumV, NumL)
-    Compressibilities = zeros(NumV, NumL)
-    Stiffnesses = zeros(NumV, NumL)
-
-    for jj in 1:NumL
-        Energies[:,jj] = EE[ NumV*(jj-1)+1 : NumV*jj ]
-        Compressibilities[:,jj] = kk[ NumV*(jj-1)+1 : NumV*jj ]
-        Stiffnesses[:,jj] = DD[ NumV*(jj-1)+1 : NumV*jj ]
-    end
-
-    if EFilePathOut != ""
-        pE = plot(
-        	unique(VV), Energies, 
-			xlabel=L"$V/t$",
-			ylabel=L"$E$",
-			title=L"Ground-state energy ($L=%$L$)"
-		)
-
-        savefig(pE, EFilePathOut)
-        println("Zero-field energy plot for L=$L saved on file!")
-    end
-
-    if kFilePathOut != ""
-        pk = plot(
-        	unique(VV), Compressibilities[3:end,:], 
-			xlabel=L"$V/t$",
-			ylabel=L"$\kappa_{1/2}$",
-			title=L"Compressibility ($L=%$L$)"
-		)
-
-        savefig(pk, kFilePathOut)
-        println("Zero-field compressibility plot for L=$L saved on file!")
-    end
-    
-    if DFilePathOut != ""
-        pD = plot(
-        	unique(VV), Stiffnesses, 
-			xlabel=L"$V/t$",
-			ylabel=L"$\mathcal{D}_{1/2}$",
-			title=L"Charge stiffness ($L=%$L$)"
-		)
-
-        savefig(pD, DFilePathOut)
-        println("Zero-field charge stiffness plot for L=$L saved on file!")
-    end
-end
-
-
-"""
-Add the phase boundaries to the heatmap, for the closest size L available,
-and adjusting the xlimits and ylimits appropriately.
-"""
-function HeatmapAddPhaseBoundaries(PhaseBoundariesFilePath::String,
-                                   L::Int64,
-                                   JJ::Array{Float64},
-                                   μμ::Array{Float64};
-                                   μ0=0.0)
-	
-	@warn "Function under construction..."	
-	                                   
-#    BoundariesData = readdlm(PhaseBoundariesFilePath, ';', '\n'; comments=true)
-#    LL = unique(BoundariesData[:, 1])
-#
-#    L_PB_index = argmin(abs.(LL .- L)) # best approximation of L
-#    L_PhaseBoundaries = LL[L_PB_index]
-#
-#    if L_PhaseBoundaries !== L
-#        println("L=$L is not among horizontal data. Using the closest available size, L=$L_PhaseBoundaries. (μ0=$μ0)")
-#    end
-#
-#    # Filter data corresponding to L_PhaseBoundaries
-#    indices = (BoundariesData[:, 1] .== L_PhaseBoundaries)
-#    JJ_PB = BoundariesData[indices, 2]
-#    μUp = BoundariesData[indices, 4]
-#    μDown = BoundariesData[indices, 5]
-#    
-#    plot!(JJ_PB, -μDown .+ 2 * μ0, 
-#        label=nothing,#"$L=%$L_PhaseBoundaries$",
-#        seriestype=:scatter,
-#        markersize=1.5,
-#        color="white",
-#        xlimits=(minimum(JJ), maximum(JJ)),
-#        ylimits=(minimum(μμ), maximum(μμ)))
-#    plot!(JJ_PB, μ0 .+ μUp, seriestype=:scatter,
-#        label=nothing,
-#        markersize=1.5,
-#        color="white",
-#        xlimits=(minimum(JJ), maximum(JJ)),
-#        ylimits=(minimum(μμ), maximum(μμ)))      
 end
 
 # ----------------------------- Phase boundaries -------------------------------
@@ -333,7 +329,8 @@ function PlotPhaseBoundaries(
         gap=false,
         double=false,
         CustomLL=[],
-        μ0=0.0
+        μ0=0.0,
+        StandAlone=true
     )
     
     BoundariesData = readdlm(FilePathIn, ';', '\n'; comments=true)
@@ -345,7 +342,9 @@ function PlotPhaseBoundaries(
         LL = CustomLL
     end
 
-	P = plot()
+	if StandAlone
+		P = plot()
+	end
 
 	VV = 0	# Initialize VV to use it outside the for loop
 	for (l, L) in enumerate(LL)
@@ -381,13 +380,18 @@ function PlotPhaseBoundaries(
                 color=MyColors[l % length(MyColors)]
             )
    	    else
+   	    
+   	    	if StandAlone
+   	    		plot!(
+		            xlabel=L"$V/t$", ylabel=L"$\mu$",
+		            title=L"Extrapolation of $\mu_c^\pm$ ($\mu_0=%$μ0$, \texttt{double}=%$(double))",
+		            legend=:outertopright,
+		        )
+   	    	end
 
             plot!(
-                xlabel=L"$V/t$", ylabel=L"$\mu$",
-                title=L"Extrapolation of $\mu_c^\pm$ ($\mu_0=%$μ0$, \texttt{double}=%$(double))",
-                xlims=[-2.0,4.0],
-                ylims=[0.0,4.0],
-                legend=:outertopright,
+            	xlims=[minimum(RectangularVV), maximum(RectangularVV)],
+	            ylims=[minimum(Rectangularμμ), maximum(Rectangularμμ)],
 				VV, -hμm .+ μ0,
 				label="",
                 linewidth=0.5,
@@ -407,7 +411,6 @@ function PlotPhaseBoundaries(
 
 	        plot!(
                 VV, hμp .+ μ0, 
-                #seriestype=:scatter,
                 markershape=:circle,
                 label="",
                 markersize=1.5,
@@ -417,7 +420,6 @@ function PlotPhaseBoundaries(
             
             plot!(
                 VV, -uμm .+ μ0, 
-                #seriestype=:scatter,
                 markershape=:circle,
                 linestyle=:dash,
                 label="",
@@ -428,15 +430,17 @@ function PlotPhaseBoundaries(
 	    end
 	    
 	end
+	
+	if !StandAlone
+    	plot!(
+    		legend=false
+    	)
+	end
     
     if !=(FilePathOut,"")
         savefig(FilePathOut)
         printstyled("Done!\n", color=:green)
-    else
-    	gui()
     end
-    
-    return P
 end
 
 # ------------------------------------------------------------------------------
@@ -627,100 +631,6 @@ function PlotCorrelationFunctionsMIvsSF(FilePathIn::String;
 #        else
 #            gui()
 #        end
-#    end
-end
-
-"""
-Read the fit results from txt.
-Plot the results of the fits, i.e., K_∞ vs J, for all the rMin, rMax available.
-"""
-function PlotFitResultsK(FilePathIn::String,
-                         μ0::Float64,
-                         rMin::Int64;
-                         FilePathOut="")
-    
-    @warn "Mode under construction."
-
-#    # Read the input data
-#    FittedData = readdlm(FilePathIn, ',', '\n'; comments=true)
-#
-#    # Extract unique J, rMin values
-#    JJ = unique(FittedData[:, 1])
-#    rrMax = unique(FittedData[:, 3])
-#    rrMin = unique(FittedData[:, 2])
-#
-#    println("Chosen rMin = $rMin")
-#
-#    # if length(rrMin) != 1
-#    #     print("Error! More than one rMin. Which one should I put in the title?")
-#    #     return
-#    # end
-#    
-#    AllK_∞ = FittedData[:,4]
-#    e_AllK_∞ = FittedData[:,4]
-#
-#    plot()
-#
-#    for rMax in rrMax
-#        # Filter data corresponding to the current rMin
-#        Filter = (FittedData[:, 3] .== rMax) .& (FittedData[:, 2] .== rMin)
-#        K_∞ = AllK_∞[Filter]
-#        e_K_∞ = e_AllK_∞[Filter]
-#
-#        scatter!(JJ, K_∞,
-#                 xlabel=L"$J$",
-#                 ylabel=L"$K_\infty$",
-#                 title=L"Luttinger parameter vs $J$ ($\mu_0 = %$μ0$, $r_\mathrm{min}=%$rMin$)",
-#                 label=L"$r_\mathrm{max}=%$(Int64(rMax))$",
-#                 markersize=2,
-#                 legend=:topright)
-#
-#    end
-#
-#    hline!([0.5], label=L"$K_c=1/2$", color="black", linestyle=:dash)
-#
-#    if FilePathOut != ""
-#        savefig(FilePathOut)
-#        println("\nPlot of K_∞ vs J plotted to ", FilePathOut)
-#    else
-#        gui()  
-#    end
-end
-
-function PlotIllustrativeResultK(FilePathIn::String,
-                                 μ0::Float64,
-                                 rMin::Int64, 
-                                 rMax::Int64;
-                                 FilePathOut="")
-
-    @warn "Mode under construction."
-
-#    # Read the input data
-#    FittedData = readdlm(FilePathIn, ',', '\n'; comments=true)
-#
-#    # Extract unique J values
-#    JJ = unique(FittedData[:, 1])
-#
-#    # Extract K_∞ for chosen rMin and rMax
-#    Filter = (FittedData[:, 3] .== rMax) .& (FittedData[:, 2] .== rMin)
-#    K_∞ = FittedData[Filter,4]
-#    e_K_∞ = FittedData[Filter,5]
-#
-#    scatter!(JJ, K_∞,
-#    yerr=e_K_∞,
-#    xlabel=L"$J$",
-#    ylabel=L"$K_\infty$",
-#    title=L"Luttinger parameter vs $J$ ($\mu_0 = %$μ0$, $%$rMin \le r \le %$rMax$)",
-#    label=nothing,
-#    markersize=2,
-#    color="black",
-#    legend=:topright)
-#
-#    if FilePathOut != ""
-#        savefig(FilePathOut)
-#        println("Illustrative plot saved on file.")
-#    else
-#        gui()
 #    end
 end
 
