@@ -7,13 +7,17 @@ function PlotHeatmap(
         L::Int64,
         FilePathIn::String;
         PhaseBoundariesFilePath="",
+        
         EFilePathOut="",
         ρFilePathOut="",
         δFilePathOut="",
+        
         uPFilePathOut="",
     	hPFilePathOut="",
     	kFilePathOut="",
         DFilePathOut="",
+        KFilePathOut="",
+        uFilePathOut="",
         verbose=false
     )
     
@@ -26,13 +30,17 @@ function PlotHeatmap(
         L::Int64,
         FilePathIn::String;
         PhaseBoundariesFilePath="",
+		#
         EFilePathOut="",		    # Energy heatmap
         ρFilePathOut="",			# Density heatmap
         δFilePathOut="",			# Block density variance heatmap
+        #
         uPFilePathOut="",			# Unitary filling MI projection heatmap
     	hPFilePathOut="",			# Half filling MI projection heatmap
     	kFilePathOut="",			# Charge stiffness
         DFilePathOut="",            # Compressibility heatmap
+        KFilePathOut="",			# K Luttinger heatmap
+    	uFilePathOut="",				# u Luttinger heatmap
         verbose=false
     )
     
@@ -67,10 +75,12 @@ function PlotHeatmap(
 	
 	end
 
-    Full=false
+    Full=false	# Simpler conditioning
     if kFilePathOut!=="" || DFilePathOut!==""
         Full=true
     end
+    
+    # Import data
 
     VV = Data[:,1]
     μμ = Data[:,2]
@@ -83,7 +93,14 @@ function PlotHeatmap(
     	hPhP = Data[:,7]
         kk = Data[:,8]
         DD = Data[:,9]
+    	KK = sqrt.(abs.(pi .* kk .* DD))
+    	uu = sqrt.(abs.(DD ./ (pi .* kk)))
     end
+    
+    KK[1:2,:] .= 0	# Avoid errors later
+    uu[1:2,:] .= 0	# Avoid errors later
+
+	# Filter data
 
     NumV = length(unique(VV))
     Numμ = length(unique(μμ))
@@ -93,10 +110,13 @@ function PlotHeatmap(
     VarVar = zeros(Numμ, NumV)
 
     if Full
-        Compressibilities = zeros(Numμ, NumV)
-        Stiffnesses = zeros(Numμ, NumV)
+    
         UnitaryProjections = zeros(Numμ, NumV)
-        HalfProjections = zeros(Numμ, NumV)
+        HalfProjections = zeros(Numμ, NumV)    
+        Compressibilities = zeros(Numμ, NumV)
+        Stiffnesses = zeros(Numμ, NumV)    
+	    Interactions = zeros(Numμ, NumV)
+	    Velocities = zeros(Numμ, NumV)
     end
 
     for jj in 1:NumV
@@ -105,10 +125,14 @@ function PlotHeatmap(
         VarVar[:,jj] = δδ[ Numμ*(jj-1)+1 : Numμ*jj ]
         
         if Full
+        
+        	UnitaryProjections[:,jj] = uPuP[ Numμ*(jj-1)+1 : Numμ*jj ]
+            HalfProjections[:,jj] = hPhP[ Numμ*(jj-1)+1 : Numμ*jj ]
             Compressibilities[:,jj] = kk[ Numμ*(jj-1)+1 : Numμ*jj ]
             Stiffnesses[:,jj] = DD[ Numμ*(jj-1)+1 : Numμ*jj ]
-            UnitaryProjections[:,jj] = uPuP[ Numμ*(jj-1)+1 : Numμ*jj ]
-            HalfProjections[:,jj] = hPhP[ Numμ*(jj-1)+1 : Numμ*jj ]
+	    	Interactions[:,jj] = KK[ Numμ*(jj-1)+1 : Numμ*jj ]
+        	Velocities[:,jj] = uu[ Numμ*(jj-1)+1 : Numμ*jj ]
+        	
         end
     end
 
@@ -120,8 +144,8 @@ function PlotHeatmap(
         	unique(VV), unique(μμ), Energies, 
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
-			label=L"E",
-			title=L"Ground-state energy ($L=%$L$)"
+			label=L"$E$",
+			title=L"$E$ ($L=%$L$)"
 		)
 
     	if PlotBoundaries                                      
@@ -149,7 +173,8 @@ function PlotHeatmap(
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
 			label=L"$\rho$",
-			title=L"Charge density ($L=%$L$)"
+			title=L"$\rho$ ($L=%$L$)",
+			clim=(0,1)
 		)
 
         if PlotBoundaries                                      
@@ -177,8 +202,8 @@ function PlotHeatmap(
         	unique(VV), unique(μμ), VarVar, 
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
-			label=L"\delta_{L/4}^2",
-			title=L"Charge density block variance ($L=%$L$, $M=\lfloor L/4 \rfloor$)"
+			label=L"$\delta n_{L/4}^2$",
+			title=L"$\delta n_{L/4}^2$ ($L=%$L$, $M=\lfloor L/4 \rfloor$)",
 		)
 
 		if PlotBoundaries                                      
@@ -208,7 +233,8 @@ function PlotHeatmap(
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
 			label=L"$\langle \Psi | \hat P_{\mathrm{MI}_1} | \Psi \rangle$",
-			title=L"$\mathrm{MI}_1$ projection ($L=%$L$)"
+			title=L"$\langle \Psi | \hat P_{\mathrm{MI}_1} | \Psi \rangle$ ($L=%$L$)",
+			clim=(0,1)
 		)
 
 		if PlotBoundaries                                      
@@ -237,7 +263,8 @@ function PlotHeatmap(
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
 			label=L"$\langle \Psi | \hat P_{\mathrm{MI}_{1/2}} | \Psi \rangle$",
-			title=L"$\mathrm{MI}_{1/2}$ projection ($L=%$L$)"
+			title=L"$\langle \Psi | \hat P_{\mathrm{MI}_{1/2}} | \Psi \rangle$ ($L=%$L$)",
+			clim=(0,1)
 		)
 
 		if PlotBoundaries                                      
@@ -265,8 +292,8 @@ function PlotHeatmap(
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
 			label=L"\kappa",
-			title=L"Compressibility ($L=%$L$)",
-			#clim=(0,1)
+			title=L"$\kappa$ ($L=%$L$)",
+			clim=(0,1)
 		)
 
 		if PlotBoundaries                                      
@@ -294,8 +321,8 @@ function PlotHeatmap(
         	unique(VV), unique(μμ), Stiffnesses, 
 			xlabel=L"V/t",
 			ylabel=L"$\mu/t$",
-			label=L"\mathcal{D}",
-			title=L"Charge stiffness ($L=%$L$)",
+			label=L"$\mathcal{D}$",
+			title=L"$\mathcal{D}$ ($L=%$L$)",
 			clim=(-100,100)
 		)
 
@@ -311,9 +338,68 @@ function PlotHeatmap(
 			)
 		end
 
-
         savefig(hD, DFilePathOut)
         printstyled("\e[2K\e[1GCharge stiffness plot for L=$L saved on file!\n", color=:green)
+    end
+    
+    if KFilePathOut != "" && DFilePathOut != "" && kFilePathOut != ""
+    
+    	printstyled("Plotting K Luttinger parameter...", color=:yellow)
+    	
+        hK = heatmap(
+        	unique(VV), unique(μμ)[3:end], Interactions[3:end,:], 
+			xlabel=L"V/t",
+			ylabel=L"$\mu/t$",
+			label=L"$K$",
+			title=L"$K$ ($L=%$L$)",
+			clim=(0,2),
+			#ylim=[Rectangularμμ[2], Rectangularμμ[end]]
+		)
+
+		if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
+
+        savefig(hK, KFilePathOut)
+        printstyled("\e[2K\e[1GK Luttinger parameter plot for L=$L saved on file!\n", color=:green)
+    end
+
+    if uFilePathOut != "" && DFilePathOut != "" && kFilePathOut != ""
+    
+    	printstyled("Plotting u Luttinger parameter...", color=:yellow)
+    	
+        hu = heatmap(
+        	unique(VV), unique(μμ)[3:end], Velocities[3:end,:], 
+			xlabel=L"V/t",
+			ylabel=L"$\mu/t$",
+			label=L"$u$",
+			title=L"$u$ ($L=%$L$)",
+			clim=(0,100),
+			#ylim=[Rectangularμμ[2], Rectangularμμ[end]]
+		)
+
+		if PlotBoundaries                                      
+			PlotPhaseBoundaries(
+				PhaseBoundariesFilePathIn; 
+				FilePathOut="",
+				gap=false,
+				double=true,
+				CustomLL=[L],
+				μ0=0.0,
+				StandAlone=false
+			)
+		end
+
+        savefig(hu, uFilePathOut)
+        printstyled("\e[2K\e[1Gu Luttinger parameter plot for L=$L saved on file!\n", color=:green)
     end
 
 end
@@ -387,26 +473,35 @@ function PlotPhaseBoundaries(
 		            title=L"Extrapolation of $\mu_c^\pm$ ($\mu_0=%$μ0$, \texttt{double}=%$(double))",
 		            legend=:outertopright,
 		        )
+		        UserColor = MyColors[l % length(MyColors)]
+		    elseif !StandAlone
+		    	UserColor = :yellow
    	    	end
 
             plot!(
-            	xlims=[minimum(RectangularVV), maximum(RectangularVV)],
-	            ylims=[minimum(Rectangularμμ), maximum(Rectangularμμ)],
+            	xlims=[RectangularVV[1], RectangularVV[end]],
+	            ylims=[Rectangularμμ[1], Rectangularμμ[end]],
 				VV, -hμm .+ μ0,
 				label="",
                 linewidth=0.5,
-                color=MyColors[l % length(MyColors)]
+                color=UserColor
             )
+            
+            if StandAlone
+	            SizeLabel = L"$L=%$(Int64(L))$"
+            elseif !StandAlone
+            	SizeLabel = ""
+            end
             
 			# Separate points and lines to correct legend            
             plot!(
 				VV, -hμm .+ μ0,
-				label=L"$L=%$(Int64(L))$",
+				label=SizeLabel,
 				seriestype=:scatter,
                 markershape=:circle,
                 markersize=1.5,
                 linewidth=0.5,
-                color=MyColors[l % length(MyColors)]
+                color=UserColor
             )
 
 	        plot!(
@@ -415,7 +510,7 @@ function PlotPhaseBoundaries(
                 label="",
                 markersize=1.5,
                 linewidth=0.5,
-                color=MyColors[l % length(MyColors)]
+                color=UserColor
             )
             
             plot!(
@@ -425,213 +520,16 @@ function PlotPhaseBoundaries(
                 label="",
                 markersize=1.5,
                 linewidth=0.5,
-                color=MyColors[l % length(MyColors)]
+                color=UserColor
             )
 	    end
 	    
-	end
-	
-	if !StandAlone
-    	plot!(
-    		legend=false
-    	)
 	end
     
     if !=(FilePathOut,"")
         savefig(FilePathOut)
         printstyled("Done!\n", color=:green)
     end
-end
-
-# ------------------------------------------------------------------------------
-# --------------------------- Correlation functions ----------------------------
-# ------------------------------------------------------------------------------
-
-""" Plot the correlation function Γ(r) for the chosen J (the j-th) and μ0."""
-function PlotPowerLawGamma(FilePathIn::String,
-                           μ0::Float64,
-                           j::Int64;
-                           FilePathOut="",
-                           overwrite=true)
-
-    @warn "Mode under construction."
-
-#    plot()
-#
-#    # Read the input data
-#    data = readdlm(FilePathIn, ';', '\n'; comments=true)
-#
-#    # Extract unique J, L values
-#    LL = unique(data[:, 1])
-#    JJ = unique(data[:, 2])
-#
-#    println("\nPlotting correlation function.")
-#    println("From input file, there are $(length(JJ)) possible values of J.")
-#    
-#    # Mastruzzo to extract array of Γ
-#    function parse_array(str)
-#        return parse.(Float64, split(strip(str, ['[', ']', ' ']), ','))
-#    end
-#    Γall = [parse_array(row[4]) for row in eachrow(data)]
-#
-#    if overwrite
-#        plot()
-#    end
-#
-#    J = JJ[j] # choose the j-th J
-#
-#    println("Chosen value of J: $J, chosen value of μ0: $μ0")
-#
-#    for L in LL
-#        # Filter data for the current J and L
-#        filter = (data[:, 2] .== J) .& (data[:, 1] .== L)
-#
-#        # Extract the correlators {Γ(r,J,L)}_r for the selected J,L
-#        Γeven = Γall[filter][1] # this is an array, Γ(r even)
-#        r = range(start=2, step=2, length=length(Γeven)) # r even
-#
-#        # Check if Γeven has at least two elements
-#        if length(Γeven) < 2
-#            println("Warning: Not enough data points for L = $L. Skipping.")
-#            continue
-#        end
-#
-#        J_round = round(J, digits=3)
-#
-#        scatter!(r, Γeven,
-#            xlabel=L"$r$",
-#            ylabel=L"$\Gamma(r)$",
-#            title=L"Correlation function ($J=%$J_round, \mu_0 = %$μ0$)",
-#            label=L"L=%$L",
-#            markersize=2,
-#            xscale=:log10,
-#            yscale=:log10,  
-#            xticks=[1,10,100],
-#            xlimits=(1,100),
-#            legend=:topright)
-#    end
-#
-#    if !=(FilePathOut,"")
-#        savefig(FilePathOut)
-#        println("Correlator vs r plotted to ", FilePathOut)
-#    end
-end
-
-"""
-Make a qualitative plot to put in the report: Gamma(r) vs r for different values
-of J, showing the MI-SF crossing when from exponential Gamma becomes power-law
-"""
-function PlotCorrelationFunctionsMIvsSF(FilePathIn::String;
-                                        FilePathOut1="",
-                                        FilePathOut2="",
-                                        PhaseBoundariesFilePath="",
-                                        L=70,
-                                        μ0=0.6,
-                                        JMin = 0.1,
-                                        JMax = 0.35)
-
-    @warn "Mode under construction."
-
-#    plot()
-#
-#    # Read the input data
-#    data = readdlm(FilePathIn, ';', '\n'; comments=true)
-#
-#    # Extract unique J, L values
-#    LL = unique(data[:, 1])
-#    JJ = unique(data[:, 2])
-#
-#    # Select the couplings
-#    JJ = JJ[ (JJ .>= JMin) .& (JJ .<= JMax) ]
-#
-#    # Mastruzzo to extract array of Γ
-#    function parse_array(str)
-#        return parse.(Float64, split(strip(str, ['[', ']', ' ']), ','))
-#    end
-#    Γall = [parse_array(row[4]) for row in eachrow(data)]
-#
-#    for (j, J) in enumerate(JJ)
-#        # Filter data for the current J and L
-#        filter = (data[:, 2] .== J) .& (data[:, 1] .== L)
-#
-#        # Extract the correlators {Γ(r,J,L)}_r for the selected J,L
-#        Γeven = Γall[filter][1] # this is an array, Γ(r even)
-#        r = range(start=2, step=2, length=length(Γeven)) # r even
-#
-#        # Check if Γeven has at least two elements
-#        if length(Γeven) < 2
-#            println("Warning: Not enough data points for L = $L. Skipping.")
-#            continue
-#        end
-#
-#        J_round = round(J, digits=3)
-#
-#        scatter!(r, Γeven,
-#            xlabel=L"$r$",
-#            ylabel=L"$\Gamma(r)$",
-#            title=L"Correlation function ($L=%$L, \mu_0 = %$μ0$)",
-#            label=L"J=%$J_round",
-#            markersize=2,
-#            xscale=:log10,
-#            yscale=:log10,  
-#            xticks=[1,10,100],
-#            xlimits=(1,100),
-#            legend=:bottomleft)
-#    end
-#
-#    if FilePathOut1 != ""
-#        savefig(FilePathOut1)
-#        println("First plot saved on file.")
-#    else
-#        gui()
-#    end
-#
-#    if PhaseBoundariesFilePath != ""
-#        # NOTE: the code works if the μ0 = 0.0 boundaries data are used.
-#        # gr()
-#        plot()
-#
-#        BoundariesData = readdlm(PhaseBoundariesFilePath, ';', '\n'; comments=true)
-#        LL = unique(BoundariesData[:, 1])
-#    
-#        L_PB_index = argmin(abs.(LL .- L)) # best approximation of L
-#        L_PhaseBoundaries = LL[L_PB_index]
-#    
-#        if L_PhaseBoundaries !== L
-#            println("L=$L is not among horizontal data. Using the closest available size, L=$L_PhaseBoundaries. (μ0=$μ0)")
-#        end
-#    
-#        # Filter data corresponding to L_PhaseBoundaries
-#        indices = (BoundariesData[:, 1] .== L_PhaseBoundaries)
-#        JJ_PB = BoundariesData[indices, 2]
-#        μUp = BoundariesData[indices, 4]
-#        μDown = BoundariesData[indices, 5]
-#        
-#        plot!(JJ_PB, -μDown, 
-#            label=L"$\mu_c^\pm$",
-#            seriestype=:scatter,
-#            markersize=1.5,
-#            color="black",
-#            xlabel=L"$J$",
-#            ylabel=L"$\mu$",
-#            title=L"Phase boundaries ($L=%$L, \mu_0=%$μ0$)"
-#            )
-#        plot!(JJ_PB, μUp, seriestype=:scatter,
-#            label="",
-#            markersize=1.5,
-#            color="black",
-#            )
-#
-#        vspan!([minimum(JJ), maximum(JJ)]; alpha=0.2, color=MyColors[4], label=nothing)
-#        plot!([minimum(JJ), maximum(JJ)], [0.6, 0.6], color=MyColors[4], label=L"$(J,\mu_0)$")
-#
-#        if FilePathOut2 != ""
-#            savefig(FilePathOut2)
-#            println("Second plot saved on file.")
-#        else
-#            gui()
-#        end
-#    end
 end
 
 # -------------------------- State populations plot ----------------------------
@@ -703,7 +601,7 @@ function PlotPopulations(
 
 end
 
-# -------------------------------- Entropy plot --------------------------------
+# --------------------------- State-properties plots ---------------------------
 
 function ParseRawString(
             RawString::SubString{String}
@@ -716,28 +614,35 @@ function ChainPlots(
 		DirPathIn::String,
 		DirPathOut::String,
 		L::Int64,
-		XYPoint::Vector{Float64},
+		XYPointUp::Vector{Float64},
+		XYPointDown::Vector{Float64},
 		IFPoint::Vector{Float64},
-        IAFPoint::Vector{Float64}
+        IAFPoint::Vector{Float64};
+        CompactPlot=false
 	)
 
 Returns: none (plots saved).
 
 This function plots, for given parametrizations (points ,`XYPoint`, `IFPoint` 
-and `IAFPoint` on the `(V,μ)` plane, the state entropy recovering it from the
-appropriate `FilePathIn` built thanks to the function variables.
+and `IAFPoint` on the `(V,μ)` plane, all the \"chain variables\": microscopic
+energy, local density, bipartite entropy, block density variance and the CDW
+and SU correlators. If `CompactPlot=true`, only the last four are plotted in a
+grid scheme.
 """
 function ChainPlots(
 		DirPathIn::String,
 		DirPathOut::String,
 		L::Int64,
-		XYPoint::Vector{Float64},
+		XYPointUp::Vector{Float64},
+		XYPointDown::Vector{Float64},
 		IFPoint::Vector{Float64},
-        IAFPoint::Vector{Float64}
+        IAFPoint::Vector{Float64};
+        CompactPlot=false
 	)
 
     PointDict = Dict([
-        ("XY", XYPoint),
+        ("XY-Up", XYPointUp),
+        ("XY-Down", XYPointDown),
         ("IF", IFPoint),
         ("IAF", IAFPoint)
     ])
@@ -746,11 +651,13 @@ function ChainPlots(
     Density = Dict([])
     BlockDensityVariance = Dict([])
     Entropy = Dict([])
+    CDWCorrelator = Dict([])
+	SUCorrelator = Dict([])
 	
-    for Phase in ["XY", "IF", "IAF"]
+    for Phase in ["XY-Up", "XY-Down", "IF", "IAF"]
 
         Point = PointDict[Phase]
-        FilePathIn = DirPathIn * Phase * "_V=$(Point[1])_μ=$(Point[2]).txt"
+        FilePathIn = DirPathIn * Phase * "_V=$(Point[1])_μ=$(Point[2])_L=$(L).txt"
     	Data = readdlm(FilePathIn, ';', '\n'; comments=true)
         ConserveNumber = Data[:,1]
         ConserveParity = Data[:,2]
@@ -759,68 +666,148 @@ function ChainPlots(
         
         # [1] is necessary to read the SubString
         LocalEnergy[Phase] = ParseRawString(Data[Index,8][1])
-        Density[Phase] = ParseRawString(Data[Index,9][1])        
-        BlockDensityVariance[Phase] = ParseRawString(Data[Index,10][1])
-        Entropy[Phase] = ParseRawString(Data[Index,11][1])
+        Density[Phase] = ParseRawString(Data[Index,9][1])
+        Entropy[Phase] = ParseRawString(Data[Index,10][1])        
+        BlockDensityVariance[Phase] = ParseRawString(Data[Index,11][1])
+        CDWCorrelator[Phase] = ParseRawString(Data[Index,12][1])
+        SUCorrelator[Phase] = ParseRawString(Data[Index,13][1])
     end
 
     MainDict = Dict([
         ("Local energy", LocalEnergy),
         ("Density", Density),
         ("Block density variance", BlockDensityVariance),
-        ("Bipartite entropy", Entropy)
+        ("Bipartite entropy", Entropy),
+        ("CDW Correlator", CDWCorrelator),
+        ("SU Correlator", SUCorrelator)
     ])
-    MarkerStyleDict = Dict([
-        ("XY", [MyColors[1], 1.5, :transparent, 0]),
-        ("IF", [MyColors[4], 1.5, :transparent, 0]),
-        ("IAF", [MyColors[3], 1.5, :transparent, 0])
-#        ("XY", [MyColors[1], 2, :transparent, 0]),
-#        ("IF", [:transparent, 2.5, MyColors[4], 0.5]),
-#        ("IAF", [MyColors[3], 1.5, :transparent, 0])
+    StyleDict = Dict([
+      	# Name: color, size, border color, border size, line style, label
+        ("XY-Up", [MyColors[1], 1.5, :transparent, 0, :solid, L"$\mathrm{XY}_1$"]),
+        ("XY-Down", [MyColors[1], 1.5, :transparent, 0, :dash, L"$\mathrm{XY}_2$"]),
+        ("IF", [MyColors[4], 1.5, :transparent, 0, :solid, L"$\mathrm{IF}$"]),
+        ("IAF", [MyColors[3], 1.5, :transparent, 0, :solid, L"$\mathrm{IAF}$"])
     ])
     xLabelsDict = Dict([
         ("Local energy", L"$j$"),
         ("Density", L"$j$"),
         ("Block density variance", L"$M$"),
-        ("Bipartite entropy", L"$\ell$")
+        ("Bipartite entropy", L"$\ell$"),
+        ("CDW Correlator", L"$r$"),
+        ("SU Correlator", L"$r$")
     ])
     yLabelsDict = Dict([
         ("Local energy", L"$e_j$"),
         ("Density", L"$n_j$"),
         ("Block density variance", L"$\delta n_M^2$"),
-        ("Bipartite entropy", L"$S_\ell$")
+        ("Bipartite entropy", L"$S_\ell$"),
+        ("CDW Correlator", L"$\mathcal{C}_\mathrm{CDW}(r)$"),
+        ("SU Correlator", L"$\mathcal{C}_\mathrm{SU}(r)$")
     ])
 
-    for Observable in [k for k in keys(MainDict)] # Needed to get Vector{String}
-        plot(
-            title = Observable * " ($L sites)",
-            legend=:best
-        )
-    
-        for Phase in ["XY", "IF", "IAF"]
+	if !CompactPlot
 
-            Point = PointDict[Phase]
+		for (o,Observable) in enumerate([k for k in keys(MainDict)]) # Needed to get Vector{String}
+		    plot(
+		        title = Observable * " ($L sites)",
+		        legend=:best
+		    )
+		    
+		    if o > 6	# Correlators are the last two to be plotted
+		    	plot!(
+		    		xaxis=:log,
+		    		yaxis=:log,
+		    	)
+		    end
+		
+		    for Phase in ["XY-Up", "XY-Down", "IF", "IAF"]
 
-            yy = MainDict[Observable][Phase]
-            xx = [l for l in 1:length(yy)]
-		    plot!(
-                xx, yy,
-                xlabel = xLabelsDict[Observable],
-                ylabel = yLabelsDict[Observable],
-                markershape = :circle,                
-                markercolor = MarkerStyleDict[Phase][1],
-                markersize = MarkerStyleDict[Phase][2],
-                markerstrokecolor = MarkerStyleDict[Phase][3],
-                markerstrokewidth = MarkerStyleDict[Phase][4],
-                linewidth = 0.5,
-                label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(Phase))",
-            )
+		        Point = PointDict[Phase]
 
-        end
-    
-		savefig(DirPathOut * "/" * lowercase(replace(Observable, ' '=>'-')) * ".pdf")
-        printstyled("$(Observable) plot done!\n", color=:green)
+		        yy = MainDict[Observable][Phase]
+		        xx = [l for l in 1:length(yy)]
+				plot!(
+		            xx, yy,
+		            xlabel = xLabelsDict[Observable],
+		            ylabel = yLabelsDict[Observable],
+		            markershape = :circle,
+		            markercolor = StyleDict[Phase][1],
+		            markersize = StyleDict[Phase][2],
+		            markerstrokecolor = StyleDict[Phase][3],
+		            markerstrokewidth = StyleDict[Phase][4],
+		            linewidth = 0.5,
+		            linestyle = StyleDict[Phase][5],
+		            linecolor= StyleDict[Phase][1],
+		            label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(StyleDict[Phase][6]))",
+		        )
 
-    end
+		    end
+		
+			savefig(DirPathOut * "/" * lowercase(replace(Observable, ' '=>'-')) * "_L=$L.pdf")
+		    printstyled("$(Observable) plot done!\n", color=:green)
+
+		end
+
+	elseif CompactPlot
+		
+		OrderedObservables = [
+			"Bipartite entropy",
+			"Block density variance",
+			"CDW Correlator",
+			"SU Correlator"
+		]
+		PlotsList = Any[]
+		
+		for (o,Observable) in enumerate(OrderedObservables) # Needed to get Vector{String}
+		    P = plot(
+		    	size = (800,600),
+		        title = Observable * " ($L sites)",
+		    )
+		
+		    for Phase in ["XY-Up", "XY-Down", "IF", "IAF"]
+
+		        Point = PointDict[Phase]
+
+				if o==2
+		        	LabelString = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(StyleDict[Phase][6]))"
+		        else
+					LabelString = ""
+		        end
+					
+
+		        yy = MainDict[Observable][Phase]
+		        xx = [l for l in 1:length(yy)]
+				plot!(
+		            xx, yy,
+		            xlabel = xLabelsDict[Observable],
+		            ylabel = yLabelsDict[Observable],
+		            markershape = :circle,
+		            markercolor = StyleDict[Phase][1],
+		            markersize = StyleDict[Phase][2]+0.5,
+		            markerstrokecolor = StyleDict[Phase][3],
+		            markerstrokewidth = StyleDict[Phase][4],
+		            linewidth = 0.5,
+		            linestyle = StyleDict[Phase][5],
+		            linecolor= StyleDict[Phase][1],
+		            label = LabelString,
+		            minorticks = false
+		        )
+
+		    end
+			push!(PlotsList,P)
+		end
+		
+		plot(
+			PlotsList[1], PlotsList[2],
+			PlotsList[3], PlotsList[4],
+	        layout=4,
+	        margin=3*Plots.mm,
+	        legend=:outertopright
+	    )
+		
+		savefig(DirPathOut * "/compact-plot_L=$L.pdf")
+	    printstyled("Compact plot done!\n", color=:green)
+		
+	end
 
 end

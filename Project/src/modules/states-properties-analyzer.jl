@@ -39,21 +39,30 @@ function GetStateProperties(
 	
 	# ------------------------------- Simulation ------------------------------- 
 
-	DMRGParameters = global DMRGParametersXY # Always use XY parameters
+#	DMRGParameters = global DMRGParametersXY # Always use XY parameters
 	
 	Observables = RunDMRGAlgorithm(
 		ModelParameters,
-		DMRGParameters,
-		"StateAnalyzer"; #UserMode
+		DMRGParametersXY,	# Overkill
+		"StateAnalyzer"; 	# UserMode
 		verbose=false,
 		FixedN=ConserveNumber,
 		FixedParity=ConserveParity
 	)
 	
-	# Energy, local energy, state, local denisty, density-density correlator, entropy
+	# Energy, local energy, state, local density, density-density correlator, entropy
 	E, lE, psi, n, Cnn, S = Observables
+	
 	ρ = sum(n)/L
-	δn2M = GetBlockVariance(n, Cnn)z
+	δn2M = GetBlockVariance(n, Cnn)
+	
+	eCnn = std(Cnn, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+	Cnn = mean(Cnn, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+	
+	Csu = GetSuperconductingCorrelator(psi)
+	eCsu = std(Csu, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+	Csu = mean(Csu, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+	
 	k = 0 # Initialize
 	D = 0 # Initialize
 	
@@ -62,7 +71,7 @@ function GetStateProperties(
 		# Create tasks for each DMRG call
 		task1 = @spawn RunDMRGAlgorithm(
 			[L, N, 1.0, V, μ+Δμ, 0.0],		# Central
-			DMRGParameters,
+			DMRGParametersXY,				# Overkill
 			"Fast"; # UserMode
 			verbose=false,
 			FixedN=ConserveNumber,
@@ -70,15 +79,15 @@ function GetStateProperties(
 		)
 		task2 = @spawn RunDMRGAlgorithm(
 			[L, N, 1.0, V, μ, ε], 			# Rotate clockwise
-			DMRGParameters,
+			DMRGParametersXY,				# Overkill
 			"Fast"; # UserMode
 			verbose=false,
 			FixedN=ConserveNumber,
 			FixedParity=ConserveParity
 		)
 		task3 = @spawn RunDMRGAlgorithm(
-			[L, N, 1.0, V, μ, -ε], 		# Rotate counter-clockwise
-			DMRGParameters,
+			[L, N, 1.0, V, μ, -ε],	 		# Rotate counter-clockwise
+			DMRGParametersXY,				# Overkill
 			"Fast"; # UserMode
 			verbose=false,
 			FixedN=ConserveNumber,
@@ -99,48 +108,57 @@ function GetStateProperties(
 
 	# --------------------------------- Write ----------------------------------
 
+	Bools = "$ConserveNumber; $ConserveParity; "
+	Macro = "$L; $N; $V; $μ; $E; "							# Macroscopic
+	Chain = "$(lE); $(n); $(S); $(δn2M); $(Cnn); $(Csu); "	# Microscopic
+	Bos = "$k; $D"											# Bosonization
+	
 	DataFile = open(FilePathOut, "a")
-		write(DataFile, "$ConserveNumber; $ConserveParity; $L; $N; $V; $μ; $E; $lE; $n; $(δn2M); $S; $k; $D\n")
+		write(DataFile, Bools * Macro * Chain * Bos * "\n")
 	close(DataFile)
 	
-	return E, psi, ρ, δn2M, S, k, D
+	return E, psi, ρ, S, δn2M, Cnn, Csu, k, D
 end
 
 # ----------------------------------- Main -------------------------------------
 	
 function main()
 
-	L = global StatePropertiesL
+	L = StatePropertiesL
+	N = StatePropertiesN
+#	global IFPoint
+#	global IAFPoint
+#	global XYPoint1
+#	global XYPoint2
+	
+	PhasesDict = Dict([
+		("XY-Up", XYPoint1),	# Global
+		("XY-Down", XYPoint2),	# Global
+		("IF", IFPoint),		# Global
+		("IAF", IAFPoint)		# Global
+	])
+	
 	η = 0.0
 	
 	print("Should I run the simulations? (y/n) ")
 	Compute = readline()
 	
-	for Phase in ["XY", "IAF", "IF"]		
+	for Phase in ["XY-Up", "XY-Down", "IAF", "IF"]		
 	
 		printstyled("Simulating phase: $(Phase)", color=:yellow)
 
 		DirPathOut = PROJECT_ROOT * "/simulations/states-properties/"
 		mkpath(DirPathOut)
-		
-		if Phase=="XY"			# XY state (Jordan-Wigner mapping)  
-			V = 0.5
-			μ = 1.0
-			FilePathOut = DirPathOut * "XY_V=$(V)_μ=$(μ).txt"
-		elseif Phase=="IAF"		# IAF state (Jordan-Wigner mapping), Mott insulating
-			V = 5.0
-			μ = 4.0
-			FilePathOut = DirPathOut * "IAF_V=$(V)_μ=$(μ).txt"	
-		elseif Phase=="IF"		# IF state (Jordan-Wigner mapping), Mott insulating
-			V = -2.5
-			μ = 1.0
-			FilePathOut = DirPathOut * "IF_V=$(V)_μ=$(μ).txt"
-		end
 
-	        if Compute=="y"
+		Point = PhasesDict[Phase]
+		V = Point[1]
+		μ = Point[2]
+		FilePathOut = DirPathOut * Phase * "_V=$(V)_μ=$(μ)_L=$(L).txt"
+		
+	    if Compute=="y"
 			DataFile = open(FilePathOut, "w")
 				write(DataFile, "# FixedN; FixedParity; L; N; V; μ; E; e; n;"
-					* " δn_M^2; S; k; D [calculated at $(now())]\n")
+					* " S; δn_M^2; <Cnn>; <Csu>; k; D; [calculated at $(now())]\n")
 			close(DataFile)
 		end
 
@@ -168,7 +186,7 @@ function main()
 					ConserveNumber,
 					ConserveParity
 				)
-				E, lE, ρ, δn2M, S, k, D = Observables
+				E, lE, ρ, S, δn2M, Cnn, Csu, k, D = Observables
 				
 				@info Phase ConserveNumber ConserveParity ρ k D
 				println()

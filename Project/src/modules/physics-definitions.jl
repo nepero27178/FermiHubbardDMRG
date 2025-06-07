@@ -186,16 +186,16 @@ function GetBlockVariance(
 	]
 
 	L = size(Cnn,1)
-	δn2M = zeros(length(kVector))
+	δn2M = Float64[]	# Unknown size
 	
-	if kVector!==[]
+	if kVector!=[]
 	
 		if any(kVector .< 0 .|| kVector .> Int64(L/2))
 			error("Invalid kVector! Enter 1 .≤ kVector .≤ L.")
 		end
 		
+		δn2M = zeros(length(kVector))
 		for (j,k) in enumerate(kVector)
-
 			if k>0 && k<=Int64(L/2)
 			
 				Vectorδn2M = zeros(L)
@@ -208,13 +208,11 @@ function GetBlockVariance(
 					)
 				end
 				
-				δn2M[j] = mean(Vectorδn2M)
+				push!(δn2M, mean(Vectorδn2M))
 			
-			end
-			
-			return δn2M
-		
+			end		
 		end
+		return δn2M
 		
 	elseif kVector==[]
 		
@@ -229,11 +227,10 @@ function GetBlockVariance(
 			)
 		end
 		
-		δn2M = mean(Matrixδn2M,dims=2)[:,1] # Indexing needed to format to Vector
+		δn2M .= mean(Matrixδn2M, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+		return δn2M
 	
 	end
-	
-	return δn2M
 end
 
 

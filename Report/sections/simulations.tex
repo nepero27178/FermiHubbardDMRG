@@ -36,7 +36,7 @@ end
 \end{lstlisting}
 I inserted the above snippet to give a feel of the easiness of the packages in Julia language. Finite-size DMRG method is a built-in method in the packages. The entirety of the code, as said, is openly accessible \href{https://github.com/nepero27178/FermiHubbardDMRG}{at this repository}.
 
-\subsection{What I would have liked to do}
+\subsection{What I would have liked to do (better)}\label{subsec:what-i-would-have-liked-to-do-(better)}
 
 A good target is to extract the Bosonization parameters $u$ and $K$ for the spinless Fermi-Hubbard model of Eq.~\eqref{eq:spinless-hamiltonian-pbc}. As said in Sec.~\ref{subsubsec:spinless-fermions-observables}, for a spinless model the task can be easy enough by performing the calculation of the charge compressibility $\kappa$ and the charge stiffness $\mathcal{D}$. From Eq.~\eqref{eq:charge-compressibility} and \eqref{eq:charge-stiffness} respectively,
 \begin{equation}\label{eq:charge-compressibility-stiffness-definitions}
@@ -89,9 +89,9 @@ for a ``small'' flux variation $\delta\eta$. It is important to notice here that
 
 \subsection{What I actually did}
 
-All I described in the above section is a rather good strategy, provided you can simulate a big long chubby chain with a lot of fermions. It turns out, taken into account my computational resources, the entire strategy turns out to be a little optimistic. It would have been wiser to understand my limits earlier, but that's how life goes, I guess.
+All I described in the above section is a rather good strategy, provided you can simulate a big long chubby chain with a lot of fermions. It turns out, taken into account my computational resources, the entire strategy turns out to be a little optimistic. It would have been wiser to understand my limits earlier, but that's how life goes, I guess. I limited the estimation of the Luttinger parameters $u$ and $K$ to purely qualitative.
 
-\subsubsection*{Charge gaps}
+\subsubsection{Charge gaps}
 
 For a model of the class of the spinless Fermi-Hubbard, Eq.~\eqref{eq:spinless-hamiltonian-pbc}, the chemical potential part amounts to a pure energy shift when working inside a fixed-number subspace of the many-body Hilbert space. Let $E_g[L,N,\eta]$ be the ground-state energy of Eq.~\eqref{eq:fixed-number-energy-definition} at fixed particle number $N$. Moreover, let me define
 \[
@@ -138,37 +138,264 @@ A numerical extraction of such phase boundaries was performed for increasing siz
 \]
 in order to maintain an odd particles number at half-filling and keep under control computational runtimes. Moreover, I performed the calculation setting $\texttt{double}=\mathrm{true}$ -- which is, adding or removing two particles -- to conserve parity. By direct confrontation of an analogous analysis performed with $\texttt{double}=\mathrm{false}$, no significant difference seems to arise. Results are shown in Fig.~\ref{fig:phase-boundaries}. The $\mathrm{MI}_1$ phase is perfectly coherent with the expectations of Fig.~\ref{fig:expected-sfh-phase-diagram}, while the same is not true for the $\mathrm{MI}_{1/2}$ phase. Increasing lattice length, however, coherence with expectations seems to improve\footnote{
 	A straightforward procedure one should carry out at this point should be one Finite-Size-Scaling to estimate the $L \to \infty$ converged phase-boundaries lines. A procedure of this kind I avoid here, but was analogously carried out by Marco Pompili and me on \href{https://github.com/mrc-pop/BoseHubbardDMRG}{our previous work}.
-}.
+}. An important feature to notice is that, differently from the expectations of Fig.~\ref{fig:expected-sfh-phase-diagram}, the $\mathrm{SU}$ phase is expected to be disconnected (split in two parts). Computationally, finite-size effects could lead to some physical differences in the ``upper''-$\mathrm{SU}$ and the ``lower''-$\mathrm{SU}$ phases I analyze briefly in next sections.
 
-Computationally, this analysis had two purposes. First, detect the finite-size phase transition lines positions without running heavy simulations along the entire parameters space. Secondly and most importantly, using these results, one is able to predict the phase where a given point $(V/t, \mu/t)$ is expected to lie. Now, to simulate Mott-insulating systems requires little computational resources given the simplicity of the ground-state: then, for states expected to be Mott-insulating I have run DMRG algorithms adjusting its simulation parameters to less-expensive configurations without sacrificing accuracy, making use of the rapid convergence times. In DMRG language, I have chosen the following configurations:
+Computationally, this analysis had two purposes. First, detect the finite-size phase transition lines positions without running heavy simulations along the entire parameters space. Secondly and most importantly, using these results, one is able to predict the phase where a given point $(V/t, \mu/t)$ is expected to lie. Now, to simulate Mott-insulating systems requires little computational resources given the simplicity of the ground-state: for the Ferromagnetic region the solutions subspace is approximately $1$-dimensional, being dominated by the state
+\[
+	\ket{11 \cdots 1}
+\]
+while for the Anti-Ferromagnetic region the subspace is approximately two-dimensional, dominated by the states
+\[
+	\ket{0101\cdots01}
+	\qquad
+	\ket{1010\cdots10}
+\]
+Then, for states expected to be Mott-insulating I have run DMRG algorithms adjusting its simulation parameters to less-expensive configurations without sacrificing accuracy, making use of the rapid convergence times. In DMRG language, I have chosen the following configurations:
 
 \begin{lstlisting}[language=julia]
-	#  Ising Ferromagnet (analog) DMRG parameters
-	
-	IFnSweeps = 5
-	IFMaxLinkDim = [10,20,30,40,50]
-	IFCutoff = [1E-8]
-	
-	# Ising Anti-Ferromagnet (analog) DMRG parameters
-	
-	IAFnSweeps = 5
-	IAFMaxLinkDim = [10,20,30,40,50]
-	IAFCutoff = [1E-8]
-	
-	# XY (analog) DMRG paramters
-	
-	XYnSweeps = 20
-	XYMaxLinkDim = [10,50,75,200,500]
-	XYCutoff = [1E-8]
+#  Ising Ferromagnet (analog) DMRG parameters
+
+IFnSweeps = 5
+IFMaxLinkDim = [10,20,30,40,50]
+IFCutoff = [1E-8]
+
+# Ising Anti-Ferromagnet (analog) DMRG parameters
+
+IAFnSweeps = 5
+IAFMaxLinkDim = [10,20,30,40,50]
+IAFCutoff = [1E-8]
+
+# XY (analog) DMRG paramters
+
+XYnSweeps = 20
+XYMaxLinkDim = [10,50,75,200,500]
+XYCutoff = [1E-8]
 \end{lstlisting}
 
-\noindent Notice that, when the length of the \texttt{MaxLinkDim} vector is bigger of the number of sweeps \texttt{nSweeps}, the last value of the \texttt{MaxLinkDim} vector is used \textit{ad libitum}. For the three phases, the \texttt{Cutoff} is set to a generous value and only for the $\mathrm{XY}$ phase there is a significant computational difference both in bond-link dimensions and in the number of DMRG sweeps.
+\noindent Notice that, when the length of the \texttt{MaxLinkDim} vector is bigger of the number of sweeps \texttt{nSweeps}, the last value of the \texttt{MaxLinkDim} vector is used \textit{ad libitum}. For the three phases, the \texttt{Cutoff} is set to a generous value and only for the $\mathrm{XY}$ phase there is a significant computational difference both in bond-link dimensions and in the number of DMRG sweeps. 
 
-\subsubsection*{Single-point characterization}
+\subsubsection{Single-point characterization}\label{subsubsec:single-point-characterization}
 
-A good task is to characterize the three phases by choosing one precise set of parameters representative of each. Each choice $(V/t,\mu/t)$ describes a model whose solution is a given physical phase.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../Project/analysis/states-properties/compact-plot_L=6.pdf}
+	\caption{Compact plot of the four observables listed in Sec.~\ref{subsubsec:single-point-characterization}. Top left: bipartite entropy; top right: block density variance; bottom left: density-density correlator; bottom-right: superconducting correlator. The legend on the top left side listing the four analyzed points refers to all figures.}
+	\label{fig:compact-plot}
+\end{figure}
 
-{\color{tabred} [Study of precise states (one for each phase): block density variance, compressibility and charge stiffness, plot of the correlation functions, bipartite entropy.]}
+A good task is to characterize the three phases by choosing one precise set of parameters representative of each. Each choice $(V/t,\mu/t)$ describes a model whose solution is a given physical phase. The four points I have chosen are:
+\begin{lstlisting}[language=julia]
+IFPoint  = [-1.0, 3.0]	# MI\_1 point
+IAFPoint = [ 3.5, 3.5]	# MI\_1/2 point
+XYPoint1 = [ 1.0, 2.6]	# upper SU point
+XYPoint2 = [ 3.5, 0.5]	# lower SU point
+\end{lstlisting}
+Various possible analyses can be carried out for single-point simulations. Among others, I decided to analyze the following properties:
+\begin{enumerate}
+	\item bipartite entropy of the ground-state,
+	\begin{equation}\label{eq:bipartite-entropy-definition}
+		S(\hat \rho_\ell) \equiv - \Tr_\ell \left\lbrace \hat \rho_\ell \log \hat \rho_\ell \right\rbrace
+	\end{equation}
+	as a function of the bipartition length $\ell$, being $\hat \rho_\ell$ the block reduced density matrix;
+	\item density variance across a block of sites, defined by
+	\begin{equation}\label{eq:density-block-variance-definition}
+		\delta n_M^2 = \left\langle \left( \sum_{i \in M} \hat n_i \right)^2 \right\rangle - \left\langle \sum_{i \in M} \hat n_i \right\rangle^2
+	\end{equation}
+	as a function of the block length $M$;
+	\item density-density correlation function as defined in Eq.~\eqref{eq:density-density-correlation-power-law} along sites;
+	\item superconducting correlation function as defined in Eq.~\eqref{eq:superconducting-correlation-power-law} along sites;
+\end{enumerate}
+The $\mathrm{SU}$ states are expected to be significantly more entropic with respect to the Mott insulating states\footnote{
+	I skip the formal proof of this sentence. Intuitively, this is due to the fact that the Mott-insulating phase is dominated by a small-size Hilbert subspace ($1$-dimensional for the unitary filling part, $2$-dimensional for the half-filling part). Because of this, the unitary-filled phase is exactly separable and the half-filled is low-entangled and almost-separable. In these phases, the ground-state density matrix is sparse. On the contrary, superconducting phase imply heavy entanglement -- which is, big entropy -- because, being fermion hopping favored, the ground-state density matrix is not sparse at all.
+}. Similarly, due to increased mobility of fermions as well as entanglement the density variance across sites is expected to be near-zero for the Mott-insulating phase and significantly non-zero for the superconducting phase. Moreover, the above sentence is expected to hold true for the $\mathrm{MI}_1$ phase and approximately true for the $\mathrm{MI}_{1/2}$ phase due to finite-size effects.
 
-\subsubsection*{Observables heatmaps}
-{\color{tabred} [Density heatmap and phase identification.]}
+Consider Fig.~\ref{fig:compact-plot}: I there sketched the four observables hereby listed computed for {\color{tabred}[$L=6$]}, for each of the four points analyzed. For each observable, what is shown is the value averaged along the chain; the error is not shown but can be estimated easily by taking the standard deviation across the chain. {\color{tabred} [Comments\dots]}.
+
+\subsubsection{Observables heatmaps}
+
+\begin{figure}
+	\centering
+	\subfloat[][Density heatmap.]{
+		\includegraphics[height=0.35\textwidth]{
+			../Project/analysis/heatmap/density_L=22.pdf
+		}\label{subfig:density-heatmap}
+	}
+	\subfloat[][Block density variance heatmap.]{
+		\includegraphics[height=0.35\textwidth]{
+			../Project/analysis/heatmap/block-density-variance_L=22.pdf
+		}\label{subfig:block-density-variance-heatmap}
+	}
+	\caption{The averaged density heatmap for the DMRG solved ground state of the spinless Fermi-Hubbard model is shown in Fig~\ref{subfig:density-heatmap}. Superimposed and with the same criteria as in Fig.~\ref{fig:phase-boundaries} are the expected phase boundaries. Fig.~\ref{subfig:block-density-variance-heatmap} depicts the average density variance across a block of sites of length $M = \lfloor L/4 \rfloor$.}
+	\label{fig:density-heatmaps}
+\end{figure}
+
+In this last section I sketch some relevant observables heatmaps. Results are described qualitatively but give space to deep understanding of how the (finite-size) phases are made.
+
+\paragraph{Density.} I start by commenting the results shown in Fig.~\ref{fig:density-heatmaps}. The first and simplest observable is the average particle density along the chain, shown as a heatmap in Fig.~\ref{subfig:density-heatmap}. As expected the left-side $\mathrm{IF}/\mathrm{MI}_1$ phase is unitary filled, while the expected $\mathrm{IAF}/\mathrm{MI}_{1/2}$ is almost uniformly half-filled. Due to finite size, which implies finite particle number, in the expected $\mathrm{XY}$ phase uniform-density domains borders are clearly visible. These correspond to single particles removal.
+
+Interestingly, at zero chemical potential (no system-environment matter exchange) the expected density at strong NN repulsion is less than half. To alternate particles and holes in not enough to gain energy: residual subdominant hopping makes the ground state converge onto a less populated state.
+
+\paragraph{Block density variance.} Fig.~\ref{subfig:block-density-variance-heatmap} shows the block density variance $\ev{ \delta \hat n_{M}^2 }$ as a heatmap for $M = \lfloor L/4 \rfloor$. For the $\mathrm{IF}/\mathrm{MI}_1$ phase, the variance of density along the block is null -- a consequence of the robust ground-state
+\[
+	\ket{\Psi} \simeq \ket{\bm{1}} \equiv \bigotimes_{j=1}^L \hat c_j^\dagger \ket{\Omega}
+\]
+Similarly, the dominant contribution to the $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase is given by the states
+\begin{align}
+	\ket{\mathrm{e}} &\equiv \bigotimes_{j=1}^{L/2} \hat c_{2j}^\dagger \ket{\Omega}
+	&&\text{(even sites filled, odd sites empty)}
+	\label{eq:even-state-definition}
+	\\
+	\ket{\mathrm{o}} &\equiv \bigotimes_{j=1}^{L/2} \hat c_{2j-1}^\dagger \ket{\Omega}
+	&&\text{(odd sites filled, even sites filled)}
+	\label{eq:odd-state-definition}
+\end{align}
+Separately, each of these states is a number operator eigenstate and thus has zero density variance on each site and on every block. For a state in $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$ the variance over a block is expected to be small:
+\[
+	\ket{\Psi} = \frac{1}{\sqrt{1 + \abs{\gamma}^2}} \ket{\mathrm{e}} + \frac{\gamma}{\sqrt{1 + \abs{\gamma}^2}} \ket{\mathrm{o}}
+	\qquad
+	\gamma \in \mathbb{C}
+\]
+and
+\[
+	\mel{\Psi}{\hat n_j}{\Psi} = \frac{1+(-1)^j}{2} \frac{1}{1 + \abs{\gamma}^2} + \frac{1-(-1)^j}{2} \frac{\abs{\gamma}^2}{1 + \abs{\gamma}^2} = 		\mel{\Psi}{\hat n_j^2 }{\Psi}
+\]
+Since
+\[
+	\left(
+		\frac{1\pm(-1)^j}{2}
+	\right)^2 = \frac{1\pm(-1)^j}{2}
+	\qquad\text{and}\qquad
+	\frac{1\pm(-1)^j}{2} \frac{1\mp(-1)^j}{2} = 0
+\]
+this implies using some basic algebra
+\[
+	\mel{\Psi}{\hat n_j^2 }{\Psi} - \mel{\Psi}{\hat n_j}{\Psi}^2 = \frac{\abs{\gamma}^2}{\left(1 + \abs{\gamma}^2\right)^2}  \le \frac{1}{4}
+\]
+the last inequality being trivial to prove and satisfied $\forall \gamma \in \mathbb{C}$. One can show easily that if the state is not dominated by $\ket{\mathrm{e}}, \ket{\mathrm{o}}$ and the number of particles on the chain is allowed to fluctuate -- as is in the superpositions composing the $\mathrm{XY}$ ground states -- the $j$-site variance increases. Such difference becomes even sharper when considering a block of sites of length $M$ instead of a single site $j$\footnote{
+	I will not show this here, being the proof purely algebraic and not so interesting. This behavior essentially arises because of the appearance of connected density-density correlation functions, whose power-law decay in $\mathrm{XY}$ phase produces the ``boost'' of the observable.
+}. In Fig.~\ref{subfig:block-density-variance-heatmap} such a behavior is observed, becoming more and more important as we approach the top-right side of the picture, coherently with the theoretical expectations of Fig.~\ref{fig:expected-sfh-phase-diagram}. This last property is interesting, because it signals that the finite-size version of the gapped $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase extends over a broad region but remains most similar to its thermodynamic limit in the correct part of the phase diagram.
+	
+\begin{figure}
+	\centering	
+	\subfloat[][Overlap with $\ket{\bm{1}}$.]{
+		\includegraphics[height=0.35\textwidth]{
+			../Project/analysis/heatmap/uMI_projection_L=22.pdf
+		}\label{subfig:uMI-projection-heatmap}
+	}
+	\subfloat[][Overlap with $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$.]{
+		\includegraphics[height=0.35\textwidth]{
+			../Project/analysis/heatmap/hMI_projection_L=22.pdf
+		}\label{subfig:hMI-projection-heatmap}
+	}\caption{In Fig.~\ref{subfig:uMI-projection-heatmap} the projection of the ground-state onto the pure $\mathrm{IF}/\mathrm{MI}_1$ subspace is shown; such subspace is spanned by $\ket{\bm{1}} \equiv \ket{11\cdots1}$. Similarly, Fig.~\ref{subfig:hMI-projection-heatmap} shows the projection of the ground-state onto the pure $\mathrm{IAF}/\mathrm{MI}_{1/2}$ subspace, given by $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$.}
+\end{figure}
+
+\paragraph{Projection onto Mott subspaces.} A good confirmation of the assumptions of the above paragraph is to check directly how much the ground-state is projected onto a given Mott subspace. Let me start by the $\mathrm{IF}/\mathrm{MI}_1$ phase. Let me define
+\[
+	\hat{\mathrm{P}}_{\mathrm{MI}_1} = \op{\bm{1}}{\bm{1}}
+\]
+Evidently, if
+\[
+	\ket{\Psi} = \alpha_{\bm{1}} \ket{\bm{1}} + \sum_\psi \alpha_\psi \ket{\psi}
+\]
+being $\ket{\psi}$ any other state and the $\alpha$s the amplitudes, we get
+\[
+	\ev{\hat{\mathrm{P}}_{\mathrm{MI}_1}} = \abs{\alpha_{\bm{1}}}^2
+\]
+which is the probability for the state to coincide (up to an irrelevant phase) with $\ket{\bm{1}}$. Consider Fig.~\ref{subfig:uMI-projection-heatmap}: inside the expected $\mathrm{IF}/\mathrm{MI}_1$ region, the convergence of the simulated state on $\ket{\bm{1}}$ is absolute. Outside, the simulated state is (obviously) orthogonal to $\ket{\bm{1}}$. I defined this MPO simply as
+\begin{lstlisting}[language=julia]
+function GetUnitaryMIProjector(
+		sites::Any
+	)::MPO
+
+	L = length(sites)
+	
+	states = ["1" for j in 1:L]		# 1111...
+	u = MPS(sites, states)			# Unitary-filled state
+	
+	UP = projector(u)
+	return UP
+
+end
+\end{lstlisting}
+
+Similarly, let me define 
+\[
+	\hat{\mathrm{P}}_{\mathrm{MI}_{1/2}} = \op{\mathrm{e}}{\mathrm{e}} + \op{\mathrm{o}}{\mathrm{o}}
+\]
+the projector onto the $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase. With analogous notation as above,
+\[
+	\ev{\hat{\mathrm{P}}_{\mathrm{MI}_{1/2}}} = \abs{\alpha_\mathrm{e}}^2  + \abs{\alpha_\mathrm{o}}^2
+\]
+which is the probability for the ground-state of being in the $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$ subspace. Check Fig.~\ref{subfig:hMI-projection-heatmap}: the coherence is much less sharp, but the result get better as the simulation takes up larger and larger chains. Correctly, the relevant non-zero projection lies inside the expected borders and is limited to the top-right corner. This detail is good: it signals that fermions tend to be Mott-localized for a system with strong NN repulsion and particle drain from bath, which makes sense. The MPO definition of this projector is
+\begin{lstlisting}[language=julia]
+function GetHalfMIProjector(
+		sites::Any
+	)::MPO
+	
+	L = length(sites)
+	
+	states = [isodd(j) ? "0" : "1" for j in 1:L] # 0101...
+	e = MPS(sites, states)						 # Even-filled state
+	
+	states = [isodd(j) ? "1" : "0" for j in 1:L] # 1010...
+	o = MPS(sites, states)						 # Odd-filled state
+	
+	E = projector(e) # Normalized projector
+	O = projector(o) # Normalized projector
+	HP = E+O
+	return HP
+
+end
+\end{lstlisting}
+
+\paragraph{Luttinger parameters.} 
+
+\begin{figure}
+	\centering	
+	\subfloat[][Charge compressibility.]{
+		\includegraphics[height=0.35\textwidth]{
+			../Project/analysis/heatmap/compressibility_L=22.pdf
+		}\label{subfig:compressibility-heatmap}
+	}
+	\subfloat[][Charge stiffness.]{
+		\includegraphics[height=0.35\textwidth]{
+			../Project/analysis/heatmap/stiffness_L=22.pdf
+		}\label{subfig:stiffness-heatmap}
+	}
+	\caption{In Fig.~\ref{subfig:compressibility-heatmap}, the ground state compressibility is reported. The low part of the plot (small chemical potential) has been omitted: compressibility was here computed by the means of finite differences, a technique requiring cached data from previous simulations. Finite differentiation is also responsible for the smearing of the heatmap across the phase boundaries. In Fig~\ref{subfig:stiffness-heatmap} the charge stiffness for a small flux threading the chain is plotted.}
+\end{figure}
+
+Finally, I explored roughly the behavior of charge compressibility $\kappa$ and charge stiffness $\mathcal{D}$, as explained in Sec.~\ref{subsec:what-i-would-have-liked-to-do-(better)}. Both observables are extracted by the means of finite derivatives: $\kappa$, by looking at the density difference at two close chemical potentials; $\mathcal{D}$, by looking at the current response to small fluxes, which is, the energy derivative response.
+
+Fig.~\ref{subfig:compressibility-heatmap} shows a heatmap of the finite-size compressibility. Taking into account the roughness of the simulation, coherence with the expectations is acceptable. The two interesting Mott-insulating regions are almost uniformly non compressible, a signature of the presence of a gap. Outside, fluctuations in compressibility are visible. It must be noted that, for an infinitely long chain (the continuum limit) the step-like regions of gradually decreasing density of Fig.~\ref{subfig:density-heatmap} between the two Mott phases degenerate into a continuum. In other words: moving from the unitary-filled to the half-filled region, the density varies continuously. For a small finite chain, the finite-size effect is the step-like variation of density, a feature giving rise to the aforementioned fringes as well as the zero-compressibility regions in the bottom right corner of the phase diagram \ref{subfig:compressibility-heatmap}. These regions are not generated by a thermodynamically gapped phase, rater by the finite-size nature of the simulation.
+
+In Fig.~\ref{subfig:stiffness-heatmap} the charge stiffness heatmap is reported. Similar observations as for the charge compressibility hold for $\mathcal{D}$. The $\mathrm{IF}/\mathrm{MI}_1$ phase is stiff: given some flux threading the chain, static Mott-localization gives null current response. A non-zero current response requires the possibility of hopping, which in turn requires a filled site near an empty site. No infinitesimal flux can be responsible of the global synchronized rotation of all the fermions in the unitary-filled state.
+The $\mathrm{IAF}/\mathrm{MI}_{1/2}$ presents a small finite positive stiffness, gradually decreasing to zero in the top-right corner of Fig.~\ref{subfig:stiffness-heatmap}. Analogous considerations as for the unitary filled state hold here, and Mott localization explains the stiffness. Outside, as for $\kappa$, fringes are visible. Interestingly, changes in parity appear to cause current response to diverge negatively.
+
+Recall now Eqns.~\eqref{eq:u-K-formulas},
+\[
+	u = \sqrt{\frac{\mathcal{D}}{\pi\kappa}}
+	\qquad\text{and}\qquad
+	K = \sqrt{\pi\kappa\mathcal{D}}
+\]
+Compressibility and charge stiffness, multiplied and divided, are connected to the Luttinger parameters $u$ and $K$. The two parameters completely govern the bosonization description of a one-dimensional spinless fermionic system. Most importantly, {\color{tabred} [as explained in Sec.]}, if $K < 1$ the equivalent interaction between bosons is repulsive and gives rise to a $\mathrm{CDW}$ behavior. If $K > 1$, the interaction is attractive and the main dynamics is superfluid.
+
+\begin{figure}
+	\centering	
+	\subfloat[][$u$ Luttinger paramter.]{
+		\includegraphics[height=0.35\textwidth]{
+			../Project/analysis/heatmap/u-Luttinger_L=22.pdf
+		}\label{subfig:u-Luttinger-heatmap}
+	}
+	\subfloat[][$K$ Luttinger parameter.]{
+		\includegraphics[height=0.35\textwidth]{
+			../Project/analysis/heatmap/K-Luttinger_L=22.pdf
+		}\label{subfig:K-Luttinger-heatmap}
+	}
+	\caption{Honestly, I have no idea what is going on in Fig.~\ref{subfig:u-Luttinger-heatmap}, showing the renormalized velocity $u$. In order to make the data intelligible I had to apply a cutoff of $100$. In Fig.~\ref{subfig:K-Luttinger-heatmap} the heatmap for the Luttinger parameter $K$ is sketched. The low part has been cut off because of the finite-differences method used to compute $\kappa$.}
+	\label{fig:Luttinger-heatmaps}
+\end{figure}
+
+Comically, the $u$ and $K$ heatmaps of Fig.~\ref{fig:Luttinger-heatmaps} -- which should have been the entire point of this whole project -- are not so satisfying. On one hand, the plot for $u$ in Fig.~\ref{subfig:u-Luttinger-heatmap} -- apart from the general structure -- is not insightful, oscillates strangely in the robust ferromagnetic phase and is evidently suffering from some numerical error in calculating $u$ starting from $\kappa$, $\mathcal{D}$. On the other hand Fig.~\ref{subfig:K-Luttinger-heatmap} shows -- as expected -- a strongly suppressed $K$ in the Mott-insulating region (signaling a $\mathrm{CDW}$ kind of order), while outside the same parameter oscillates and reaches values much bigger than $1$. Note that the heatmap has been limited to the values $[0,2]$ for intelligibility reasons. Apart from this consideration, which confirms expectations, not much more can be said.
+
+Let me close with a positive note. At least, the heatmap for the Luttinger parameter $K$ in Fig.~\ref{subfig:K-Luttinger-heatmap} makes sense in the bosonization framework. Remembering the many turns of this project, I could not have asked for more.

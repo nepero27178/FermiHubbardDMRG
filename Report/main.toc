@@ -19,7 +19,14 @@
 \contentsline {subsection}{\numberline {2.3}Bosonization of the free model}{18}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{20}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Algorithms and simulations}{22}{section.3}%
-\contentsline {subsection}{\numberline {3.1}What I would have liked to do}{22}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.1}What I would have liked to do (better)}{22}{subsection.3.1}%
 \contentsline {paragraph}{Charge compressibility.}{23}{section*.22}%
 \contentsline {paragraph}{Charge stiffness.}{23}{section*.23}%
 \contentsline {subsection}{\numberline {3.2}What I actually did}{23}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Charge gaps}{23}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Single-point characterization}{26}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}Observables heatmaps}{27}{subsubsection.3.2.3}%
+\contentsline {paragraph}{Density.}{27}{section*.27}%
+\contentsline {paragraph}{Block density variance.}{27}{section*.28}%
+\contentsline {paragraph}{Projection onto Mott subspaces.}{28}{section*.30}%
+\contentsline {paragraph}{Luttinger parameters.}{30}{figure.caption.32}%

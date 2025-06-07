@@ -71,8 +71,8 @@ function main()
             HeatmapDir = PROJECT_ROOT * "/../analysis/heatmap/"
             mkpath(HeatmapDir)
 
-
 			for L in LL
+			
                 if Density
                     FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/density/L=$(L).txt"#_High.txt"
                 elseif Complementary
@@ -81,13 +81,15 @@ function main()
                     FilePathIn = PROJECT_ROOT * "/../simulations/rectangular-sweep/full/L=$(L).txt"#_High.txt"
                 end
 
-				EFilePathOut = HeatmapDir * "Energy_L=$(L).pdf" 				# Ground-state energy plot
-                ρFilePathOut = HeatmapDir * "Density_L=$(L).pdf"       	    	# Charge density plot
-                δFilePathOut = HeatmapDir * "Block-Density-Variance_L=$(L).pdf" # Block density variance plot
-    	        uPFilePathOut = HeatmapDir * "uMI_Projection_L=$(L).pdf"		# Unitary filling plot
-            	hPFilePathOut = HeatmapDir * "hMI_Projection_L=$(L).pdf"		# Unitary filling plot
-            	kFilePathOut = HeatmapDir * "Compressibility_L=$(L).pdf" 		# Compressibility plot
-    	        DFilePathOut = HeatmapDir * "Stiffness_L=$(L).pdf"       		# Charge stiffness plot
+				EFilePathOut = HeatmapDir * "energy_L=$(L).pdf" 				# Ground-state energy plot
+                ρFilePathOut = HeatmapDir * "density_L=$(L).pdf"       	    	# Charge density plot
+                δFilePathOut = HeatmapDir * "block-density-variance_L=$(L).pdf" # Block density variance plot
+    	        uPFilePathOut = HeatmapDir * "uMI_projection_L=$(L).pdf"		# Unitary filling plot
+            	hPFilePathOut = HeatmapDir * "hMI_projection_L=$(L).pdf"		# Unitary filling plot
+            	kFilePathOut = HeatmapDir * "compressibility_L=$(L).pdf" 		# Compressibility plot
+    	        DFilePathOut = HeatmapDir * "stiffness_L=$(L).pdf"       		# Charge stiffness plot
+    	        KFilePathOut = HeatmapDir * "K-Luttinger_L=$(L).pdf"       		# K Luttinger parameter plot
+    	        uFilePathOut = HeatmapDir * "u-Luttinger_L=$(L).pdf"       		# u Luttinger parameter plot
                 
                 if Density
                 
@@ -110,7 +112,9 @@ function main()
     	            	uPFilePathOut,
     	            	hPFilePathOut,
     	            	kFilePathOut,
-    	            	DFilePathOut
+    	            	DFilePathOut,
+    	            	KFilePathOut,
+    	            	uFilePathOut
     	            )
     	            
                 elseif Full
@@ -125,7 +129,9 @@ function main()
     	            	uPFilePathOut,
     	            	hPFilePathOut,
     	            	kFilePathOut,
-    	            	DFilePathOut
+    	            	DFilePathOut,
+    	            	KFilePathOut,
+    	            	uFilePathOut
     	            )
     	            
                 end
@@ -154,19 +160,23 @@ function main()
             
             global StatePropertiesL
             L = StatePropertiesL # Imported from setup
-            global XYPoint, IAFPoint, IAFPoint
+            global XYPoint1, XYPoint2, IAFPoint, IAFPoint
  
             DirPathIn = PROJECT_ROOT * "/../simulations/states-properties/"
             DirPathOut = PROJECT_ROOT * "/../analysis/states-properties/"
 
-            ChainPlots(
-                DirPathIn,
-	            DirPathOut,
-	            L,
-	            XYPoint,
-	            IFPoint,
-                IAFPoint
-            )
+			for CompactPlot in [true]# [false, true]
+		        ChainPlots(
+		            DirPathIn,
+			        DirPathOut,
+			        L,
+			        XYPoint1,
+			        XYPoint2,
+			        IFPoint,
+		            IAFPoint;
+		            CompactPlot
+		        )
+		    end
 		else
 			error(ModeErrorMsg)
 			exit()
