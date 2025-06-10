@@ -46,6 +46,6 @@ Horizontalμμ = [0.0]
 
 # ----------------------------- Rectangular sweeps -----------------------------
 
-RectangularLL = [22]
+RectangularLL = [38]
 RectangularVV = collect(range(start=-2.0, stop=4.0, length=Resolution["High"]))
 Rectangularμμ = collect(range(start=0.0, stop=4.0, length=Resolution["High"]))

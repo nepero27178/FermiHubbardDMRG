@@ -9,7 +9,7 @@
 \begin{center}
     {\bfseries {\Large Finite-size DMRG characterization of the}} \\[0.8em]
     {\bfseries {\Large 1D spinless Fermi-Hubbard model phase diagram}}\\[0.8em]
-    {\bfseries {\Large in the Bosonization framework}} \\[1em]
+    {\bfseries {\Large within the Bosonization framework}} \\[1em]
     \large University of Pisa, a.y.~2024-2025 \\[0.8em]
     Alessandro Gori\footnote{\href{mailto:a.gori23@studenti.unipi.it}{a.gori23@studenti.unipi.it} / \href{https://github.com/nepero27178}{nepero27178@github.com}} \\[0.8em]
     \scriptsize Final project for the Master's Degree course ``Quantum Liquids''
@@ -20,11 +20,13 @@
 \setcounter{footnote}{0}
 
 \begin{abstract}
-    The one-dimensional Fermi-Hubbard model at zero temperature is studied, employing finite-size DMRG algorithm to investigate some of its ground state properties. The model contains a hopping term between neighbouring sites, a finite on-site interaction energy, and a chemical potential. In order to investigate the zero-temperature ground-state properties of the model, finite-size DMRG was used. 
+    The one-dimensional spinless Fermi-Hubbard model at zero temperature is studied, employing finite-size DMRG algorithm to investigate some of its ground state properties. The model contains a hopping term between neighbouring sites, a finite on-site interaction energy, and a chemical potential. In order to investigate the zero-temperature ground-state properties of the model, finite-size DMRG was used.
+    
+    The aim of the project is to observe a specific $\mathrm{SU}$/$\mathrm{CDW}$ phase transition and explain it theoretically within the bosonization framework. In order to do so, the spinless Fermi-Hubbard model is bosonized and reduced to a renormalized Klein-Gordon field theory. Within this framework, the relevant parameters dominating the collective behavior are the renormalized velocity $u$ and the Luttinger parameter $K$, which governs density-density and superconducting correlation functions. For a one-dimensional spinless model, bosonization allows for extraction of both parameters by computing second derivatives of ground-state energy at different setups. Finally, Jordan-Wigner technique is used to map the phase diagram onto the well-known $\mathrm{XXZ}$ phase diagram and reconnect the Mott insulating phases to spin Ferromagnetic/Anti-Ferromagnetic long-range orderings.
     
     The entire project heavily relies upon the precedent project carried out by the author together with Marco Pompili, where the 1D Bose-Hubbard model was studied using finite-size DMRG. You may find \href{https://github.com/mrc-pop/BoseHubbardDMRG}{at this link} our previous work.\\
     \begin{center}
-        {\footnotesize All of the code can be found at open-access in \href{https://github.com/nepero27178/FermiHubbardDMRG}{this repository}:\\ \url{https://github.com/nepero27178/FermiHubbardDMRG}}
+    	{\footnotesize All of the code can be found at open-access in \href{https://github.com/nepero27178/FermiHubbardDMRG}{this repository}:\\ \url{https://github.com/nepero27178/FermiHubbardDMRG}}
     \end{center}
 \end{abstract}
 \tableofcontents

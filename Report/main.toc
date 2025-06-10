@@ -29,4 +29,4 @@
 \contentsline {paragraph}{Density.}{27}{section*.27}%
 \contentsline {paragraph}{Block density variance.}{27}{section*.28}%
 \contentsline {paragraph}{Projection onto Mott subspaces.}{28}{section*.30}%
-\contentsline {paragraph}{Luttinger parameters.}{30}{figure.caption.32}%
+\contentsline {paragraph}{Luttinger parameters.}{30}{figure.caption.33}%

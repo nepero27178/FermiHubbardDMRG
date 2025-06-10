@@ -264,7 +264,7 @@ function PlotHeatmap(
 			ylabel=L"$\mu/t$",
 			label=L"$\langle \Psi | \hat P_{\mathrm{MI}_{1/2}} | \Psi \rangle$",
 			title=L"$\langle \Psi | \hat P_{\mathrm{MI}_{1/2}} | \Psi \rangle$ ($L=%$L$)",
-			clim=(0,1)
+			clim=(0,0.1)
 		)
 
 		if PlotBoundaries                                      

@@ -217,12 +217,12 @@ Consider Fig.~\ref{fig:compact-plot}: I there sketched the four observables here
 	\centering
 	\subfloat[][Density heatmap.]{
 		\includegraphics[height=0.35\textwidth]{
-			../Project/analysis/heatmap/density_L=22.pdf
+			../Project/analysis/heatmap/density_L=38.pdf
 		}\label{subfig:density-heatmap}
 	}
 	\subfloat[][Block density variance heatmap.]{
 		\includegraphics[height=0.35\textwidth]{
-			../Project/analysis/heatmap/block-density-variance_L=22.pdf
+			../Project/analysis/heatmap/block-density-variance_L=38.pdf
 		}\label{subfig:block-density-variance-heatmap}
 	}
 	\caption{The averaged density heatmap for the DMRG solved ground state of the spinless Fermi-Hubbard model is shown in Fig~\ref{subfig:density-heatmap}. Superimposed and with the same criteria as in Fig.~\ref{fig:phase-boundaries} are the expected phase boundaries. Fig.~\ref{subfig:block-density-variance-heatmap} depicts the average density variance across a block of sites of length $M = \lfloor L/4 \rfloor$.}
@@ -279,12 +279,12 @@ the last inequality being trivial to prove and satisfied $\forall \gamma \in \ma
 	\centering	
 	\subfloat[][Overlap with $\ket{\bm{1}}$.]{
 		\includegraphics[height=0.35\textwidth]{
-			../Project/analysis/heatmap/uMI_projection_L=22.pdf
+			../Project/analysis/heatmap/uMI_projection_L=38.pdf
 		}\label{subfig:uMI-projection-heatmap}
 	}
 	\subfloat[][Overlap with $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$.]{
 		\includegraphics[height=0.35\textwidth]{
-			../Project/analysis/heatmap/hMI_projection_L=22.pdf
+			../Project/analysis/heatmap/hMI_projection_L=38.pdf
 		}\label{subfig:hMI-projection-heatmap}
 	}\caption{In Fig.~\ref{subfig:uMI-projection-heatmap} the projection of the ground-state onto the pure $\mathrm{IF}/\mathrm{MI}_1$ subspace is shown; such subspace is spanned by $\ket{\bm{1}} \equiv \ket{11\cdots1}$. Similarly, Fig.~\ref{subfig:hMI-projection-heatmap} shows the projection of the ground-state onto the pure $\mathrm{IAF}/\mathrm{MI}_{1/2}$ subspace, given by $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$.}
 \end{figure}
@@ -326,7 +326,7 @@ the projector onto the $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase. With analogous no
 \[
 	\ev{\hat{\mathrm{P}}_{\mathrm{MI}_{1/2}}} = \abs{\alpha_\mathrm{e}}^2  + \abs{\alpha_\mathrm{o}}^2
 \]
-which is the probability for the ground-state of being in the $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$ subspace. Check Fig.~\ref{subfig:hMI-projection-heatmap}: the coherence is much less sharp, but the result get better as the simulation takes up larger and larger chains. Correctly, the relevant non-zero projection lies inside the expected borders and is limited to the top-right corner. This detail is good: it signals that fermions tend to be Mott-localized for a system with strong NN repulsion and particle drain from bath, which makes sense. The MPO definition of this projector is
+which is the probability for the ground-state of being in the $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$ subspace. The MPO was initialized as:
 \begin{lstlisting}[language=julia]
 function GetHalfMIProjector(
 		sites::Any
@@ -347,6 +347,44 @@ function GetHalfMIProjector(
 
 end
 \end{lstlisting}
+Now, I expected the projection probability to saturate quickly to unity with better and better approximation as the chain got larger. Instead, as is visible in Fig.~\ref{subfig:hMI-projection-heatmap}, it turns out that the simulated state lies in the $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$ subspace with a probability of approximately $10\%$. Correctly, the projection probability seems to increase by moving to the top-right corner. Of course I expected way better results. I tried changing the DMRG parameters (specifically \texttt{nSweeps}) but noticed no measurable improvement: the algorithm converges quickly. I tried simulating different $(V/t,\mu/t)$ choices at increasing lattice dimension. 
+
+\begin{table}
+	\centering
+	\begin{tabular}{r c c c c c}
+		\multicolumn{6}{c}{$\langle \hat{\mathrm{P}}_{\mathrm{MI}_{1/2}} \rangle \Big|_{L,V/t,\mu/t}$} \\
+		\toprule
+		& \multicolumn{5}{c}{$V/t=\mu/t$}\\
+		\cmidrule{3-6}
+		$L$ && $5$ & $10$ & $20$ & $50$ \\
+		\midrule
+		$ 38 $ && $ 0.238 $ & $ 0.692 $ & $ 0.912 $ & $ 0.985 $ \\
+		$ 54 $ && $ 0.127 $ & $ 0.591 $ & $ 0.876 $ & $ 0.979 $ \\
+		$ 70 $ && $ 0.068 $ & $ 0.504 $ & $ 0.842 $ & $ 0.973 $ \\
+		$ 86 $ && $ 0.036 $ & $ 0.43 $ & $ 0.809 $ & $ 0.967 $ \\
+		$ 102 $ && $ 0.019 $ & $ 0.366 $ & $ 0.777 $ & $ 0.96 $ \\
+		$ 118 $ && $ 0.01 $ & $ 0.312 $ & $ 0.747 $ & $ 0.954 $ \\
+		$ 134 $ && $ 0.006 $ & $ 0.266 $ & $ 0.717 $ & $ 0.948 $ \\
+		$ 150 $ && $ 0.003 $ & $ 0.227 $ & $ 0.689 $ & $ 0.942 $ \\
+		\bottomrule
+	\end{tabular}
+	\caption{Probability for the simulated ground state of the model with $V/t = \mu/t$ as specified in the first row to be in the subspace $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$ at increasing chain lengths $L$.}
+	\label{tab:MI1/2-projections}
+\end{table}
+
+Consider Tab.~\ref{tab:MI1/2-projections}: there are reported the results of the expectation value of the projector over ground states simulated at increasing ratios $V/t = \mu/t$ -- which is, on the top-right diagonal. The last column (calculated in the extreme anti-ferromagnetic parametrization), correctly, saturates at almost unity. Lowering the parameters and increasing the lattice length, interestingly the probability decreases down to extremely small values (below $1\%$ for $L>118$, $V/t=\mu/t=5$). I have tried using more generous DMRG parameters, but results did not improve much. Probably, these data are explained by the fact that -- even if algebraically simple -- the $\mathrm{IAF}$ ground state is non-locally entangled. This means, even if the number of many-body states entangled is low, in the physical ground state in thermodynamic limit each site is entangled with every other -- a condition of low long-range entanglement Finite-Size DMRG struggles to reproduce over finite lengths. Probably the simulated states is more similar to a collection of cluster of sites entangled Anti-Ferromagnetically.
+
+A possible measurement to could carry out (I did not) is the averaged projection onto finite-size Anti-Ferromagnetic local projectors,
+\[
+	\hat{\mathrm{P}}_{\mathrm{MI}_{1/2}}^M =
+	\frac{1}{L} \sum_{s=1}^{L}
+		\left[
+			\bigotimes_{j=s}^{s+M} \hat c_{2j}^\dagger \op{\Omega}{\Omega} \bigotimes_{k=s}^{s+M} \hat c_{2k}
+			+
+			\bigotimes_{j=s}^{s+M} \hat c_{2j-1}^\dagger \op{\Omega}{\Omega} \bigotimes_{k=s}^{s+M} \hat c_{2k-1}
+		\right]
+\]
+which is, the equivalent of the projector analyzed above but limited to blocks of length $M$ and averaged over different blocks.
 
 \paragraph{Luttinger parameters.} 
 
@@ -354,12 +392,12 @@ end
 	\centering	
 	\subfloat[][Charge compressibility.]{
 		\includegraphics[height=0.35\textwidth]{
-			../Project/analysis/heatmap/compressibility_L=22.pdf
+			../Project/analysis/heatmap/compressibility_L=38.pdf
 		}\label{subfig:compressibility-heatmap}
 	}
 	\subfloat[][Charge stiffness.]{
 		\includegraphics[height=0.35\textwidth]{
-			../Project/analysis/heatmap/stiffness_L=22.pdf
+			../Project/analysis/heatmap/stiffness_L=38.pdf
 		}\label{subfig:stiffness-heatmap}
 	}
 	\caption{In Fig.~\ref{subfig:compressibility-heatmap}, the ground state compressibility is reported. The low part of the plot (small chemical potential) has been omitted: compressibility was here computed by the means of finite differences, a technique requiring cached data from previous simulations. Finite differentiation is also responsible for the smearing of the heatmap across the phase boundaries. In Fig~\ref{subfig:stiffness-heatmap} the charge stiffness for a small flux threading the chain is plotted.}
@@ -384,12 +422,12 @@ Compressibility and charge stiffness, multiplied and divided, are connected to t
 	\centering	
 	\subfloat[][$u$ Luttinger paramter.]{
 		\includegraphics[height=0.35\textwidth]{
-			../Project/analysis/heatmap/u-Luttinger_L=22.pdf
+			../Project/analysis/heatmap/u-Luttinger_L=38.pdf
 		}\label{subfig:u-Luttinger-heatmap}
 	}
 	\subfloat[][$K$ Luttinger parameter.]{
 		\includegraphics[height=0.35\textwidth]{
-			../Project/analysis/heatmap/K-Luttinger_L=22.pdf
+			../Project/analysis/heatmap/K-Luttinger_L=38.pdf
 		}\label{subfig:K-Luttinger-heatmap}
 	}
 	\caption{Honestly, I have no idea what is going on in Fig.~\ref{subfig:u-Luttinger-heatmap}, showing the renormalized velocity $u$. In order to make the data intelligible I had to apply a cutoff of $100$. In Fig.~\ref{subfig:K-Luttinger-heatmap} the heatmap for the Luttinger parameter $K$ is sketched. The low part has been cut off because of the finite-differences method used to compute $\kappa$.}

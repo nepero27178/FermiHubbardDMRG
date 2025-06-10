@@ -431,3 +431,151 @@ function RectangularSweep(
 
     close(DataFile)
 end
+
+function RectangularSweepTest(
+        UserSubMode::String,	# Density/Full
+		L::Int64,
+		N::Int64,
+		VV::Vector{Float64},
+		μμ::Vector{Float64},
+		DMRGParametersArray::Vector{Vector{Any}},
+		FilePathOut::String;
+		FilePathIn="",			# Boundaries filepath (if absent, ignore)
+		double=false			# Read +/- 1 particle boundaries
+	)
+    
+    global ε
+    DataFile = open(FilePathOut,"a")
+    ρCache = 1/2	# Cache half-filling
+    NTotAvg = 0
+    UseBoundaries = false
+    
+    if FilePathIn!==""
+    
+    	UseBoundaries = true
+    
+    	# DMRGParameters::Vector{Vector{Any}}
+    	DMRGParametersXY = DMRGParametersArray[1]
+    	DMRGParametersIF = DMRGParametersArray[2]
+    	DMRGParametersIAF = DMRGParametersArray[3]
+    	
+		BoundariesData = readdlm(FilePathIn, ';', '\n'; comments=true)
+		uμm = 0	# Initialize
+		hμp = 0 # Initialize
+		hμm = 0 # Initialize
+		
+		jj =  (BoundariesData[:, 1] .== L)
+		HotizontalVV =  BoundariesData[jj,2]
+		uΔm1 = BoundariesData[jj,7]
+		uΔm2 = BoundariesData[jj,8]
+		
+		# Half-Δ boundary
+		hΔm2 = BoundariesData[jj,5]
+		hΔm1 = BoundariesData[jj,3]
+		hΔp1 = BoundariesData[jj,4]
+		hΔp2 = BoundariesData[jj,6]
+		
+		if double
+			Up = -uΔm2/2
+			Intermediate = hΔp2/2
+			Down = -hΔm2/2
+		elseif !double
+			Up = -uΔm1
+			Intermediate = hΔp1
+			Down = -hΔm1
+		end
+		
+		# Correct by +/- 0.1 to include borders (arbitrary)
+		DownLeft = Point( HotizontalVV[1]-0.1, Rectangularμμ[1]-0.1 )
+		UpLeft = Point( HotizontalVV[1]-0.1, Rectangularμμ[end]+0.1 )
+		DownRight = Point( HotizontalVV[end]+0.1, Rectangularμμ[1]-0.1 )
+		UpRight = Point( HotizontalVV[end]+0.1, Rectangularμμ[end]+0.1 )
+		
+		IFPoints = vcat(
+			[UpLeft, DownLeft], 
+			[Point( HotizontalVV[jj], Up[jj] ) for jj in 1:length(Up)])
+		IFPolygon = Polygon(IFPoints...)
+
+
+		# Note: from Beta testing it appears the IAF polygon creates some 
+		# difficulty in binary recognition of points. This is not so important 
+		# however since the phase is complicated and relatively small.
+		IAFPoints = vcat(
+			[Point( VV[jj], Intermediate[jj] ) for jj in 1:length(Intermediate)],
+			[Point( VV[end-jj+1], Down[end-jj+1] ) for jj in 1:length(Down)]
+		)
+		IAFPolygon = Polygon(IAFPoints...)
+	
+	end
+
+    for (j,V) in enumerate(VV), (m,μ) in enumerate(μμ)
+    
+    	if UseBoundaries
+    	
+			P = Point(V,μ)
+			
+			# Evaluate expected phase
+			isIF = inpolygon(IFPolygon, P)
+			isIAF = inpolygon(IAFPolygon, P)
+			if isIF && isIAF
+				@warn "This point appears to be both IF and IAF... using IAF parameters." P
+				isIF = false
+			end
+			
+			print("\e[2K")
+			if isIF && !isIAF
+				DMRGParameters = DMRGParametersIF
+				@info "Phase: IF"
+			elseif isIAF && !isIF
+				DMRGParameters = DMRGParametersIAF
+				@info "Phase: IAF"
+			elseif !isIF && !isIAF
+				DMRGParameters = DMRGParametersXY
+				@info "Phase: XY"
+			end
+			
+		elseif !UseBoundaries
+			
+			DMRGParameters = DMRGParametersArray[1]
+			
+		end
+            
+        ModelParameters = [L, N, 1.0, V, μ, 0.0]
+        
+        if j < length(VV) || m < length(μμ)
+			printstyled("\e[2KRunning DMRG for L=$L, V=$(round(V, digits=3)), ", 
+				"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
+				"$j/$(length(VV)) in V)\e[1F",
+		        color=:yellow)
+		elseif j == length(VV) && m == length(μμ)	# Remove final escape code
+			printstyled("\e[2KRunning DMRG for L=$L, V=$(round(V, digits=3)), ", 
+				"μ=$(round(μ,digits=3)) (simulation $m/$(length(μμ)) in μ, ",
+				"$j/$(length(VV)) in V)",
+		        color=:yellow)
+		end
+
+		E = 0 # Initalize energy to save variableJulia comes with
+       
+		E, psi  = RunDMRGAlgorithm(
+			[L, L/2, 1.0, V, μ, 0.0],		# Central
+			DMRGParameters,
+			"Fast"; # UserMode
+			verbose=false,
+			FixedN=false,
+			FixedParity=false
+		)
+                
+        # Unitary and half projection
+        sites = siteinds(psi)
+        UP = GetUnitaryMIProjector(sites)
+        HP = GetHalfMIProjector(sites)
+        
+		uP = inner(psi', UP, psi)
+		hP = inner(psi', HP, psi)            
+        
+        write(DataFile,"$V; $μ; $E; $(uP); $(hP);\n")
+    
+    end
+
+    close(DataFile)
+end
