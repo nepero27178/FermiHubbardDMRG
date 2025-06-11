@@ -35,7 +35,8 @@ function GetStateProperties(
 	
 	ε = 0.1     # Arbitrary
 	Δμ = 0.5    # Arbitrary
-	L, N, _, V, μ, _ = ModelParameters
+	L, N = Int64.(ModelParameters[1:2])
+    _, V, μ, _ = ModelParameters[3:6]
 	
 	# ------------------------------- Simulation ------------------------------- 
 
@@ -51,17 +52,29 @@ function GetStateProperties(
 	)
 	
 	# Energy, local energy, state, local density, density-density correlator, entropy
-	E, lE, psi, n, Cnn, S = Observables
+	E, lE, psi, n, CnnMatrix, S = Observables
 	
 	ρ = sum(n)/L
-	δn2M = GetBlockVariance(n, Cnn)
+	δn2M = GetBlockVariance(n, CnnMatrix)
 	
-	eCnn = std(Cnn, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
-	Cnn = mean(Cnn, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+	Cnn = zeros(Int64(L/2)+1)
+	Csu = zeros(Int64(L/2)+1)	
+	CsuMatrix = GetSuperconductingCorrelator(psi)
+#	eCsu = std(Csu, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+#	Csu = mean(Csu, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+	for r in 0:Int64(L/2)
+		TmpCnn = 0
+		TmpCsu = 0
+		for j in 1:L
+			TmpCnn += CnnMatrix[j, mod1(j+r, L)]
+			TmpCsu += CsuMatrix[j, mod1(j+r, L)]
+		end
+		Cnn[r+1] = TmpCnn/L
+		Csu[r+1] = TmpCsu/L
+	end
 	
-	Csu = GetSuperconductingCorrelator(psi)
-	eCsu = std(Csu, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
-	Csu = mean(Csu, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+#	eCsu = std(Csu, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
+#	Csu = mean(Csu, dims=2)[:] # [:] Matrix{Float64} -> Vector{Float64}
 	
 	k = 0 # Initialize
 	D = 0 # Initialize

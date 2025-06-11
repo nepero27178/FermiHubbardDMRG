@@ -10,12 +10,12 @@ Resolution = Dict([
 
 # ------------------------------ State properties ------------------------------
 
-StatePropertiesL = 6
+StatePropertiesL = 14
 StatePropertiesN = floor(Int64, StatePropertiesL/2)
-IFPoint  = [-1.0, 3.0]
-IAFPoint = [ 3.5, 3.5]
-XYPoint1 = [ 1.0, 2.6]
-XYPoint2 = [ 3.5, 0.5]
+IFPoint  = [-10.0, 10.0]
+IAFPoint = [ 10.0, 10.0]
+XYPoint1 = [ 0.0, 1.0]
+XYPoint2 = [ 10.0, 0.5]
 
 # ----------------  Ising Ferromagnet (analog) DMRG parameters -----------------
 

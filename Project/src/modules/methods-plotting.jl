@@ -720,7 +720,7 @@ function ChainPlots(
 		    	)
 		    end
 		
-		    for Phase in ["XY-Up", "XY-Down", "IF", "IAF"]
+		    for Phase in ["XY-Up", "XY-Down"]#, "IF", "IAF"]
 
 		        Point = PointDict[Phase]
 
