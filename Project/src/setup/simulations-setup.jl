@@ -15,7 +15,7 @@ StatePropertiesN = floor(Int64, StatePropertiesL/2)
 IFPoint  = [-10.0, 10.0]
 IAFPoint = [ 10.0, 10.0]
 XYPoint1 = [ 6.0,  12.0]
-XYPoint2 = [ 2.0,  4.0]
+XYPoint2 = [ 10.0,  0.5]
 
 # ----------------  Ising Ferromagnet (analog) DMRG parameters -----------------
 
