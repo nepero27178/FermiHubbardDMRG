@@ -293,12 +293,11 @@ function GetSuperconductingCorrelator(
 	
 	for j in 1:L, k in 1:L
 		A = GetSuperconductingPairingMPO(sites,j)
-		B = GetSuperconductingPairingMPO(sites,mod1(j+k,L))
+		B = GetSuperconductingPairingMPO(sites,k)
 		
 		# Unusual definition, can get useful later in calculating mean correlators
 		# SuperconductingCorrelator[j,mod1(j+k,L)] = inner(A, psi, B, psi)	
 		
-		# Standard definition, it gets useful later in calculating mean correlators
 		SuperconductingCorrelator[j,k] = inner(A, psi, B, psi)
 	end
 	

@@ -706,43 +706,94 @@ function ChainPlots(
     ])
 
 	if !CompactPlot
-
+	
 		for (o,Observable) in enumerate([k for k in keys(MainDict)]) # Needed to get Vector{String}
 		    plot(
 		        title = Observable * " ($L sites)",
 		        legend=:best
 		    )
-		    
-		    if o > 6	# Correlators are the last two to be plotted
-		    	plot!(
-		    		xaxis=:log,
-		    		yaxis=:log,
-		    	)
-		    end
 		
-		    for Phase in ["XY-Up", "XY-Down"]#, "IF", "IAF"]
+	        if Observable=="CDW Correlator"
+				
+				for Phase in ["XY-Up", "XY-Down", "IF", "IAF"]
 
-		        Point = PointDict[Phase]
+				    Point = PointDict[Phase]
 
-		        yy = MainDict[Observable][Phase]
-		        xx = [l for l in 1:length(yy)]
-				plot!(
-		            xx, yy,
-		            xlabel = xLabelsDict[Observable],
-		            ylabel = yLabelsDict[Observable],
-		            markershape = :circle,
-		            markercolor = StyleDict[Phase][1],
-		            markersize = StyleDict[Phase][2],
-		            markerstrokecolor = StyleDict[Phase][3],
-		            markerstrokewidth = StyleDict[Phase][4],
-		            linewidth = 0.5,
-		            linestyle = StyleDict[Phase][5],
-		            linecolor= StyleDict[Phase][1],
-		            label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(StyleDict[Phase][6]))",
-		        )
+				    yy = MainDict[Observable][Phase]
+				    xx = [l for l in 1:length(yy)]
+					plot!(
+				        xx, yy,
+				        xaxis=:log,
+						yaxis=:log,
+				        xlabel = xLabelsDict[Observable],
+				        ylabel = yLabelsDict[Observable],
+				        markershape = :circle,
+				        markercolor = StyleDict[Phase][1],
+				        markersize = StyleDict[Phase][2],
+				        markerstrokecolor = StyleDict[Phase][3],
+				        markerstrokewidth = StyleDict[Phase][4],
+				        linewidth = 0.5,
+				        linestyle = StyleDict[Phase][5],
+				        linecolor= StyleDict[Phase][1],
+				        label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(StyleDict[Phase][6]))",
+				    )
 
-		    end
-		
+				end
+				
+			elseif Observable=="SU Correlator"
+			
+				for Phase in ["XY-Up", "XY-Down"]
+
+				    Point = PointDict[Phase]
+
+				    yy = MainDict[Observable][Phase]
+				    xx = [l for l in 1:length(yy)]
+					plot!(
+				        xx, yy,
+				        xaxis=:log,
+						yaxis=:log,
+				        xlabel = xLabelsDict[Observable],
+				        ylabel = yLabelsDict[Observable],
+				        markershape = :circle,
+				        markercolor = StyleDict[Phase][1],
+				        markersize = StyleDict[Phase][2],
+				        markerstrokecolor = StyleDict[Phase][3],
+				        markerstrokewidth = StyleDict[Phase][4],
+				        linewidth = 0.5,
+				        linestyle = StyleDict[Phase][5],
+				        linecolor= StyleDict[Phase][1],
+				        label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(StyleDict[Phase][6]))",
+				    )
+
+				end
+			
+			else
+			
+				for Phase in ["XY-Up", "XY-Down", "IF", "IAF"]
+
+				    Point = PointDict[Phase]
+
+				    yy = MainDict[Observable][Phase]
+				    xx = [l for l in 1:length(yy)]
+					plot!(
+				        xx, yy,
+				        xlabel = xLabelsDict[Observable],
+				        ylabel = yLabelsDict[Observable],
+				        markershape = :circle,
+				        markercolor = StyleDict[Phase][1],
+				        markersize = StyleDict[Phase][2],
+				        markerstrokecolor = StyleDict[Phase][3],
+				        markerstrokewidth = StyleDict[Phase][4],
+				        linewidth = 0.5,
+				        linestyle = StyleDict[Phase][5],
+				        linecolor= StyleDict[Phase][1],
+				        label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(StyleDict[Phase][6]))",
+				    )
+
+				end
+				
+	    	end
+
 			savefig(DirPathOut * "/" * lowercase(replace(Observable, ' '=>'-')) * "_L=$L.pdf")
 		    printstyled("$(Observable) plot done!\n", color=:green)
 
