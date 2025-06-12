@@ -4,13 +4,6 @@ This first, vast section is devoted to the introduction of an extremely powerful
 
 \subsection{Bosonization in a nutshell for spinless fermions}
 
-\begin{figure}
-	\centering
-	\input{pictures/theory/bands.tex}
-	\caption{Sketch of the fermionic band $\epsilon_k$, the Fermi level $\epsilon_F$ and the two linear bands $\epsilon_k^{(\mathrm{L}/\mathrm{R})}$ used to approximate the original bands around the Fermi surface. The double-linear model is often referred to as the Tomonaga-Luttinger model.}
-	\label{fig:bands}
-\end{figure}
-
 The key idea is simple: start from a conventional fermionic-metallic hamiltonian,
 \[
 	\hat H = \hat H_0 + \hat V = \sum_k \xi_k \hat c_k^\dagger \hat c_k + \hat V
@@ -40,6 +33,13 @@ Let me use a slightly different, somewhat lighter notation:
 	\hat \rho_q^{(s)} \leftrightarrow \hat \rho_s (q)
 \]
 From now on, I will proceed only highlighting the important result in the bosonization procedure, since all the detailed derivation is included in \cite{giamarchi2003quantum}.
+
+\begin{figure}
+	\centering
+	\input{pictures/theory/bands.tex}
+	\caption{Sketch of the fermionic band $\epsilon_k$, the Fermi level $\epsilon_F$ and the two linear bands $\epsilon_k^{(\mathrm{L}/\mathrm{R})}$ used to approximate the original bands around the Fermi surface. The double-linear model is often referred to as the Tomonaga-Luttinger model.}
+	\label{fig:bands}
+\end{figure}
 
 \subsubsection{Boson operators}
 
@@ -210,7 +210,7 @@ a rewriting that will become useful later on. A prefactor $\hbar$ on the right s
 \end{figure}
 
 It is time to let in interactions. As said, particle-hole excitations exchange a fermion from the Fermi sea with a hole from outside. Due to the strict topology of the Fermi surface, only three processes actually contribute -- namely $g_1$, $g_2$ and $g_4$, respectively in Figs.~\ref{fig:g1-process}-\ref{fig:g2-process}-\ref{fig:g4-process}. Note that, for spinless fermions, due to particles indistinguishability, actually $g_1$ and $g_2$ are the same process\footnote{
-	I here skip an explanation about how to absorb $g_1$ inside $g_2$, a detail that will become clear in the spinful case.
+	I here skip an explanation about how to absorb $g_1$ inside $g_2$, a detail that becomes clear in the spinful case.
 }.
 
 Now, consider a particle-hole symmetric interaction, \textit{quartic} in the fermionic operators,
@@ -225,7 +225,9 @@ coupling left-going and right-going fermions. I collect $g_4$ processes as those
 \[
 	\underbrace{\hat \rho_\mathrm{R} (x_1) \hat \rho_\mathrm{R} (x_2) \quad \hat \rho_\mathrm{L} (x_1) \hat \rho_\mathrm{L} (x_2)}_{g_4} \qquad \underbrace{\hat \rho_\mathrm{R} (x_1) \hat \rho_\mathrm{L} (x_2) \quad \hat \rho_\mathrm{L} (x_1) \hat \rho_\mathrm{R} (x_2)}_{g_1 = g_2}
 \]
-At this point, I make an apparently heavy assumption I will heal later. Let me use for now a contact-like interaction,
+At this point, I make an apparently heavy assumption. Let me use for now a contact-like interaction\footnote{
+	For the type of interaction I will consider in this project, which is a NN neighbors interaction onto a closed chain, this assumption makes sense in thermodynamic limit.
+},
 \[
 	\left[V(x-y)\right] = \frac{1}{2} \begin{bmatrix}
 		g_4 & g_2 \\ g_2 & g_4
@@ -233,9 +235,9 @@ At this point, I make an apparently heavy assumption I will heal later. Let me u
 	\qquad
 	\text{with $g_2, g_4 \in \mathbb{R}$}
 \]
-(with a little notation abuse, I used the side indices $s_1$, $s_2$ as row-column indices) and let me analyze separately the contributions to the hamiltonian: $\hat V = \hat V_2 + \hat V_4$.
+(with a little notation abuse, I used the side indices $s_1$, $s_2$ as row-column indices). Let me analyze separately the contributions to the hamiltonian: $\hat V = \hat V_2 + \hat V_4$.
 
-\paragraph{$g_4$ process.} this is the simpler case. The densities vertex contributions to $\hat K_0$ is simply
+\paragraph{$g_4$ process.} This is the simpler case. The densities vertex contributions to $\hat K_0$ is simply
 \[
 	\hat V_4 = \frac{1}{2} g_4 \int_0^L dx \, \left[ \hat \rho_\mathrm{R} (x) \hat \rho_\mathrm{R} (x) + \hat \rho_\mathrm{L} (x) \hat \rho_\mathrm{L} (x) \right]
 \]
@@ -427,7 +429,7 @@ I now need to link all of this with the bosonization scheme. The procedure is id
 	\[
 		S_\phi \to S_\phi - \int dx \, J(x) A(x) = S_\phi - \frac{\Phi}{L} \int dx \, J(x)
 	\]
-	\item The charge density current is one dimension is obtained easily from the continuity equation:
+	\item The charge density current in one dimension is obtained easily from the continuity equation:
 	\[
 		\partial_t \rho + \nabla j = 0
 		\qquad\implies\qquad

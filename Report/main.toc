@@ -1,32 +1,32 @@
-\contentsline {section}{\numberline {1}Theoretical introduction to bosonization}{2}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Bosonization in a nutshell for spinless fermions}{2}{subsection.1.1}%
+\contentsline {section}{\numberline {1}Theoretical introduction to bosonization}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Bosonization in a nutshell for spinless fermions}{3}{subsection.1.1}%
 \contentsline {subsubsection}{\numberline {1.1.1}Boson operators}{3}{subsubsection.1.1.1}%
-\contentsline {paragraph}{Fermionic-bosonic correspondence}{4}{section*.3}%
-\contentsline {subsubsection}{\numberline {1.1.2}Field-theoretic representation of the free hamiltonian}{4}{subsubsection.1.1.2}%
-\contentsline {subsubsection}{\numberline {1.1.3}Inserting interactions}{6}{subsubsection.1.1.3}%
-\contentsline {paragraph}{$g_4$ process.}{6}{section*.6}%
-\contentsline {paragraph}{$g_2$ process.}{7}{section*.7}%
-\contentsline {subsubsection}{\numberline {1.1.4}The euclidean action}{7}{subsubsection.1.1.4}%
-\contentsline {subsubsection}{\numberline {1.1.5}Spinless fermions observables}{8}{subsubsection.1.1.5}%
-\contentsline {paragraph}{Charge compressibility.}{8}{section*.8}%
-\contentsline {paragraph}{Charge stiffness}{9}{figure.caption.10}%
-\contentsline {paragraph}{Equal-time Green's function.}{10}{section*.11}%
-\contentsline {paragraph}{Equal-time density-density correlations.}{11}{section*.12}%
-\contentsline {paragraph}{Superconducting correlations.}{12}{section*.13}%
-\contentsline {section}{\numberline {2}The Fermi-Hubbard model}{13}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{14}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Non-interacting ground-state}{18}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Bosonization of the free model}{18}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{20}{subsection.2.4}%
-\contentsline {section}{\numberline {3}Algorithms and simulations}{22}{section.3}%
-\contentsline {subsection}{\numberline {3.1}What I would have liked to do (better)}{22}{subsection.3.1}%
-\contentsline {paragraph}{Charge compressibility.}{23}{section*.22}%
-\contentsline {paragraph}{Charge stiffness.}{23}{section*.23}%
-\contentsline {subsection}{\numberline {3.2}What I actually did}{23}{subsection.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.1}Charge gaps}{23}{subsubsection.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2}Single-point characterization}{26}{subsubsection.3.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.3}Observables heatmaps}{27}{subsubsection.3.2.3}%
-\contentsline {paragraph}{Density.}{27}{section*.27}%
-\contentsline {paragraph}{Block density variance.}{27}{section*.28}%
-\contentsline {paragraph}{Projection onto Mott subspaces.}{28}{section*.30}%
-\contentsline {paragraph}{Luttinger parameters.}{30}{figure.caption.33}%
+\contentsline {paragraph}{Fermionic-bosonic correspondence}{5}{section*.3}%
+\contentsline {subsubsection}{\numberline {1.1.2}Field-theoretic representation of the free hamiltonian}{5}{subsubsection.1.1.2}%
+\contentsline {subsubsection}{\numberline {1.1.3}Inserting interactions}{7}{subsubsection.1.1.3}%
+\contentsline {paragraph}{$g_4$ process.}{7}{section*.6}%
+\contentsline {paragraph}{$g_2$ process.}{8}{section*.7}%
+\contentsline {subsubsection}{\numberline {1.1.4}The euclidean action}{8}{subsubsection.1.1.4}%
+\contentsline {subsubsection}{\numberline {1.1.5}Spinless fermions observables}{9}{subsubsection.1.1.5}%
+\contentsline {paragraph}{Charge compressibility.}{9}{section*.8}%
+\contentsline {paragraph}{Charge stiffness}{10}{figure.caption.10}%
+\contentsline {paragraph}{Equal-time Green's function.}{11}{section*.11}%
+\contentsline {paragraph}{Equal-time density-density correlations.}{12}{section*.12}%
+\contentsline {paragraph}{Superconducting correlations.}{13}{section*.13}%
+\contentsline {section}{\numberline {2}The Fermi-Hubbard model}{14}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Jordan-Wigner mapping of the Heisenberg XXZ model}{15}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Non-interacting ground-state}{19}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Bosonization of the free model}{19}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Bosonization of nearest-neighbors interaction}{21}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Algorithms and simulations}{23}{section.3}%
+\contentsline {subsection}{\numberline {3.1}What I would have liked to do (better)}{23}{subsection.3.1}%
+\contentsline {paragraph}{Charge compressibility.}{24}{section*.22}%
+\contentsline {paragraph}{Charge stiffness.}{24}{section*.23}%
+\contentsline {subsection}{\numberline {3.2}What I actually did}{24}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Charge gaps}{24}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Single-point characterization}{27}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}Observables heatmaps}{28}{subsubsection.3.2.3}%
+\contentsline {paragraph}{Density.}{28}{section*.27}%
+\contentsline {paragraph}{Block density variance.}{29}{section*.28}%
+\contentsline {paragraph}{Projection onto Mott subspaces.}{29}{section*.30}%
+\contentsline {paragraph}{Luttinger parameters.}{32}{figure.caption.33}%

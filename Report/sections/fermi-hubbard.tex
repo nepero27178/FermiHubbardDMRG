@@ -12,7 +12,7 @@
 		\input{pictures/fermi-hubbard/lattice-ring-flux.tex}
 		\label{subfig:lattice-ring-flux}
 	}
-	\caption{In Fig.~\ref{subfig:lattice-ring} a schematics of a $1D$ closed lattice is portrayed. The hopping amplitude $t$ is purely real, $t = \sgn(t) \abs{t}$. In Fig.~\ref{subfig:lattice-ring-flux} the same lattice is represented, but coupled to a finite threading flux $\Phi$ which can be absorbed via the pseudo-gauge transformation in Eq.~\todo. As a consequence, the hopping amplitude acquires a chirality which manifests in a non-null imaginary part, $T = t e^{i\Phi/L}$.}
+	\caption{In Fig.~\ref{subfig:lattice-ring} a schematics of a $1D$ closed lattice is portrayed. The hopping amplitude $t$ is purely real, $t = \sgn(t) \abs{t}$. In Fig.~\ref{subfig:lattice-ring-flux} the same lattice is represented, but coupled to a finite threading flux $\Phi$ which can be absorbed via the pseudo-gauge transformation in Eq.~\eqref{eq:pseudo-gauge-transformation}. As a consequence, the hopping amplitude acquires a chirality which manifests in a non-null imaginary part, $T = t e^{i\Phi/L}$.}
 	\label{fig:lattice-rings}
 \end{figure}
 
@@ -29,13 +29,13 @@ This is a simple nearest-neighbors (NN) interacting lattice hamiltonian with NN 
 \]
 
 I will also be considering a magnetic flux $\Phi$ threading the ring and coupling to the charge degree of freedom. On a ring this pinned flux acts as a tangential vector potential, which is, a momentum offset; thus the correct way to absorb into our lattice framework this interaction is via the pseudo-gauge transformation
-\[
+\begin{equation}\label{eq:pseudo-gauge-transformation}
 	\hat c_j \to e^{-ij \phi} \hat c_j
 	\qquad\qquad
 	\hat c_j^\dagger \to e^{ij \phi} \hat c_j^\dagger
 	\qquad\qquad
 	\phi \equiv \frac{\Phi}{L}
-\]
+\end{equation}
 Incorporate the latter in the above hamiltonian: the hopping amplitude becomes complex (which is, chiral) $t \to T \equiv t e^{i\phi}$, with $t, \phi \in \mathbb{R}$. We have, as in Fig.~\ref{subfig:lattice-ring-flux}
 \begin{equation}\label{eq:spinless-hamiltonian-tbc}
 	\hat H \equiv -t \sum_{j=1}^L \left[ 

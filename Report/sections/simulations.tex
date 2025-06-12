@@ -178,19 +178,19 @@ XYCutoff = [1E-8]
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{../Project/analysis/states-properties/compact-plot_L=6.pdf}
+	\includegraphics[width=\textwidth]{../Project/analysis/states-properties/compact-plot_L=14.pdf}
 	\caption{Compact plot of the four observables listed in Sec.~\ref{subsubsec:single-point-characterization}. Top left: bipartite entropy; top right: block density variance; bottom left: density-density correlator; bottom-right: superconducting correlator. The legend on the top left side listing the four analyzed points refers to all figures.}
 	\label{fig:compact-plot}
 \end{figure}
 
 A good task is to characterize the three phases by choosing one precise set of parameters representative of each. Each choice $(V/t,\mu/t)$ describes a model whose solution is a given physical phase. The four points I have chosen are:
 \begin{lstlisting}[language=julia]
-IFPoint  = [-1.0, 3.0]	# MI\_1 point
-IAFPoint = [ 3.5, 3.5]	# MI\_1/2 point
-XYPoint1 = [ 1.0, 2.6]	# upper SU point
-XYPoint2 = [ 3.5, 0.5]	# lower SU point
+IFPoint  = [-10.0, 10.0]	# MI\_1 point
+IAFPoint = [ 10.0, 10.0]	# MI\_1/2 point
+XYPoint1 = [  6.0, 12.0]	# upper SU point
+XYPoint2 = [ 10.0,  0.5]	# lower SU point
 \end{lstlisting}
-Various possible analyses can be carried out for single-point simulations. Among others, I decided to analyze the following properties:
+I have explicitly chosen configurations deep in the theoretically expected phases. Various possible analyses can be carried out for single-point simulations. Among others, I decided to analyze the following properties:
 \begin{enumerate}
 	\item bipartite entropy of the ground-state,
 	\begin{equation}\label{eq:bipartite-entropy-definition}
@@ -209,7 +209,9 @@ The $\mathrm{SU}$ states are expected to be significantly more entropic with res
 	I skip the formal proof of this sentence. Intuitively, this is due to the fact that the Mott-insulating phase is dominated by a small-size Hilbert subspace ($1$-dimensional for the unitary filling part, $2$-dimensional for the half-filling part). Because of this, the unitary-filled phase is exactly separable and the half-filled is low-entangled and almost-separable. In these phases, the ground-state density matrix is sparse. On the contrary, superconducting phase imply heavy entanglement -- which is, big entropy -- because, being fermion hopping favored, the ground-state density matrix is not sparse at all.
 }. Similarly, due to increased mobility of fermions as well as entanglement the density variance across sites is expected to be near-zero for the Mott-insulating phase and significantly non-zero for the superconducting phase. Moreover, the above sentence is expected to hold true for the $\mathrm{MI}_1$ phase and approximately true for the $\mathrm{MI}_{1/2}$ phase due to finite-size effects.
 
-Consider Fig.~\ref{fig:compact-plot}: I there sketched the four observables hereby listed computed for {\color{tabred}[$L=6$]}, for each of the four points analyzed. For each observable, what is shown is the value averaged along the chain; the error is not shown but can be estimated easily by taking the standard deviation across the chain. {\color{tabred} [Comments\dots]}.
+Consider Fig.~\ref{fig:compact-plot}: I there sketched the four observables hereby listed computed for $L=14$, for each of the four points analyzed. For each observable, what is shown is the value averaged along the chain; the error is not shown but can be estimated easily by taking the standard deviation across the chain.
+
+As a first comment, as expected bipartite entropy and block density variance are indeed significantly larger on the $\mathrm{XY}$ points. Correctly, the $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase shows both a finite small entropy and a finite small block density variance. Things get interesting for correlators
 
 \subsubsection{Observables heatmaps}
 
@@ -374,7 +376,7 @@ Now, I expected the projection probability to saturate quickly to unity with bet
 
 Consider Tab.~\ref{tab:MI1/2-projections}: there are reported the results of the expectation value of the projector over ground states simulated at increasing ratios $V/t = \mu/t$ -- which is, on the top-right diagonal. The last column (calculated in the extreme anti-ferromagnetic parametrization), correctly, saturates at almost unity. Lowering the parameters and increasing the lattice length, interestingly the probability decreases down to extremely small values (below $1\%$ for $L>118$, $V/t=\mu/t=5$). I have tried using more generous DMRG parameters, but results did not improve much. Probably, these data are explained by the fact that -- even if algebraically simple -- the $\mathrm{IAF}$ ground state is non-locally entangled. This means, even if the number of many-body states entangled is low, in the physical ground state in thermodynamic limit each site is entangled with every other -- a condition of low long-range entanglement Finite-Size DMRG struggles to reproduce over finite lengths. Probably the simulated states is more similar to a collection of cluster of sites entangled Anti-Ferromagnetically.
 
-A possible measurement to could carry out (I did not) is the averaged projection onto finite-size Anti-Ferromagnetic local projectors,
+A possible measurement one could carry out (I did not) is the averaged projection onto finite-size Anti-Ferromagnetic local projectors,
 \[
 	\hat{\mathrm{P}}_{\mathrm{MI}_{1/2}}^M =
 	\frac{1}{L} \sum_{s=1}^{L}

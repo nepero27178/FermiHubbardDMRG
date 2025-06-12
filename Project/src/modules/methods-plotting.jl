@@ -669,8 +669,8 @@ function ChainPlots(
         Density[Phase] = ParseRawString(Data[Index,9][1])
         Entropy[Phase] = ParseRawString(Data[Index,10][1])        
         BlockDensityVariance[Phase] = ParseRawString(Data[Index,11][1])
-        CDWCorrelator[Phase] = ParseRawString(Data[Index,12][1])
-        SUCorrelator[Phase] = ParseRawString(Data[Index,13][1])
+        CDWCorrelator[Phase] = ParseRawString(Data[Index,12][1])[2:end]	# Exclude 0
+        SUCorrelator[Phase] = ParseRawString(Data[Index,13][1])[2:end]	# Exclude 0
     end
 
     MainDict = Dict([
