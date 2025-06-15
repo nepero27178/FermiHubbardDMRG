@@ -168,6 +168,47 @@
       \verb https://dx.doi.org/10.1088/0022-3719/14/19/010
       \endverb
     \endentry
+    \entry{miranda2003introduction}{article}{}
+      \name{author}{1}{}{%
+        {{hash=2cb7d7cf8707637eba4d0985c2265f01}{%
+           family={Miranda},
+           familyi={M\bibinitperiod},
+           given={E.},
+           giveni={E\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Sociedade Brasileira de Física}%
+      }
+      \strng{namehash}{2cb7d7cf8707637eba4d0985c2265f01}
+      \strng{fullhash}{2cb7d7cf8707637eba4d0985c2265f01}
+      \strng{bibnamehash}{2cb7d7cf8707637eba4d0985c2265f01}
+      \strng{authorbibnamehash}{2cb7d7cf8707637eba4d0985c2265f01}
+      \strng{authornamehash}{2cb7d7cf8707637eba4d0985c2265f01}
+      \strng{authorfullhash}{2cb7d7cf8707637eba4d0985c2265f01}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0103-9733}
+      \field{journaltitle}{Brazilian Journal of Physics}
+      \field{month}{3}
+      \field{number}{1}
+      \field{title}{Introduction to bosonization}
+      \field{volume}{33}
+      \field{year}{2003}
+      \true{nocite}
+      \field{pages}{3\bibrangedash 35}
+      \range{pages}{33}
+      \verb{doi}
+      \verb 10.1590/S0103-97332003000100002
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1590/S0103-97332003000100002
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1590/S0103-97332003000100002
+      \endverb
+    \endentry
     \entry{rakov2016symmetries}{article}{}
       \name{author}{3}{}{%
         {{hash=c824f6973fbf4985842dd642d4d9af1d}{%

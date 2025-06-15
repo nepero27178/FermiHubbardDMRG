@@ -322,11 +322,11 @@ one is able to complete the square for the $\nabla \theta$ part appearing in $\m
 \end{equation}
 which, exponentiated, is the path integral statistical weight.
 
-\subsubsection{Spinless fermions observables}\label{subsubsec:spinless-fermions-observables}
+\subsection{Spinless fermions observables}\label{subsubsec:spinless-fermions-observables}
 
 The big, heavy (but wondrous) theoretical part is over: let's get operative. My aim is to estimate the renormalized parameters $u$ and $K$. First, it must be understood how to get them out of some observables.
 
-\paragraph{Charge compressibility.}
+\subsubsection{Charge compressibility}
 
 A very simple observable, usable for estimating easily the ratio $u/K$, is charge compressibility. Let $\mu$ be the chemical potential,
 \[
@@ -378,7 +378,7 @@ Finally:
 \end{equation}
 Then, to measure the ratio $u/K$ I need to measure the quantity $(\pi \Delta \rho / \Delta \mu)^{-1}$ (times $\hbar$, to be dimensionally correct). This most certainly is a simple quantity to be measured by the means of a DMRG simulation.
 
-\paragraph{Charge stiffness}
+\subsubsection{Charge stiffness}
 
 \begin{figure}
 	\centering
@@ -452,7 +452,7 @@ Recalling the definition of $\mathcal{D}$ of Eq.~\eqref{eq:charge-stiffness-defi
 \end{equation}
 which is the second relation I needed in order to determine $u$ and $K$. The entirety of this derivation could have been worked out analogously by expressing the current in terms of the conjugate momentum field $\Pi$ and completing the square directly in the hamiltonian.
 
-\paragraph{Equal-time Green's function.}
+\subsubsection*{Equal-time Green's function}
 
 The single-particle Green's function is defined in imaginary time, and for $s$-side fermions, as:
 \[
@@ -478,51 +478,51 @@ with $A \in \mathbb{R}$. Then, a suitable way to extract the $K$ parameter on a 
 \]
 From this measure $\zeta$ can be extracted for $k<k_F$ and $k>k_F$, and from the latter $K$.
 
-\paragraph{Equal-time density-density correlations.}
+\subsection{Bosonized correlations}
+
+This section is actually a propagation of the above section, born because correlations have particular importance in the Bosonization framework, and in understanding the different phases.
+
+\subsubsection{Equal-time density-density correlations}
 
 A very important feature of the bosonization scheme is the possibility of computing first-order analytical expressions for the correlations of observables. Take density-density correlations,
 \[
-	\mathcal{C}_\mathrm{CDW}(s) = \ev{\hat \rho(s) \hat \rho(0)}
-	\quad\text{for}\quad
-	s = (x,u\tau)
+	\mathcal{C}_\mathrm{CDW}(x) = \ev{\delta \hat \rho(x) \delta \hat \rho(0)} = \ev{\hat \rho(x) \hat \rho(0)} - \ev{\hat \rho(x)} \ev{\hat \rho(0)}
 \]
-To treat this expression in a field-theoretical fashion, I express the density operator as
+I will sketch briefly the derivation of the analytical expression for this correlation function. All details are described in \cite{giamarchi2003quantum, miranda2003introduction}. To treat this expression in a field-theoretical fashion, I express the density operator as
 \[
 	\begin{aligned}
-		\hat \rho(s) &= \colon \left[
-			\hat \psi_\mathrm{R}^\dagger(s) + \hat \psi_\mathrm{L}^\dagger(s)
+		\hat \rho(x) &= \colon \left[
+			\hat \psi_\mathrm{R}^\dagger(x) + \hat \psi_\mathrm{L}^\dagger(x)
 		\right] \left[
-			\hat \psi_\mathrm{R}(s) + \hat \psi_\mathrm{L}(s)
+			\hat \psi_\mathrm{R}(x) + \hat \psi_\mathrm{L}(x)
 		\right] \colon \\
-		&= - \frac{1}{\pi} \nabla \hat \phi(s) + \left[
-			\hat \psi_\mathrm{R}^\dagger(s) \hat \psi_\mathrm{L}(s) + \hat \psi_\mathrm{L}^\dagger(s) \hat \psi_\mathrm{R}(s) 
+		&= - \frac{1}{\pi} \nabla \hat \phi(x) + \left[
+			\hat \psi_\mathrm{R}^\dagger(x) \hat \psi_\mathrm{L}(x) + \hat \psi_\mathrm{L}^\dagger(x) \hat \psi_\mathrm{R}(x) 
 		\right] \\
-		&= - \frac{1}{\pi} \nabla \hat \phi(s) + \frac{1}{2\pi\alpha} \left[
-			e^{i 2k_F x} e^{-i 2 \hat \phi(s)}
-			+ \mathrm{h.c.}
-		\right]
+		&= \underbrace{
+				- \frac{1}{\pi} \nabla \hat \phi(x)
+			}_{\text{smooth}} + \underbrace{
+				\frac{1}{2\pi\alpha} \left[
+					e^{i 2k_F x} e^{-i 2 \hat \phi(x)}
+					+ \mathrm{h.c.}
+				\right]
+			}_{\text{rapidly oscillating}}
 	\end{aligned}
 \]
-Recall, $\alpha$ is a cutoff I introduced to stabilize the theory. In particular, $\alpha$ has the dimensions of a length and the momentum integral is cut at momenta larger than $1/\alpha$. I avoid entering in the detailed derivation: what is important, is that we can safely assume $\alpha \to 0$, at least for this correlation function \cite{haldane1981luttinger}. Let $y_\alpha$ be
-\[
-	y_\alpha \equiv u\tau + \alpha \sgn(\tau)
-\]
-The dominant behavior for $\mathcal{C}_\mathrm{CDW}(s)$ is given by
-\[
-	\mathcal{C}_\mathrm{CDW}(s) \simeq \frac{K}{2\pi^2} \frac{y_\alpha^2 - x^2}{(x^2 + y_\alpha^2)^2} + \frac{2}{(2\pi\alpha)^2} \cos\left(2k_F x\right) \left(
-		\frac{\alpha}{\sqrt{x^2 + (u\tau)^2}}
-	\right)^{2K}
-	\quad\text{for}\quad \sqrt{x^2 + (u\tau)^2} \gg \alpha
-\]
-which, for equal-time measurement ($\tau=0$) reduces to
+Recall, $\alpha$ is a cutoff I introduced to stabilize the theory. In particular, $\alpha$ has the dimensions of a length and the momentum integral is cut at momenta larger than $1/\alpha$. I have split the above expression in two parts: the first is smooth, slowly oscillating on length scales $k_F^{-1}$. The second is rapidly oscillating. The two do not mix when computing $\mathcal{C}_\mathrm{CDW}(x)$, thus can be computed separately. \citeauthor{miranda2003introduction} does so \cite[Sec.~$\mathrm{XIV}.2$]{miranda2003introduction}, obtaining
 \begin{equation}\label{eq:density-density-correlation-power-law}
-	\mathcal{C}_\mathrm{CDW}(x) \simeq - \frac{K}{2\pi^2 x^2} +  \frac{2}{(2\pi\alpha)^2} \cos\left(2k_F x\right) \left(
-		\frac{\alpha}{x}
-	\right)^{2K}
+	\mathcal{C}_\mathrm{CDW}(x) \simeq 
+	\underbrace{
+		- \frac{K}{2\pi^2 x^2}
+	}_{\text{smooth}} +  \underbrace{
+		\frac{2}{(2\pi\alpha)^2} \cos\left(2k_F x\right) \left(
+	 		\frac{\alpha}{x}
+		\right)^{2K}
+	}_{\text{rapidly oscillating}}
 \end{equation}
-As \citeauthor{giamarchi2003quantum} notes \cite[Sec.~2.2.2]{giamarchi2003quantum}, the first term reproduces a standard Fermi liquid correlation, decaying as $x^{-2}$ with an amplitude renormalized by interactions. The second term is highly unusual and has two remarkable properties: an amplitude modulation of wavevector $2k_F$ (a property also present in Fermi liquids, signaling the presence of a Fermi sea underneath the interactions) \textit{plus} a power-law decay whose strength is determined by interactions.
+I once again indicated the smooth and rapid parts explicitly. As \citeauthor{giamarchi2003quantum} notes \cite[Sec.~2.2.2]{giamarchi2003quantum}, the first term reproduces a standard Fermi liquid correlation, decaying as $x^{-2}$ with an amplitude renormalized by interactions. The second term is highly unusual and has two remarkable properties: an amplitude modulation of wavevector $2k_F$ (a property also present in Fermi liquids, signaling the presence of a Fermi sea underneath the interactions) \textit{plus} a power-law decay whose strength is determined by interactions.
 
-Finally, notice that for a $1$D lattice of lattice spacing $a$ at half-filling, the Fermi wavevector is given by $k_F = \pi/2a$. Since each site coordinate is $x_r=ra$, one has
+Moreover, notice that for a $1$D lattice of lattice spacing $a$ at half-filling, the Fermi wavevector is given by $k_F = \pi/2a$. Since each site coordinate is $x_r=ra$, one has
 \[
 	\mathcal{C}_\mathrm{CDW}(r) \simeq - \frac{K}{2\pi^2 (ra)^2} +  \frac{2 (-1)^r }{(2\pi\alpha)^2} \left(
 	\frac{\alpha}{ra}
@@ -532,9 +532,9 @@ Finally, notice that for a $1$D lattice of lattice spacing $a$ at half-filling, 
 \]
 The oscillatory character of the correlation function with the site index parity reflects the fact that, at half-filling, charge-density waves (CDW) excitations follow have wavelength twice the lattice spacing. At unitary filling, such oscillatory behavior vanishes due to the halving of the Fermi wavevector.
 
-\paragraph{Superconducting correlations.}
+\subsubsection{Superconducting pairing correlations}
 
-The superconducting phase is gapless and governed by a tendency to fermion pairing. Consider the NN-pairing operator
+The ``superconducting'' phase is gapless and governed by a tendency to fermion pairing. Consider the NN-pairing operator
 \[
 	\hat \psi(x) \hat \psi(x)
 \]
@@ -563,19 +563,31 @@ the $(\mathrm{RR})$ and $(\mathrm{LL})$ terms are strongly suppressed in the $a 
 		&= e^{ik_F a} \hat \Psi_\mathrm{R} (x+a) \hat \Psi_\mathrm{L} (x) - e^{-ik_F a} \hat \Psi_\mathrm{R} (x) \hat \Psi_\mathrm{L} (x+a)\\
 		&\simeq 2i \sin(k_F a) \hat \Psi_\mathrm{R} (x) \hat \Psi_\mathrm{L} (x) \\
 		&\simeq \frac{i \sin(k_F a)}{\pi\alpha} e^{-i \left[ \hat \phi(x) + \hat \theta(x) \right] } e^{i \left[ \hat \phi(x) - \hat \theta(x) \right]} \\
-		(\text{half filling})&\simeq \frac{i}{\pi\alpha} e^{-2i\hat\theta(x)}
+		&\simeq \frac{i \sin(k_F a)}{\pi\alpha} e^{-2i\hat\theta(x)} \\
+		(@ \ \text{half filling})&\simeq \frac{i}{\pi\alpha} e^{-2i\hat\theta(x)}
 	\end{aligned}
 \]
 I used a sequence of approximations: the continuum limit was taken, $a \to 0$, using the slow variation of the shifted fields $\hat \Psi_s$; then the fields $\hat \Psi_s$ were written explicitly in terms of their bosonic counterpart (ignoring the Klein factors), and finally I merged the two exponential operators ignoring the correction terms.
 
 The superconducting correlator is defined as
 \[
-	\mathcal{C}_\mathrm{SU}(x) = \ev{\hat{\mathcal{O}}_\mathrm{SU}^\dagger(x) \hat{\mathcal{O}}_\mathrm{SU}(x)}
+	\mathcal{C}_\mathrm{SU}(x) = \ev{\hat{\mathcal{O}}_\mathrm{SU}^\dagger(x) \hat{\mathcal{O}}_\mathrm{SU}(0)}
 \]
 It can be shown that using the previous result gives:
 \begin{equation}\label{eq:superconducting-correlation-power-law}
 	\mathcal{C}_\mathrm{SU}(x) = \frac{1}{(\pi\alpha)^2} \left(
 		\frac{\alpha}{x}
-	\right)^{1/2K}
+	\right)^{2/K}
 \end{equation}
-The most important detail to notice with respect to the $\mathrm{CDW}$ correlator of Eq.~\eqref{eq:density-density-correlation-power-law} is the inverted power-law dependence.
+The most important detail to notice with respect to the $\mathrm{CDW}$ correlator of Eq.~\eqref{eq:density-density-correlation-power-law} is the inverted power-law dependence. This feature ensures that $\mathrm{CDW}$ and $\mathrm{SU}$ correlators are somewhat ``dual'' with respect to the Luttinger parameter $K$: as $K$ gets bigger than $1$, superconducting correlations are boosted while charge correlations are suppressed. The situation is inverted as $K<1$ gets smaller. A schematics of this behavior is given in Fig.~\ref{fig:k-luttinger-phases}.
+
+\begin{figure}
+	\centering
+	\input{pictures/theory/k-luttinger-phases}
+	\caption{Schematic illustration of the dominant correlator (charge density wave or superconducting) for different values of $K \ge 0$. The $\mathrm{CDW}$ phase is confined by $0 \le K \le 1$, while the $\mathrm{SU}$ phase is given by $K \ge 1$.}
+	\label{fig:k-luttinger-phases}
+\end{figure}
+
+\subsubsection{Meaning of the Luttinger parameter $K$}\label{subsubsec:meaning-of-the-luttinger-parameter-K}
+
+The Luttinger parameter $K$ ultimately contains all the relevant physics of the problem. As \citeauthor{giamarchi2003quantum} explains \cite[Sec.~2.2.2]{giamarchi2003quantum}, \todo

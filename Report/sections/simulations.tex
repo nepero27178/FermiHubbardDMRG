@@ -178,9 +178,9 @@ XYCutoff = [1E-8]
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{../Project/analysis/states-properties/compact-plot_L=14.pdf}
-	\caption{Compact plot of the four observables listed in Sec.~\ref{subsubsec:single-point-characterization}. Top left: bipartite entropy; top right: block density variance; bottom left: density-density correlator; bottom-right: superconducting correlator. The legend on the top left side listing the four analyzed points refers to all figures.}
-	\label{fig:compact-plot}
+	\input{pictures/simulations/points-expected-sfh-phase-diagram.tex}
+	\caption{Plot of the theoretical phase diagram, enlarged from Fig.~\ref{fig:expected-sfh-phase-diagram}, together with the four simulated points $\mathrm{IF}=(-10,10)$, $\mathrm{IAF}=(10,10)$, $\mathrm{XY}_1=(6,12)$ and $\mathrm{XY}_2=(10,0.5)$. The points are plotted explicitly with the respective label; the color refers to the expected phase of the ground-state.}
+	\label{fig:points-expected-sfh-phase-diagram.tex}
 \end{figure}
 
 A good task is to characterize the three phases by choosing one precise set of parameters representative of each. Each choice $(V/t,\mu/t)$ describes a model whose solution is a given physical phase. The four points I have chosen are:
@@ -190,28 +190,83 @@ IAFPoint = [ 10.0, 10.0]	# MI\_1/2 point
 XYPoint1 = [  6.0, 12.0]	# upper SU point
 XYPoint2 = [ 10.0,  0.5]	# lower SU point
 \end{lstlisting}
-I have explicitly chosen configurations deep in the theoretically expected phases. Various possible analyses can be carried out for single-point simulations. Among others, I decided to analyze the following properties:
+I have explicitly chosen configurations deep in the theoretically expected phases. The points are located on the expected phase diagram in Fig.~\ref{fig:points-expected-sfh-phase-diagram.tex}. Various possible analyses can be carried out for single-point simulations. Among others, I decided to analyze the following properties:
 \begin{enumerate}
 	\item bipartite entropy of the ground-state,
 	\begin{equation}\label{eq:bipartite-entropy-definition}
 		S(\hat \rho_\ell) \equiv - \Tr_\ell \left\lbrace \hat \rho_\ell \log \hat \rho_\ell \right\rbrace
 	\end{equation}
-	as a function of the bipartition length $\ell$, being $\hat \rho_\ell$ the block reduced density matrix;
+	as a function of the bipartition length $\ell$, being $\hat \rho_\ell$ the block reduced density matrix. A sketch of a possible chain bipartition is given in Fig.~\ref{fig:bipartition-illustration};
 	\item density variance across a block of sites, defined by
 	\begin{equation}\label{eq:density-block-variance-definition}
 		\delta n_M^2 = \left\langle \left( \sum_{i \in M} \hat n_i \right)^2 \right\rangle - \left\langle \sum_{i \in M} \hat n_i \right\rangle^2
 	\end{equation}
-	as a function of the block length $M$;
+	as a function of the block length $M$. Chain bipartition is carried out as in the previous point\footnote{
+		We could define block density variance also for non-consecutive site blocks; differently from entropy, sequentiality is not strictly needed but nevertheless implemented.
+	}, with reference to Fig.~\ref{fig:bipartition-illustration};
 	\item density-density correlation function as defined in Eq.~\eqref{eq:density-density-correlation-power-law} along sites;
 	\item superconducting correlation function as defined in Eq.~\eqref{eq:superconducting-correlation-power-law} along sites;
 \end{enumerate}
-The $\mathrm{SU}$ states are expected to be significantly more entropic with respect to the Mott insulating states\footnote{
+
+\begin{figure}
+	\centering
+	\input{pictures/simulations/bipartition-illustration}
+	\caption{Illustration of a possible chain bipartition in two parts of lengths $\ell$ and $L-\ell$, used to calculate Von Neumann entropy across the bipartition bond $b$ (the latter is only defined with respect to the starting site $s$ of the partition, with $s$ being averaged over). I omit $b$ and $s$ labels in plot. Of course, it makes sense to perform bipartition up to $\ell \le \lfloor L/2 \rfloor$.}
+	\label{fig:bipartition-illustration}
+\end{figure}
+
+\noindent The $\mathrm{SU}$ states are expected to be significantly more entropic with respect to the Mott insulating states\footnote{
 	I skip the formal proof of this sentence. Intuitively, this is due to the fact that the Mott-insulating phase is dominated by a small-size Hilbert subspace ($1$-dimensional for the unitary filling part, $2$-dimensional for the half-filling part). Because of this, the unitary-filled phase is exactly separable and the half-filled is low-entangled and almost-separable. In these phases, the ground-state density matrix is sparse. On the contrary, superconducting phase imply heavy entanglement -- which is, big entropy -- because, being fermion hopping favored, the ground-state density matrix is not sparse at all.
 }. Similarly, due to increased mobility of fermions as well as entanglement the density variance across sites is expected to be near-zero for the Mott-insulating phase and significantly non-zero for the superconducting phase. Moreover, the above sentence is expected to hold true for the $\mathrm{MI}_1$ phase and approximately true for the $\mathrm{MI}_{1/2}$ phase due to finite-size effects.
 
-Consider Fig.~\ref{fig:compact-plot}: I there sketched the four observables hereby listed computed for $L=14$, for each of the four points analyzed. For each observable, what is shown is the value averaged along the chain; the error is not shown but can be estimated easily by taking the standard deviation across the chain.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../Project/analysis/states-properties/compact-plot_L=38.pdf}
+	\caption{Compact plot of the four observables listed in Sec.~\ref{subsubsec:single-point-characterization}. Top left: bipartite entropy; top right: block density variance; bottom left: density-density correlator; bottom-right: superconducting correlator. The legend on the top left side listing the four analyzed points refers to all figures.}
+	\label{fig:compact-plot}
+\end{figure}
 
-As a first comment, as expected bipartite entropy and block density variance are indeed significantly larger on the $\mathrm{XY}$ points. Correctly, the $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase shows both a finite small entropy and a finite small block density variance. Things get interesting for correlators
+Consider Fig.~\ref{fig:compact-plot}: I there sketched the four observables hereby listed computed for $L=14$, for each of the four points analyzed. For each observable, what is shown is the value averaged along the chain; the error is not shown but can be estimated easily by taking the standard deviation across the chain. As a first comment, as expected bipartite entropy and block density variance are indeed significantly larger on the $\mathrm{XY}$ points. Correctly, the $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase shows both a finite small entropy and a finite small block density variance.
+
+Things get interesting for correlators. Consider the bottom-right plot of Fig.~\ref{fig:compact-plot}, which is, the $\mathrm{CDW}$ density-density correlator plot. The red line represents the density-density correlator for the point $\mathrm{IF}=(-10,10)$ (see Fig.~\ref{fig:points-expected-sfh-phase-diagram.tex}). The state is expected to be unitary filled and Mott insulating, which is, well approximated by
+\begin{equation}\label{eq:unitary-state-definition}
+	\ket{\Psi} \simeq \ket{\bm{1}} \equiv \bigotimes_{j=1}^L \hat c_j^\dagger \ket{\Omega}
+\end{equation}
+Correctly the density-density correlation function {\color{tabred}[is identically zero]}. Recalling the power-law behavior of $\mathcal{C}_\mathrm{CDW}(r)$ of Eq.~\eqref{eq:density-density-correlation-power-law}, such an $r$-dependence signals $K \to 0$. In the same figure, the green line indicates the simulation at the point $\mathrm{IAF}=(10,10)$. Define the states:
+\begin{align}
+	\ket{\mathrm{e}} &\equiv \bigotimes_{j=1}^{L/2} \hat c_{2j}^\dagger \ket{\Omega}
+	&&\text{(even sites filled, odd sites empty)}
+	\label{eq:even-state-definition}
+	\\
+	\ket{\mathrm{o}} &\equiv \bigotimes_{j=1}^{L/2} \hat c_{2j-1}^\dagger \ket{\Omega}
+	&&\text{(odd sites filled, even sites filled)}
+	\label{eq:odd-state-definition}
+\end{align}
+For an half-filled Mott-insulating state, the assumption is that the ground-state is dominated by these two,
+\[
+	\ket{\Psi} \simeq \alpha_\mathrm{e} \ket{\mathrm{e}} + \alpha_\mathrm{o} \ket{\mathrm{o}} + (\cdots)
+	\qquad
+	\alpha_\mathrm{e}, \alpha_\mathrm{o} \in \mathbb{C}
+	\qquad
+	\sqrt{\abs{\alpha_\mathrm{e}}^2 + \abs{\alpha_\mathrm{o}}^2} \simeq 1
+\]
+Moreover, the physical expectation is that $\abs{\alpha_\mathrm{e}} = \abs{\alpha_\mathrm{o}} = 1/2$. For such a situation, is rather easy to show that
+\[
+	\ev{\delta \hat \rho(i) \delta \hat \rho(j)} = \frac{1}{2} \left[
+		\mel{\mathrm{e}}{\hat \rho(i) \hat \rho(j)}{\mathrm{e}} + \mel{\mathrm{o}}{\hat \rho(i) \hat \rho(j)}{\mathrm{o}}
+	\right] - \frac{1}{4} = \begin{cases}
+		-1/4 &\text{if $\abs{i-j}$ is odd} \\
+		1/4 &\text{if $\abs{i-j}$ is even} 
+	\end{cases}
+\]
+an expectation {\color{tabred} [perfectly satisfied]} by the oscillation visible in Fig.~\ref{fig:compact-plot}, bottom-right panel, green line. Again, recall the expectation of Eq.~\eqref{eq:density-density-correlation-power-law} at half-filling: the correlator oscillation is present, sustained at long distances without suppression -- as before, a signal that $K \to 0$.
+
+\begin{figure}
+	\centering
+	\includegraphics{../Project/analysis/states-properties/su-correlator_L=38.pdf}
+	\caption{Logarithmic plot of $\mathcal{C}_\mathrm{SU}(r)$. The power-law decay is qualitatively visible and would require deeper and quantitative investigation.}
+	\label{su-correlator-loglog}
+\end{figure}
 
 \subsubsection{Observables heatmaps}
 
@@ -237,21 +292,8 @@ In this last section I sketch some relevant observables heatmaps. Results are de
 
 Interestingly, at zero chemical potential (no system-environment matter exchange) the expected density at strong NN repulsion is less than half. To alternate particles and holes in not enough to gain energy: residual subdominant hopping makes the ground state converge onto a less populated state.
 
-\paragraph{Block density variance.} Fig.~\ref{subfig:block-density-variance-heatmap} shows the block density variance $\ev{ \delta \hat n_{M}^2 }$ as a heatmap for $M = \lfloor L/4 \rfloor$. For the $\mathrm{IF}/\mathrm{MI}_1$ phase, the variance of density along the block is null -- a consequence of the robust ground-state
-\[
-	\ket{\Psi} \simeq \ket{\bm{1}} \equiv \bigotimes_{j=1}^L \hat c_j^\dagger \ket{\Omega}
-\]
-Similarly, the dominant contribution to the $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase is given by the states
-\begin{align}
-	\ket{\mathrm{e}} &\equiv \bigotimes_{j=1}^{L/2} \hat c_{2j}^\dagger \ket{\Omega}
-	&&\text{(even sites filled, odd sites empty)}
-	\label{eq:even-state-definition}
-	\\
-	\ket{\mathrm{o}} &\equiv \bigotimes_{j=1}^{L/2} \hat c_{2j-1}^\dagger \ket{\Omega}
-	&&\text{(odd sites filled, even sites filled)}
-	\label{eq:odd-state-definition}
-\end{align}
-Separately, each of these states is a number operator eigenstate and thus has zero density variance on each site and on every block. For a state in $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$ the variance over a block is expected to be small:
+\paragraph{Block density variance.} Fig.~\ref{subfig:block-density-variance-heatmap} shows the block density variance $\ev{ \delta \hat n_{M}^2 }$ as a heatmap for $M = \lfloor L/4 \rfloor$. For the $\mathrm{IF}/\mathrm{MI}_1$ phase, the variance of density along the block is null -- a consequence of the robust ground-state $\ket{\Psi} \simeq \ket{\bm{1}}$ as defined in Eq.~\eqref{eq:unitary-state-definition}.
+Similarly, the dominant contribution to the $\mathrm{IAF}/\mathrm{MI}_{1/2}$ phase is given by the states $\ket{\mathrm{e}}$ and $\ket{\mathrm{o}}$ as defined respectively in Eqns.~\eqref{eq:even-state-definition}, \eqref{eq:odd-state-definition}. Separately, each of these states is a number operator eigenstate and thus has zero density variance on each site and on every block. For a state in $\mathrm{Span}\lbrace \ket{\mathrm{e}}, \ket{\mathrm{o}} \rbrace$ the variance over a block is expected to be small:
 \[
 	\ket{\Psi} = \frac{1}{\sqrt{1 + \abs{\gamma}^2}} \ket{\mathrm{e}} + \frac{\gamma}{\sqrt{1 + \abs{\gamma}^2}} \ket{\mathrm{o}}
 	\qquad

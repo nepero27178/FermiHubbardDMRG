@@ -603,9 +603,19 @@ end
 
 # --------------------------- State-properties plots ---------------------------
 
+@doc raw"""
 function ParseRawString(
             RawString::SubString{String}
-        )
+        )::Vector{Float64}
+       
+Return: parsed string.
+
+This utility reads a string of data saved as: \" [a, b, c, ..., z]\" (as the
+`SubString{String}` given as input.
+"""
+function ParseRawString(
+            RawString::SubString{String}
+        )::Vector{Float64}
     return parse.(Float64, split(strip(RawString, ['[', ']', ' ']), ','))
 end
 

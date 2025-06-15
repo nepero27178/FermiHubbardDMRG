@@ -2355,26 +2355,31 @@
     <bcf:citekey order="6">giamarchi2003quantum</bcf:citekey>
     <bcf:citekey order="7">giamarchi2003quantum</bcf:citekey>
     <bcf:citekey order="7">senechal1999introduction</bcf:citekey>
-    <bcf:citekey order="8">haldane1981luttinger</bcf:citekey>
-    <bcf:citekey order="9">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="10">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="11">franchini2016integrable</bcf:citekey>
-    <bcf:citekey order="12">franchini2016integrable</bcf:citekey>
-    <bcf:citekey order="13">franchini2016integrable</bcf:citekey>
-    <bcf:citekey order="14">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="8">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="8">miranda2003introduction</bcf:citekey>
+    <bcf:citekey order="9">miranda2003introduction</bcf:citekey>
+    <bcf:citekey order="10">miranda2003introduction</bcf:citekey>
+    <bcf:citekey order="11">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="12">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="13">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="14">giamarchi2003quantum</bcf:citekey>
     <bcf:citekey order="15">franchini2016integrable</bcf:citekey>
     <bcf:citekey order="16">franchini2016integrable</bcf:citekey>
     <bcf:citekey order="17">franchini2016integrable</bcf:citekey>
-    <bcf:citekey order="17">rakov2016symmetries</bcf:citekey>
-    <bcf:citekey order="18">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="19">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="20">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="18">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="19">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="20">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="21">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="21">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="22">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="23">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="24">giamarchi2003quantum</bcf:citekey>
     <bcf:citekey order="0" nocite="1">*</bcf:citekey>
-    <bcf:citekey order="21">giamarchi2003quantum</bcf:citekey>
-    <bcf:citekey order="22">senechal1999introduction</bcf:citekey>
-    <bcf:citekey order="23">haldane1981luttinger</bcf:citekey>
-    <bcf:citekey order="24">franchini2016integrable</bcf:citekey>
-    <bcf:citekey order="25">rakov2016symmetries</bcf:citekey>
+    <bcf:citekey order="25">giamarchi2003quantum</bcf:citekey>
+    <bcf:citekey order="26">senechal1999introduction</bcf:citekey>
+    <bcf:citekey order="27">miranda2003introduction</bcf:citekey>
+    <bcf:citekey order="28">franchini2016integrable</bcf:citekey>
+    <bcf:citekey order="29">rakov2016symmetries</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

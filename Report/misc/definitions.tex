@@ -56,3 +56,48 @@
   morestring=[b]" 
 }
 
+% Captions
+
+\newcommand*{\CaptionVLineWidth}{0.5pt}
+\newcommand*{\CaptionVLineSep}{.5em}
+
+\newcommand*{\CaptionVLine}{%
+	\noindent
+	\kern\dimexpr-\CaptionVLineSep-\CaptionVLineWidth\relax
+	\textcolor{tabblue}{\vline width\CaptionVLineWidth}%
+	\kern\CaptionVLineSep\relax
+}
+
+\DeclareCaptionFormat{vLine}[%
+#1#2\CaptionVLine#3\par % Single line captions
+]{% Multi-line captions
+	\caption@ifin@list\caption@lsepcrlist\caption@lsepname{%
+		\caption@Error{%
+			The option `labelsep=\caption@lsepname' does not work\MessageBreak
+			with `format=hang'}
+	}{%
+		\sbox0{%
+			\parbox[t]{\linewidth}{%
+				\@hangfrom{#1#2}%
+				\advance\caption@parindent\hangindent
+				\advance\caption@hangindent\hangindent
+				\xdef\CaptionHangIndent{\the\hangindent}%
+				\caption@@par#3\par
+			}%
+		}%
+		\noindent
+		\kern\CaptionHangIndent\relax
+		\CaptionVLine
+		\kern-\CaptionHangIndent\relax
+		\usebox0%
+	}%
+}
+
+\captionsetup{
+	labelsep=quad,
+	labelfont={color=tabblue},
+	format=vLine,
+}
+\captionsetup[sub]{
+	labelsep=quad,
+}

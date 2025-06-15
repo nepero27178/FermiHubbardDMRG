@@ -69,7 +69,7 @@ function GetStateProperties(
 			TmpCnn += CnnMatrix[j, mod1(j+r, L)]
 			TmpCsu += CsuMatrix[j, mod1(j+r, L)]
 		end
-		Cnn[r+1] = TmpCnn/L
+		Cnn[r+1] = TmpCnn/L - ρ^2
 		Csu[r+1] = TmpCsu/L
 	end
 	

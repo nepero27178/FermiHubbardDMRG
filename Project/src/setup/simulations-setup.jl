@@ -10,7 +10,7 @@ Resolution = Dict([
 
 # ------------------------------ State properties ------------------------------
 
-StatePropertiesL = 14
+StatePropertiesL = 38
 StatePropertiesN = floor(Int64, StatePropertiesL/2)
 IFPoint  = [-10.0, 10.0]
 IAFPoint = [ 10.0, 10.0]

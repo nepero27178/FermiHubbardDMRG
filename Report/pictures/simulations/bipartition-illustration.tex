@@ -1,0 +1,44 @@
+\begin{tikzpicture}
+	\foreach \i in {0,1,...,7}{
+		\def\angle{45*\i}
+		
+		\draw[color=black]
+			(\angle:2) -- ({\angle+45}:2);
+		
+		\filldraw[color=black]
+			(\angle:2) circle (1pt);
+		}
+	
+	\filldraw[color=black]
+		(0:2) circle (1pt);
+		
+	\filldraw[color=tabgreen, fill=tabgreen, fill opacity=0.25] 
+		(0:1.75) [rounded corners]
+			-- (45:1.75)
+			-- (90:1.75)
+			-- (97:1.95)
+			-- (90:2.25)
+			-- (45:2.25)
+			-- (0:2.25)
+			-- (-7:1.95)
+			-- cycle;
+	\filldraw[color=tabblue, fill=tabblue, fill opacity=0.25] 
+		(135:1.75) [rounded corners]
+			\foreach \angle in {180,225,270,315}{
+				-- (\angle:1.75)
+			}
+			-- (322:1.95)
+			\foreach \angle in {315,270,225,180,135}{
+				-- (\angle:2.25)
+			}
+			-- (128:1.95)
+			-- cycle;
+	
+	\node[anchor=south west, color=tabgreen] 
+		at (45:2.25)
+			{$\ell$};
+			
+	\node[anchor=north east, color=tabblue] 
+		at (225:2.25)
+			{$L-\ell$};
+\end{tikzpicture}

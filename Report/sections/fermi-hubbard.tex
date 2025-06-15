@@ -1,21 +1,6 @@
 \clearpage
 \section{The Fermi-Hubbard model}
 
-\begin{figure}
-	\centering
-	\subfloat[Lattice with null flux.]{
-		\input{pictures/fermi-hubbard/lattice-ring.tex}
-		\label{subfig:lattice-ring}
-	}
-	\hfil
-	\subfloat[Lattice with finite flux $\Phi$.]{
-		\input{pictures/fermi-hubbard/lattice-ring-flux.tex}
-		\label{subfig:lattice-ring-flux}
-	}
-	\caption{In Fig.~\ref{subfig:lattice-ring} a schematics of a $1D$ closed lattice is portrayed. The hopping amplitude $t$ is purely real, $t = \sgn(t) \abs{t}$. In Fig.~\ref{subfig:lattice-ring-flux} the same lattice is represented, but coupled to a finite threading flux $\Phi$ which can be absorbed via the pseudo-gauge transformation in Eq.~\eqref{eq:pseudo-gauge-transformation}. As a consequence, the hopping amplitude acquires a chirality which manifests in a non-null imaginary part, $T = t e^{i\Phi/L}$.}
-	\label{fig:lattice-rings}
-\end{figure}
-
 In this project I limit myself to a polarized (spinless fermions) system. Extension to a spinful system is possible and introduces some refinements in the general bosonization scheme, the most notable being the famous spin-charge separation. Let me take it easy: consider the following interacting hamiltonian:
 \begin{equation}\label{eq:spinless-hamiltonian-pbc}
 	\hat H \equiv -t \sum_{\ev{j,k}} \left[
@@ -52,6 +37,21 @@ where a $\mod L$ operation is intended: $L+1 \leftrightarrow 1$. I want to indag
 	\end{aligned}
 \]
 Intuitively, if the interaction becomes dominant with respect to the hopping dynamics, the combined effect of attraction/repulsion and Pauli exclusion principle should lead to two different forms of localization. On one hand, if the interaction is strong and attractive, the ground state should be uniformly filled, because fermions save energy both by closed packing and by increasing density due to the negative chemical potential contribution ($\mu > 0$). On the other hand, a strong repulsive interaction could lead to an half-filled chain, which sacrifices the chemical potential energy gain lost by reducing the particle number by not paying the energy cost of having nearby fermions. In both cases hopping is suppressed, thus fermions are localized; now it is a matter of seeing if these states are actually realized.
+
+\begin{figure}[t]
+	\centering
+	\subfloat[Lattice with null flux.]{
+		\input{pictures/fermi-hubbard/lattice-ring.tex}
+		\label{subfig:lattice-ring}
+	}
+	\hfil
+	\subfloat[Lattice with finite flux $\Phi$.]{
+		\input{pictures/fermi-hubbard/lattice-ring-flux.tex}
+		\label{subfig:lattice-ring-flux}
+	}
+	\caption{In Fig.~\ref{subfig:lattice-ring} a schematics of a $1D$ closed lattice is portrayed. The hopping amplitude $t$ is purely real, $t = \sgn(t) \abs{t}$. In Fig.~\ref{subfig:lattice-ring-flux} the same lattice is represented, but coupled to a finite threading flux $\Phi$ which can be absorbed via the pseudo-gauge transformation in Eq.~\eqref{eq:pseudo-gauge-transformation}. As a consequence, the hopping amplitude acquires a chirality which manifests in a non-null imaginary part, $T = t e^{i\Phi/L}$.}
+	\label{fig:lattice-rings}
+\end{figure}
 
 \subsection{Jordan-Wigner mapping of the Heisenberg XXZ model}
 
