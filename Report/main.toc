@@ -26,8 +26,8 @@
 \contentsline {subsection}{\numberline {3.2}What I actually did}{25}{subsection.3.2}%
 \contentsline {subsubsection}{\numberline {3.2.1}Charge gaps}{25}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2}Single-point characterization}{28}{subsubsection.3.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.3}Observables heatmaps}{30}{subsubsection.3.2.3}%
-\contentsline {paragraph}{Density.}{30}{section*.27}%
-\contentsline {paragraph}{Block density variance.}{30}{section*.28}%
-\contentsline {paragraph}{Projection onto Mott subspaces.}{32}{section*.30}%
-\contentsline {paragraph}{Luttinger parameters.}{34}{figure.caption.33}%
+\contentsline {subsubsection}{\numberline {3.2.3}Observables heatmaps}{31}{subsubsection.3.2.3}%
+\contentsline {paragraph}{Density.}{31}{section*.28}%
+\contentsline {paragraph}{Block density variance.}{32}{section*.29}%
+\contentsline {paragraph}{Projection onto Mott subspaces.}{33}{section*.31}%
+\contentsline {paragraph}{Luttinger parameters.}{35}{figure.caption.34}%

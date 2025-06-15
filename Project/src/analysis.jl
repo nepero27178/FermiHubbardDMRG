@@ -165,7 +165,7 @@ function main()
             DirPathIn = PROJECT_ROOT * "/../simulations/states-properties/"
             DirPathOut = PROJECT_ROOT * "/../analysis/states-properties/"
 
-			for CompactPlot in [false, true]
+			for CompactPlot in [false] #, true]
 		        ChainPlots(
 		            DirPathIn,
 			        DirPathOut,

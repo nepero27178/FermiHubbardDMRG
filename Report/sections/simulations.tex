@@ -179,7 +179,7 @@ XYCutoff = [1E-8]
 \begin{figure}
 	\centering
 	\input{pictures/simulations/points-expected-sfh-phase-diagram.tex}
-	\caption{Plot of the theoretical phase diagram, enlarged from Fig.~\ref{fig:expected-sfh-phase-diagram}, together with the four simulated points $\mathrm{IF}=(-10,10)$, $\mathrm{IAF}=(10,10)$, $\mathrm{XY}_1=(6,12)$ and $\mathrm{XY}_2=(10,0.5)$. The points are plotted explicitly with the respective label; the color refers to the expected phase of the ground-state.}
+	\caption{Plot of the theoretical phase diagram, enlarged from Fig.~\ref{fig:expected-sfh-phase-diagram}, together with the four simulated points $\mathrm{IF}=(-10,10)$, $\mathrm{IAF}=(10,10)$, $\mathrm{XY}_1=(6,12)$ and $\mathrm{XY}_2=(10,0.5)$. The points are plotted explicitly with the respective labels; the color refers to the expected phase of the ground-state.}
 	\label{fig:points-expected-sfh-phase-diagram.tex}
 \end{figure}
 
@@ -232,7 +232,7 @@ Things get interesting for correlators. Consider the bottom-right plot of Fig.~\
 \begin{equation}\label{eq:unitary-state-definition}
 	\ket{\Psi} \simeq \ket{\bm{1}} \equiv \bigotimes_{j=1}^L \hat c_j^\dagger \ket{\Omega}
 \end{equation}
-Correctly the density-density correlation function {\color{tabred}[is identically zero]}. Recalling the power-law behavior of $\mathcal{C}_\mathrm{CDW}(r)$ of Eq.~\eqref{eq:density-density-correlation-power-law}, such an $r$-dependence signals $K \to 0$. In the same figure, the green line indicates the simulation at the point $\mathrm{IAF}=(10,10)$. Define the states:
+Correctly the density-density correlation function is identically zero. Recalling the power-law behavior of $\mathcal{C}_\mathrm{CDW}(r)$ of Eq.~\eqref{eq:density-density-correlation-power-law}, such an $r$-dependence signals $K \to 0$. In the same figure, the green line indicates the simulation at the point $\mathrm{IAF}=(10,10)$. Define the states:
 \begin{align}
 	\ket{\mathrm{e}} &\equiv \bigotimes_{j=1}^{L/2} \hat c_{2j}^\dagger \ket{\Omega}
 	&&\text{(even sites filled, odd sites empty)}
@@ -259,14 +259,29 @@ Moreover, the physical expectation is that $\abs{\alpha_\mathrm{e}} = \abs{\alph
 		1/4 &\text{if $\abs{i-j}$ is even} 
 	\end{cases}
 \]
-an expectation {\color{tabred} [perfectly satisfied]} by the oscillation visible in Fig.~\ref{fig:compact-plot}, bottom-right panel, green line. Again, recall the expectation of Eq.~\eqref{eq:density-density-correlation-power-law} at half-filling: the correlator oscillation is present, sustained at long distances without suppression -- as before, a signal that $K \to 0$.
+an expectation perfectly satisfied by the oscillation visible in Fig.~\ref{fig:compact-plot}, bottom-right panel, green line. Again, recall the expectation of Eq.~\eqref{eq:density-density-correlation-power-law} at half-filling: the correlator oscillation is present, sustained at long distances without suppression -- as before, a signal that $K \to 0$.
 
-\begin{figure}
+\begin{figure}[t]
 	\centering
-	\includegraphics{../Project/analysis/states-properties/su-correlator_L=38.pdf}
-	\caption{Logarithmic plot of $\mathcal{C}_\mathrm{SU}(r)$. The power-law decay is qualitatively visible and would require deeper and quantitative investigation.}
-	\label{su-correlator-loglog}
+	\includegraphics[width=0.6\linewidth]{../Project/analysis/states-properties/cdw-correlator_L=38.pdf}
+	\caption{Plot of $\mathcal{C}_\mathrm{CDW}(r)$ limited to the data of the simulation at point $\mathrm{XY}_1 = (6,12)$. Superimposed to the plot, I have plotted a simple Lorentzian decay function with estimated strength $K$. This is not a fit whatsoever.}
+	\label{fig:cdw-correlator-zoom-XY1}
 \end{figure}
+
+On the same figure, the dashed and solid blue lines (almost indiscernible) represent the correlator computed for the points $\mathrm{XY}_1=(6,12)$ and $\mathrm{XY}_2=(10,0.5)$. Two features are visible: the data oscillate on a length scale bigger than the lattice spacing, and the correlator amplitude is suppressed. I have plotted separately the data for the point $\mathrm{XY}_1 = (6,12)$ in Fig.~\ref{fig:cdw-correlator-zoom-XY1}, superimposing a simple Lorentzian computed via the extracted $K$ parameter for this configuration (reported in Figure),
+\[
+	- \frac{K}{2\pi^2 r^2}
+\]
+This is the ``smooth'' part of Eq.~\eqref{eq:density-density-correlation-power-law}. The orange line in Fig.\ref{fig:cdw-correlator-zoom-XY1} is not a fit, is just intended as an illustration. To get more quantitative, one could fit the found data with a three-parameters model from Eq.~\eqref{eq:density-density-correlation-power-law}. Without any good estimation for $\alpha$, I could not do anything more.
+
+\begin{figure}[htbp!]
+	\centering
+	\includegraphics[width=0.6\linewidth]{../Project/analysis/states-properties/su-correlator_L=38.pdf}
+	\caption{Logarithmic plot of $\mathcal{C}_\mathrm{SU}(r)$. The power-law decay is qualitatively visible and would require deeper and quantitative investigation.}
+	\label{fig:su-correlator-loglog}
+\end{figure}
+
+Finally, on the bottom right panel of Fig.~\ref{fig:compact-plot} I have reported the simulated data for $\mathcal{C}_\mathrm{SU}(r)$. For what is intelligible in the plot, coherently with expectations, the Mott-insulating states' correlators vanish identically. For the sake of intelligibility, I also plotted the $\mathrm{XY}$ data on a \texttt{:loglog} scale in Fig.~\ref{fig:su-correlator-loglog}. For both the points simulated, the decay is vaguely power-law with some evident deviations at big distance. I reconnect this last effect to the finite size: the finite nature of the chain introduces another length scale over which correlations decay, related directly to $L$. Over this length scale decay is expected to be exponential-like. Regarding Fig.~\ref{fig:su-correlator-loglog}, there is nothing much I can say apart from \textit{much} qualitative comments. I tried comparing with a power-law decay using the estimated $K$, as in Fig.~\ref{fig:cdw-correlator-zoom-XY1}, but results were unsatisfying. Evidently the simulations are not good enough to represent these correlations.
 
 \subsubsection{Observables heatmaps}
 
@@ -460,7 +475,7 @@ Recall now Eqns.~\eqref{eq:u-K-formulas},
 	\qquad\text{and}\qquad
 	K = \sqrt{\pi\kappa\mathcal{D}}
 \]
-Compressibility and charge stiffness, multiplied and divided, are connected to the Luttinger parameters $u$ and $K$. The two parameters completely govern the bosonization description of a one-dimensional spinless fermionic system. Most importantly, {\color{tabred} [as explained in Sec.]}, if $K < 1$ the equivalent interaction between bosons is repulsive and gives rise to a $\mathrm{CDW}$ behavior. If $K > 1$, the interaction is attractive and the main dynamics is superfluid.
+Compressibility and charge stiffness, multiplied and divided, are connected to the Luttinger parameters $u$ and $K$. The two parameters completely govern the bosonization description of a one-dimensional spinless fermionic system. Most importantly, as explained in Sec.~\ref{subsubsec:meaning-of-the-luttinger-parameter-K}, if $K < 1$ the equivalent interaction between bosons is repulsive and gives rise to a $\mathrm{CDW}$ behavior. If $K > 1$, the interaction is attractive and the main dynamics is superfluid.
 
 \begin{figure}
 	\centering	

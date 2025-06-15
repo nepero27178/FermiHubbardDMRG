@@ -663,6 +663,7 @@ function ChainPlots(
     Entropy = Dict([])
     CDWCorrelator = Dict([])
 	SUCorrelator = Dict([])
+	LuttingerK = Dict([])
 	
     for Phase in ["XY-Up", "XY-Down", "IF", "IAF"]
 
@@ -677,12 +678,19 @@ function ChainPlots(
         # [1] is necessary to read the SubString
         LocalEnergy[Phase] = ParseRawString(Data[Index,8][1])
         Density[Phase] = ParseRawString(Data[Index,9][1])
+        
+        ρ = sum(Density[Phase])/L
+        
         Entropy[Phase] = ParseRawString(Data[Index,10][1])        
         BlockDensityVariance[Phase] = ParseRawString(Data[Index,11][1])
-        CDWCorrelator[Phase] = ParseRawString(Data[Index,12][1])[2:end]	# Exclude 0
-        SUCorrelator[Phase] = ParseRawString(Data[Index,13][1])[2:end]	# Exclude 0
+        CDWCorrelator[Phase] = ParseRawString(Data[Index,12][1])[2:end] .- ρ^2	# Exclude 0
+        SUCorrelator[Phase] = ParseRawString(Data[Index,13][1])[2:end]			# Exclude 0
+        
+        k = Data[Index, end-1][1]
+        D = Data[Index, end][1]
+        LuttingerK[Phase] = sqrt(pi*abs(k*D))
     end
-
+    
     MainDict = Dict([
         ("Local energy", LocalEnergy),
         ("Density", Density),
@@ -725,16 +733,15 @@ function ChainPlots(
 		
 	        if Observable=="CDW Correlator"
 				
-				for Phase in ["XY-Up", "XY-Down", "IF", "IAF"]
+				for Phase in ["XY-Up"]
 
 				    Point = PointDict[Phase]
-
+					
 				    yy = MainDict[Observable][Phase]
 				    xx = [l for l in 1:length(yy)]
 					plot!(
 				        xx, yy,
-				        xaxis=:log,
-						yaxis=:log,
+				        xticks = xx[5:5:end],
 				        xlabel = xLabelsDict[Observable],
 				        ylabel = yLabelsDict[Observable],
 				        markershape = :circle,
@@ -745,7 +752,17 @@ function ChainPlots(
 				        linewidth = 0.5,
 				        linestyle = StyleDict[Phase][5],
 				        linecolor= StyleDict[Phase][1],
-				        label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(StyleDict[Phase][6]))",
+				        label = L"$\mathcal{C}_{\mathrm{CDW}}(r)$ (%$(StyleDict[Phase][6]))",
+				        legend=:bottomright
+				    )
+				    
+				    K = LuttingerK[Phase]
+				    xxEnlarged = [l for l in 1:0.1:length(yy)]
+				    plot!(
+				    	xxEnlarged, -K ./ (2 * (pi .* xxEnlarged).^2),
+				    	label=L"$-K/2\pi^2 r^2$ ($K=%$(round(K,digits=2))$)",
+				    	linewidth=0.5,
+				    	linecolor=MyColors[2],
 				    )
 
 				end
@@ -760,6 +777,7 @@ function ChainPlots(
 				    xx = [l for l in 1:length(yy)]
 					plot!(
 				        xx, yy,
+				        xticks = [1,10,100],
 				        xaxis=:log,
 						yaxis=:log,
 				        xlabel = xLabelsDict[Observable],
@@ -772,9 +790,9 @@ function ChainPlots(
 				        linewidth = 0.5,
 				        linestyle = StyleDict[Phase][5],
 				        linecolor= StyleDict[Phase][1],
-				        label = L"$V=%$(Point[1])$, $\mu=%$(Point[2])$ (%$(StyleDict[Phase][6]))",
+				        label = "$(StyleDict[Phase][6])",
+				        legend=:topright
 				    )
-
 				end
 			
 			else
@@ -840,6 +858,7 @@ function ChainPlots(
 		        xx = [l for l in 1:length(yy)]
 				plot!(
 		            xx, yy,
+		            xticks = xx[5:5:end],
 		            xlabel = xLabelsDict[Observable],
 		            ylabel = yLabelsDict[Observable],
 		            markershape = :circle,
