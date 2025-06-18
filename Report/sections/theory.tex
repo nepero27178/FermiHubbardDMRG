@@ -64,7 +64,7 @@ Now, Eq.~\eqref{eq:density-commutator} looks ``bosonic''. Notice that the left-s
 Then, I define a boson operator with finite particle numbers as
 \[
 \begin{aligned}
-	\hat b_q^\dagger &\equiv \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}}  \left(\sgn(s) q\right) \hat \rho_s^\dagger (q) \\
+	\hat b_q^\dagger &\equiv \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \mathrm{H} \left(\sgn(s) q\right) \hat \rho_s^\dagger (q) \\
 	\hat b_q &\equiv \sqrt{\frac{2\pi}{\abs{q}L}} \sum_{s \in \left\{\mathrm L, \mathrm R\right\}} \mathrm{H} \left(\sgn(s) q\right) \hat \rho_s^\dagger (-q)
 \end{aligned}
 \]
@@ -458,7 +458,7 @@ which is the second relation I needed in order to determine $u$ and $K$. The ent
 
 The single-particle Green's function is defined in imaginary time, and for $s$-side fermions, as:
 \[
-	\mathcal{G}_s (x,\tau) \equiv - \ev{\mathrm{T}_\tau \left\{ \hat \psi_s (x,\tau) \hat \psi_s ^\dagger (0,0) \right\}}
+	\mathcal{G}_s (x,\tau) \equiv - \ev{\mathcal{T}_\tau \left\{ \hat \psi_s (x,\tau) \hat \psi_s ^\dagger (0,0) \right\}}
 \]
 having we assumed in definition spacetime translational invariance, and being $\mathcal{T}_\tau$ the time-ordering operator. Let me take $\tau = 0^-$, thus keeping the order $\hat \psi \hat \psi^\dagger$ inside the expectation value. I (surprisingly) follow here the lead of \cite{giamarchi2003quantum, senechal1999introduction}: the occupation factor $n(k)$,
 \[
@@ -532,7 +532,7 @@ Moreover, notice that for a $1$D lattice of lattice spacing $a$ at half-filling,
 	\quad\text{for}\quad
 	r \in \mathbb{Z} \mod L
 \]
-The oscillatory character of the correlation function with the site index parity reflects the fact that, at half-filling, charge-density waves (CDW) excitations follow have wavelength twice the lattice spacing. At unitary filling, such oscillatory behavior vanishes due to the halving of the Fermi wavevector.
+The oscillatory character of the correlation function with the site index parity reflects the fact that, at half-filling, charge-density waves (CDW) excitations have wavelength twice the lattice spacing. At unitary filling, such oscillatory behavior vanishes due to the halving of the Fermi wavevector.
 
 \subsubsection{Superconducting pairing correlations}
 
@@ -575,7 +575,7 @@ The superconducting correlator is defined as
 \[
 	\mathcal{C}_\mathrm{SU}(x) = \ev{\hat{\mathcal{O}}_\mathrm{SU}^\dagger(x) \hat{\mathcal{O}}_\mathrm{SU}(0)}
 \]
-It can be shown that using the previous result gives:
+It can be shown that previous result give:
 \begin{equation}\label{eq:superconducting-correlation-power-law}
 	\mathcal{C}_\mathrm{SU}(x) = \frac{1}{(\pi\alpha)^2} \left(
 		\frac{\alpha}{x}
